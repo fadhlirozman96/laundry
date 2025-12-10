@@ -24,7 +24,36 @@
 
             </div>
             <!-- /add -->
-            <form action="edit-product">
+            
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Validation Errors:</strong>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data" id="edit-product-form">
+                @csrf
+                @method('PUT')
                 <div class="card">
                     <div class="card-body add-product pb-0">
                         <div class="accordion-card-one accordion" id="accordionExample">
@@ -47,45 +76,41 @@
                                             <div class="col-lg-4 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
                                                     <label class="form-label">Store</label>
-                                                    <select class="select">
-                                                        <option>Thomas</option>
-                                                        <option>Rasmussen</option>
-                                                        <option>Fred john</option>
+                                                    <select name="store_id" class="select">
+                                                        <option value="">Choose</option>
+                                                        @foreach($stores as $store)
+                                                            <option value="{{ $store->id }}" {{ old('store_id', $product->store_id) == $store->id ? 'selected' : '' }}>
+                                                                {{ $store->name }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <label class="form-label">Warehouse</label>
-                                                    <select class="select">
-                                                        <option>Legendary</option>
-                                                        <option>Determined</option>
-                                                        <option>Sincere</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
                                             <div class="col-lg-4 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
                                                     <label class="form-label">Product Name</label>
-                                                    <input type="text" class="form-control" value="Nike Jordan">
+                                                    <input type="text" name="name" class="form-control" value="{{ old('name', $product->name) }}" required>
+                                                    @error('name')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
                                                     <label class="form-label">Slug</label>
-                                                    <input type="text" class="form-control" value="Shoe">
+                                                    <input type="text" name="slug" class="form-control" value="{{ old('slug', $product->slug) }}" placeholder="Auto-generated from name">
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-12">
                                                 <div class="input-blocks add-product list">
                                                     <label>SKU</label>
-                                                    <input type="text" class="form-control list" placeholder="Enter SKU"
-                                                        value="PT003">
-                                                    <button type="submit" class="btn btn-primaryadd">
+                                                    <input type="text" name="sku" class="form-control list" placeholder="Enter SKU" value="{{ old('sku', $product->sku) }}" required>
+                                                    <button type="button" class="btn btn-primaryadd" onclick="generateSKU()">
                                                         Generate Code
                                                     </button>
+                                                    @error('sku')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
@@ -101,28 +126,13 @@
                                                                     class="plus-down-add"></i><span>Add
                                                                     New</span></a>
                                                         </div>
-                                                        <select class="select">
-                                                            <option>Lenovo</option>
-                                                            <option>Electronics</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="mb-3 add-product">
-                                                        <label class="form-label">Choose Category</label>
-                                                        <select class="select">
-                                                            <option>Lenovo</option>
-                                                            <option>Electronics</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="mb-3 add-product">
-                                                        <label class="form-label">Sub Category</label>
-                                                        <select class="select">
-                                                            <option>Fruits</option>
-                                                            <option>Computers</option>
-                                                            <option>Shoes</option>
+                                                        <select name="category_id" class="select">
+                                                            <option value="">Choose</option>
+                                                            @foreach($categories as $category)
+                                                                <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                                                    {{ $category->name }}
+                                                                </option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
@@ -140,9 +150,13 @@
                                                                     class="plus-down-add"></i><span>Add
                                                                     new</span></a>
                                                         </div>
-                                                        <select class="select">
-                                                            <option>Nike</option>
-                                                            <option>Bolt</option>
+                                                        <select name="brand_id" class="select">
+                                                            <option value="">Choose</option>
+                                                            @foreach($brands as $brand)
+                                                                <option value="{{ $brand->id }}" {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
+                                                                    {{ $brand->name }}
+                                                                </option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
@@ -155,9 +169,13 @@
                                                                 data-bs-target="#add-unit"><i data-feather="plus-circle"
                                                                     class="plus-down-add"></i><span>Add New</span></a>
                                                         </div>
-                                                        <select class="select">
-                                                            <option>Kg</option>
-                                                            <option>Pc</option>
+                                                        <select name="unit_id" class="select">
+                                                            <option value="">Choose</option>
+                                                            @foreach($units as $unit)
+                                                                <option value="{{ $unit->id }}" {{ old('unit_id', $product->unit_id) == $unit->id ? 'selected' : '' }}>
+                                                                    {{ $unit->name }}
+                                                                </option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
@@ -185,10 +203,10 @@
                                             </div>
                                             <div class="col-lg-6 col-sm-6 col-12">
                                                 <div class="input-blocks add-product list">
-                                                    <label>Item Code</label>
-                                                    <input type="text" class="form-control list"
-                                                        placeholder="Please Enter Item Code">
-                                                    <button type="submit" class="btn btn-primaryadd">
+                                                    <label>Barcode</label>
+                                                    <input type="text" name="barcode" class="form-control list"
+                                                        placeholder="Please Enter Barcode" value="{{ old('barcode', $product->barcode) }}">
+                                                    <button type="button" class="btn btn-primaryadd" onclick="generateBarcode()">
                                                         Generate Code
                                                     </button>
                                                 </div>
@@ -199,7 +217,7 @@
                                             <div class="col-lg-12">
                                                 <div class="input-blocks summer-description-box transfer mb-3">
                                                     <label>Description</label>
-                                                    <textarea class="form-control h-100" rows="5"></textarea>
+                                                    <textarea name="description" class="form-control h-100" rows="5">{{ old('description', $product->description) }}</textarea>
                                                     <p class="mt-1">Maximum 60 Characters</p>
                                                 </div>
                                             </div>
@@ -257,45 +275,59 @@
                                                     <div class="col-lg-4 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
                                                             <label>Quantity</label>
-                                                            <input type="text" class="form-control" value="5">
+                                                            <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}" required>
+                                                            @error('quantity')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-4 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
                                                             <label>Price</label>
-                                                            <input type="text" class="form-control" value="300">
+                                                            <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $product->price) }}" required>
+                                                            @error('price')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-4 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
-                                                            <label>Tax Type</label>
-                                                            <select class="select">
-                                                                <option>Exclusive</option>
-                                                                <option>Sales Tax</option>
-                                                            </select>
+                                                            <label>Cost</label>
+                                                            <input type="number" step="0.01" name="cost" class="form-control" value="{{ old('cost', $product->cost) }}">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-4 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
-                                                            <label>Discount Type</label>
-                                                            <select class="select">
-                                                                <option>Percentage</option>
-                                                                <option>Cash</option>
+                                                            <label>Tax Type</label>
+                                                            <select name="tax_type" class="select">
+                                                                <option value="Exclusive" {{ old('tax_type', $product->tax_type) == 'Exclusive' ? 'selected' : '' }}>Exclusive</option>
+                                                                <option value="Inclusive" {{ old('tax_type', $product->tax_type) == 'Inclusive' ? 'selected' : '' }}>Inclusive</option>
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Discount Value</label>
-                                                            <input type="text" placeholder="10%">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-4 col-sm-6 col-12">
+                                                    <div class="col-lg-8 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
                                                             <label>Quantity Alert</label>
-                                                            <input type="text" class="form-control" value="100">
+                                                            <input type="number" name="alert_quantity" class="form-control" value="{{ old('alert_quantity', $product->alert_quantity) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-sm-6 col-12">
+                                                        <div class="input-blocks add-product">
+                                                            <label>Discount Type</label>
+                                                            <select name="discount_type" class="select">
+                                                                <option value="fixed" {{ old('discount_type', $product->discount_type) == 'fixed' ? 'selected' : '' }}>Fixed</option>
+                                                                <option value="percentage" {{ old('discount_type', $product->discount_type) == 'percentage' ? 'selected' : '' }}>Percentage</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-sm-6 col-12">
+                                                        <div class="input-blocks add-product">
+                                                            <label>Discount Value</label>
+                                                            <input type="number" step="0.01" name="discount_value" class="form-control" value="{{ old('discount_value', $product->discount_value) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -320,31 +352,35 @@
                                                             <div class="accordion-body">
                                                                 <div class="text-editor add-list add">
                                                                     <div class="col-lg-12">
-                                                                        <div class="add-choosen">
+                                                                        <div class="add-choosen" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start;">
                                                                             <div class="input-blocks">
-                                                                                <div class="image-upload">
-                                                                                    <input type="file">
+                                                                                <div class="image-upload" id="image-upload-wrapper-edit">
+                                                                                    <input type="file" name="image" id="image-input-edit" accept="image/*">
                                                                                     <div class="image-uploads">
                                                                                         <i data-feather="plus-circle"
                                                                                             class="plus-down-add me-0"></i>
-                                                                                        <h4>Add Images</h4>
+                                                                                        <h4>{{ $product->image ? 'Change Image' : 'Add Images' }}</h4>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="phone-img">
-                                                                                <img src="{{ URL::asset('/build/img/products/phone-add-2.png')}}"
-                                                                                    alt="image">
-                                                                                <a href="javascript:void(0);"><i
-                                                                                        data-feather="x"
-                                                                                        class="x-square-add remove-product"></i></a>
+                                                                            
+                                                                            @if($product->image)
+                                                                            <div id="current-image-container">
+                                                                                <div class="phone-img" style="position: relative !important; display: block !important; width: 150px !important; height: 150px !important;">
+                                                                                    <img src="{{ URL::asset($product->image) }}" alt="Current Image" style="width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 10px !important; border: 2px solid #ddd !important; background: #f9f9f9 !important;">
+                                                                                    <small class="d-block text-center mt-1">Current Image</small>
+                                                                                </div>
                                                                             </div>
+                                                                            @endif
 
-                                                                            <div class="phone-img">
-                                                                                <img src="{{ URL::asset('/build/img/products/phone-add-1.png')}}"
-                                                                                    alt="image">
-                                                                                <a href="javascript:void(0);"><i
-                                                                                        data-feather="x"
-                                                                                        class="x-square-add remove-product"></i></a>
+                                                                            <div id="image-preview-container-edit" class="image-preview-box" style="display: none !important;">
+                                                                                <div class="phone-img" style="position: relative !important; display: block !important; width: 150px !important; height: 150px !important;">
+                                                                                    <img id="image-preview-edit" src="" alt="Preview" style="width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 10px !important; border: 2px solid #ddd !important; background: #f9f9f9 !important;">
+                                                                                    <a href="javascript:void(0);" onclick="removeImageEdit()" style="position: absolute !important; top: -8px !important; right: -8px !important; background: #ea5455 !important; border-radius: 50% !important; width: 28px !important; height: 28px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important; cursor: pointer !important; z-index: 999 !important;">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                                    </a>
+                                                                                    <small class="d-block text-center mt-1">New Image</small>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -642,3 +678,93 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+console.log('Edit Product Scripts Loaded');
+
+// Auto-generate slug from product name
+$('input[name="name"]').on('keyup', function() {
+    var name = $(this).val();
+    var slug = name.toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
+        .trim();
+    $('input[name="slug"]').val(slug);
+});
+
+// Generate SKU
+function generateSKU() {
+    var prefix = 'PT';
+    var random = Math.floor(1000 + Math.random() * 9000);
+    $('input[name="sku"]').val(prefix + random);
+}
+
+// Generate Barcode
+function generateBarcode() {
+    var barcode = Math.floor(100000000000 + Math.random() * 900000000000);
+    $('input[name="barcode"]').val(barcode);
+}
+
+// Image preview for edit page
+$('body').on('change', '#image-input-edit', function(e) {
+    console.log('File input changed (Edit)!');
+    var input = this;
+    var file = input.files[0];
+    
+    if (file) {
+        console.log('File selected:', file.name);
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            console.log('Image loaded, showing preview');
+            $('#image-preview-edit').attr('src', e.target.result);
+            $('#image-preview-container-edit').css('display', 'block');
+            $('#image-preview-container-edit').show();
+            
+            // Reinitialize feather icons
+            setTimeout(function() {
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
+                }
+            }, 100);
+        }
+        
+        reader.readAsDataURL(file);
+    }
+});
+
+// Remove new image preview
+function removeImageEdit() {
+    console.log('Removing image (Edit)');
+    
+    // Hide preview
+    $('#image-preview-container-edit').hide();
+    $('#image-preview-edit').attr('src', '');
+    
+    // Clear the file input by replacing it
+    var $oldInput = $('#image-input-edit');
+    var $newInput = $oldInput.clone();
+    $newInput.val('');
+    $oldInput.replaceWith($newInput);
+}
+
+// Main form Cancel button only (not modal cancel buttons)
+$('.btn-addproduct .btn-cancel').on('click', function() {
+    window.location.href = "{{ route('product-list') }}";
+});
+
+// Debug form submission
+$('#edit-product-form').on('submit', function(e) {
+    console.log('Form submitted!');
+    console.log('Form action:', $(this).attr('action'));
+    console.log('Form method:', $(this).attr('method'));
+    console.log('Product Name:', $('input[name="name"]').val());
+    console.log('Price:', $('input[name="price"]').val());
+    console.log('Quantity:', $('input[name="quantity"]').val());
+    // Let the form submit normally
+});
+</script>
+@endpush
+

@@ -39,6 +39,10 @@
                                         <h6>{{ $product->brand->name ?? 'None' }}</h6>
                                     </li>
                                     <li>
+                                        <h4>Store</h4>
+                                        <h6><span class="badge bg-primary">{{ $product->store->name ?? 'No Store Assigned' }}</span></h6>
+                                    </li>
+                                    <li>
                                         <h4>Unit</h4>
                                         <h6>{{ $product->unit->name ?? 'Piece' }}</h6>
                                     </li>

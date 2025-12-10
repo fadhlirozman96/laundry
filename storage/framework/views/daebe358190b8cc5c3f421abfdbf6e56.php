@@ -1,33 +1,35 @@
 <?php $page = 'product-list'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <div class="page-wrapper">
         <div class="content">
-            @component('components.breadcrumb')
-                @slot('title')
+            <?php $__env->startComponent('components.breadcrumb'); ?>
+                <?php $__env->slot('title'); ?>
                     Product List
-                @endslot
-                @slot('li_1')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_1'); ?>
                     Manage your products
-                @endslot
-                @slot('li_2')
-                    {{ url('add-product') }}
-                @endslot
-                @slot('li_3')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_2'); ?>
+                    <?php echo e(url('add-product')); ?>
+
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_3'); ?>
                     Add New Product
-                @endslot
-                @slot('li_4')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_4'); ?>
                     Import Product
-                @endslot
-            @endcomponent
+                <?php $__env->endSlot(); ?>
+            <?php echo $__env->renderComponent(); ?>
 
             <!-- /product list -->
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Success!</strong> {{ session('success') }}
+                    <strong>Success!</strong> <?php echo e(session('success')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <div class="card table-list-card">
                 <div class="card-body">
@@ -42,7 +44,7 @@
                         <div class="search-path">
                             <a class="btn btn-filter" id="filter_search">
                                 <i data-feather="filter" class="filter-icon"></i>
-                                <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
+                                <span><img src="<?php echo e(URL::asset('/build/img/icons/closes.svg')); ?>" alt="img"></span>
                             </a>
                         </div>
                         <div class="form-sort">
@@ -163,9 +165,9 @@
             <!-- /product list -->
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <style>
     /* Action icons styling */
     .edit-delete-action a {
@@ -255,7 +257,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "{{ route('product-list') }}",
+            url: "<?php echo e(route('product-list')); ?>",
             type: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -352,7 +354,7 @@ function deleteProduct(id) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
             }
         })
         .then(response => response.json())
@@ -371,4 +373,6 @@ function deleteProduct(id) {
     }
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/product-list.blade.php ENDPATH**/ ?>

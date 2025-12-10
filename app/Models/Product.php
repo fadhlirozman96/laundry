@@ -10,6 +10,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
+        'store_id',
         'sku',
         'name',
         'slug',
@@ -38,6 +39,11 @@ class Product extends Model
         'is_active' => 'boolean',
         'images' => 'array',
     ];
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
 
     public function category()
     {

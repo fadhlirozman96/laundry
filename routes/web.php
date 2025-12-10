@@ -258,9 +258,15 @@ Route::get('/suppliers', function () {
     return view('suppliers');
 })->name('suppliers');  
 
-Route::get('/store-list', function () {                         
-    return view('store-list');
-})->name('store-list');  
+// Store Management Routes
+Route::get('/store-list', [App\Http\Controllers\StoreController::class, 'index'])->name('store-list')->middleware('auth');
+Route::post('/stores', [App\Http\Controllers\StoreController::class, 'store'])->name('stores.store')->middleware('auth');
+Route::put('/stores/{id}', [App\Http\Controllers\StoreController::class, 'update'])->name('stores.update')->middleware('auth');
+Route::delete('/stores/{id}', [App\Http\Controllers\StoreController::class, 'destroy'])->name('stores.destroy')->middleware('auth');
+Route::post('/stores/{id}/assign-user', [App\Http\Controllers\StoreController::class, 'assignUser'])->name('stores.assign-user')->middleware('auth');
+Route::delete('/stores/{storeId}/remove-user/{userId}', [App\Http\Controllers\StoreController::class, 'removeUser'])->name('stores.remove-user')->middleware('auth');
+Route::post('/stores/{id}/create-user', [App\Http\Controllers\StoreController::class, 'createStoreUser'])->name('stores.create-user')->middleware('auth');
+Route::get('/select-store/{id}', [App\Http\Controllers\StoreController::class, 'selectStore'])->name('select-store')->middleware('auth');  
 
 Route::get('/warehouse', function () {                         
     return view('warehouse');

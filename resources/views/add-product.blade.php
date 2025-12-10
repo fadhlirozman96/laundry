@@ -18,6 +18,26 @@
                 @endslot
             @endcomponent
             <!-- /add -->
+            
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Validation Errors:</strong>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card">
@@ -41,28 +61,20 @@
                                         <div class="row">
                                             <div class="col-lg-4 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
-                                                    <label class="form-label">Store</label>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Thomas</option>
-                                                        <option>Rasmussen</option>
-                                                        <option>Fred john</option>
+                                                    <label class="form-label">Store <span class="text-danger">*</span></label>
+                                                    <select name="store_id" class="select" required>
+                                                        <option value="">Choose Store</option>
+                                                        @foreach($stores as $store)
+                                                            <option value="{{ $store->id }}" {{ (old('store_id') == $store->id || (isset($selectedStoreId) && $selectedStoreId == $store->id)) ? 'selected' : '' }}>
+                                                                {{ $store->name }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
+                                                    @error('store_id')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <label class="form-label">Warehouse</label>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Legendary</option>
-                                                        <option>Determined</option>
-                                                        <option>Sincere</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
                                             <div class="col-lg-4 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
                                                     <label class="form-label">Product Name</label>
@@ -284,12 +296,29 @@
                                                     <div class="col-lg-4 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
                                                             <label>Cost</label>
-                                                            <input type="number" step="0.01" name="cost" class="form-control">
+                                                            <input type="number" step="0.01" name="cost" class="form-control" value="0">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-4 col-sm-6 col-12">
+                                                        <div class="input-blocks add-product">
+                                                            <label>Tax Type</label>
+                                                            <select name="tax_type" class="select">
+                                                                <option value="Exclusive">Exclusive</option>
+                                                                <option value="Inclusive">Inclusive</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-8 col-sm-6 col-12">
+                                                        <div class="input-blocks add-product">
+                                                            <label>Quantity Alert</label>
+                                                            <input type="number" name="alert_quantity" class="form-control" value="10">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
                                                             <label>Discount Type</label>
                                                             <select name="discount_type" class="select">
@@ -298,16 +327,10 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4 col-sm-6 col-12">
+                                                    <div class="col-lg-6 col-sm-6 col-12">
                                                         <div class="input-blocks add-product">
                                                             <label>Discount Value</label>
                                                             <input type="number" step="0.01" name="discount_value" class="form-control" value="0">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-4 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Quantity Alert</label>
-                                                            <input type="number" name="alert_quantity" class="form-control" value="10">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -332,15 +355,23 @@
                                                             <div class="accordion-body">
                                                                 <div class="text-editor add-list add">
                                                                     <div class="col-lg-12">
-                                                                        <div class="add-choosen">
+                                                                        <div class="add-choosen" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start;">
                                                                             <div class="input-blocks">
-                                                                                <div class="image-upload">
-                                                                                    <input type="file" name="image" accept="image/*">
+                                                                                <div class="image-upload" id="image-upload-wrapper">
+                                                                                    <input type="file" name="image" id="image-input" accept="image/*">
                                                                                     <div class="image-uploads">
                                                                                         <i data-feather="plus-circle"
                                                                                             class="plus-down-add me-0"></i>
                                                                                         <h4>Add Images</h4>
                                                                                     </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div id="image-preview-container" class="image-preview-box" style="display: none !important;">
+                                                                                <div class="phone-img" style="position: relative !important; display: block !important; width: 150px !important; height: 150px !important;">
+                                                                                    <img id="image-preview" src="" alt="Preview" style="width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 10px !important; border: 2px solid #ddd !important; background: #f9f9f9 !important;">
+                                                                                    <a href="javascript:void(0);" onclick="removeImage()" style="position: absolute !important; top: -8px !important; right: -8px !important; background: #ea5455 !important; border-radius: 50% !important; width: 28px !important; height: 28px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important; cursor: pointer !important; z-index: 999 !important;">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                                                    </a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -642,6 +673,8 @@
 
 @push('scripts')
 <script>
+console.log('Add Product Scripts Loaded');
+
 // Auto-generate slug from product name
 $('input[name="name"]').on('keyup', function() {
     var name = $(this).val();
@@ -666,20 +699,62 @@ function generateBarcode() {
     $('input[name="barcode"]').val(barcode);
 }
 
-// Cancel button
-$('.btn-cancel').on('click', function() {
-    window.location.href = "{{ route('product-list') }}";
+// Image preview - using body delegation for better compatibility
+$('body').on('change', '#image-input', function(e) {
+    console.log('File input changed!');
+    var input = this;
+    var file = input.files[0];
+    
+    if (file) {
+        console.log('File selected:', file.name);
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            console.log('Image loaded, showing preview');
+            $('#image-preview').attr('src', e.target.result);
+            $('#image-preview-container').css('display', 'block');
+            $('#image-preview-container').show();
+            
+            console.log('Preview container display:', $('#image-preview-container').css('display'));
+            console.log('Preview container visible:', $('#image-preview-container').is(':visible'));
+            
+            // Reinitialize feather icons
+            setTimeout(function() {
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
+                }
+            }, 100);
+        }
+        
+        reader.readAsDataURL(file);
+    }
 });
 
-// Form validation messages
-@if($errors->any())
-    @foreach ($errors->all() as $error)
-        toastr.error('{{ $error }}');
-    @endforeach
-@endif
+// Remove image
+function removeImage() {
+    console.log('Removing image');
+    
+    // Hide preview
+    $('#image-preview-container').hide();
+    $('#image-preview').attr('src', '');
+    
+    // Create a new file input to replace the old one
+    var oldInput = document.getElementById('image-input');
+    var newInput = document.createElement('input');
+    newInput.type = 'file';
+    newInput.name = 'image';
+    newInput.id = 'image-input';
+    newInput.accept = 'image/*';
+    
+    // Replace the old input with the new one
+    oldInput.parentNode.replaceChild(newInput, oldInput);
+    
+    console.log('Input replaced');
+}
 
-@if(session('success'))
-    toastr.success('{{ session('success') }}');
-@endif
+// Main form Cancel button only (not modal cancel buttons)
+$('.btn-addproduct .btn-cancel').on('click', function() {
+    window.location.href = "{{ route('product-list') }}";
+});
 </script>
 @endpush

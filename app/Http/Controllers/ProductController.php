@@ -16,7 +16,20 @@ class ProductController extends Controller
     {
         // Handle DataTables AJAX request
         if ($request->ajax() || $request->has('draw')) {
-            $query = Product::with(['category', 'brand', 'unit', 'creator']);
+            $query = Product::with(['category', 'brand', 'unit', 'creator', 'store']);
+
+            // Filter by user's accessible stores
+            $user = auth()->user();
+            if (!$user->isSuperAdmin()) {
+                $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+                // Only show products that belong to user's accessible stores
+                $query->whereIn('store_id', $accessibleStoreIds);
+            }
+
+            // If a specific store is selected in session, filter by that store
+            if (session('selected_store_id')) {
+                $query->where('store_id', session('selected_store_id'));
+            }
 
             // DataTables search
             if ($request->has('search') && !empty($request->search['value'])) {
@@ -28,8 +41,16 @@ class ProductController extends Controller
                 });
             }
 
-            // Get total records
-            $totalRecords = Product::count();
+            // Get total records (filtered by store access)
+            $totalQuery = Product::query();
+            if (!$user->isSuperAdmin()) {
+                $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+                $totalQuery->whereIn('store_id', $accessibleStoreIds);
+            }
+            if (session('selected_store_id')) {
+                $totalQuery->where('store_id', session('selected_store_id'));
+            }
+            $totalRecords = $totalQuery->count();
             $filteredRecords = $query->count();
 
             // DataTables ordering
@@ -71,6 +92,7 @@ class ProductController extends Controller
                     'price' => '$' . number_format($product->price, 2),
                     'unit' => $product->unit->short_name ?? 'Pc',
                     'quantity' => $product->quantity,
+                    'store' => '<span class="badge bg-outline-primary">' . ($product->store->name ?? 'No Store') . '</span>',
                     'created_by' => '<div class="userimgname">
                                         <a href="javascript:void(0);" class="product-img">
                                             <img src="' . asset('/build/img/users/user-30.jpg') . '" alt="user">
@@ -100,7 +122,11 @@ class ProductController extends Controller
         }
 
         // Regular page load
-        return view('product-list');
+        $categories = Category::where('is_active', true)->get();
+        $brands = Brand::where('is_active', true)->get();
+        $units = Unit::where('is_active', true)->get();
+        $stores = auth()->user()->getAccessibleStores();
+        return view('product-list', compact('categories', 'brands', 'units', 'stores'));
     }
 
     public function create()
@@ -108,8 +134,10 @@ class ProductController extends Controller
         $categories = Category::where('is_active', true)->get();
         $brands = Brand::where('is_active', true)->get();
         $units = Unit::where('is_active', true)->get();
-        
-        return view('add-product', compact('categories', 'brands', 'units'));
+        $stores = auth()->user()->getAccessibleStores();
+        $selectedStoreId = session('selected_store_id');
+
+        return view('add-product', compact('categories', 'brands', 'units', 'stores', 'selectedStoreId'));
     }
 
     public function store(Request $request)
@@ -117,6 +145,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'sku' => 'required|string|unique:products,sku',
+            'store_id' => 'nullable|exists:stores,id',
             'category_id' => 'nullable|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'unit_id' => 'nullable|exists:units,id',
@@ -133,6 +162,19 @@ class ProductController extends Controller
         $data['slug'] = Str::slug($request->name);
         $data['created_by'] = Auth::id();
 
+        // If no store_id provided, use selected store from session
+        if (empty($data['store_id']) && session('selected_store_id')) {
+            $data['store_id'] = session('selected_store_id');
+        }
+
+        // Validate user has access to the store
+        if (!empty($data['store_id'])) {
+            $accessibleStoreIds = auth()->user()->getAccessibleStores()->pluck('id')->toArray();
+            if (!in_array($data['store_id'], $accessibleStoreIds)) {
+                return redirect()->back()->with('error', 'You do not have access to this store.')->withInput();
+            }
+        }
+
         // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -148,27 +190,58 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['category', 'brand', 'unit', 'creator'])->findOrFail($id);
+        $product = Product::with(['category', 'brand', 'unit', 'creator', 'store'])->findOrFail($id);
+        
+        // Check if user has access to this product's store
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $product->store_id) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            if (!in_array($product->store_id, $accessibleStoreIds)) {
+                abort(403, 'You do not have access to this product.');
+            }
+        }
+        
         return view('product-details', compact('product'));
     }
 
     public function edit($id)
     {
         $product = Product::findOrFail($id);
+        
+        // Check if user has access to this product's store
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $product->store_id) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            if (!in_array($product->store_id, $accessibleStoreIds)) {
+                abort(403, 'You do not have access to this product.');
+            }
+        }
+        
         $categories = Category::where('is_active', true)->get();
         $brands = Brand::where('is_active', true)->get();
         $units = Unit::where('is_active', true)->get();
-        
-        return view('edit-product', compact('product', 'categories', 'brands', 'units'));
+        $stores = auth()->user()->getAccessibleStores();
+
+        return view('edit-product', compact('product', 'categories', 'brands', 'units', 'stores'));
     }
 
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
+        
+        // Check if user has access to this product's store
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $product->store_id) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            if (!in_array($product->store_id, $accessibleStoreIds)) {
+                return redirect()->route('product-list')->with('error', 'You do not have access to this product.');
+            }
+        }
 
         $request->validate([
             'name' => 'required|string|max:255',
             'sku' => 'required|string|unique:products,sku,' . $id,
+            'store_id' => 'nullable|exists:stores,id',
             'category_id' => 'nullable|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'unit_id' => 'nullable|exists:units,id',
@@ -180,6 +253,14 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'barcode' => 'nullable|string',
         ]);
+
+        // Validate user has access to the new store
+        if (!empty($request->store_id)) {
+            $accessibleStoreIds = auth()->user()->getAccessibleStores()->pluck('id')->toArray();
+            if (!in_array($request->store_id, $accessibleStoreIds)) {
+                return redirect()->back()->with('error', 'You do not have access to this store.')->withInput();
+            }
+        }
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
@@ -197,14 +278,27 @@ class ProductController extends Controller
             $data['image'] = 'uploads/products/' . $imageName;
         }
 
-        $product->update($data);
+        $updated = $product->update($data);
 
-        return redirect()->route('product-list')->with('success', 'Product updated successfully!');
+        if ($updated) {
+            return redirect()->route('product-list')->with('success', 'Product updated successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update product. Please try again.');
+        }
     }
 
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+        
+        // Check if user has access to this product's store
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $product->store_id) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            if (!in_array($product->store_id, $accessibleStoreIds)) {
+                return response()->json(['error' => 'You do not have access to delete this product.'], 403);
+            }
+        }
 
         // Delete image if exists
         if ($product->image && file_exists(public_path($product->image))) {
