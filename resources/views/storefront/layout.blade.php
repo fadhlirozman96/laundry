@@ -88,7 +88,7 @@
                 <div class="nav-center">
                     <ul class="nav-menu">
                         <li class="has-dropdown">
-                            <a href="{{ route('storefront.products', $store->slug) }}">Shop</a>
+                            <a href="{{ route('storefront.products', $store->slug) }}">Services</a>
                             @if(isset($categories) && $categories->count() > 0)
                             <ul class="dropdown-menu">
                                 @foreach($categories as $category)
@@ -97,10 +97,9 @@
                             </ul>
                             @endif
                         </li>
-                        <li><a href="{{ route('storefront.products', $store->slug) }}">Best Sellers</a></li>
-                        <li><a href="{{ route('storefront.products', $store->slug) }}">Gift Shop</a></li>
-                        <li><a href="#about">Our Story</a></li>
-                        <li><a href="#more">More</a></li>
+                        <li><a href="{{ route('storefront.products', $store->slug) }}">All Services</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
                 
@@ -179,7 +178,7 @@
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="{{ route('storefront.index', $store->slug) }}">Home</a></li>
-                        <li><a href="{{ route('storefront.products', $store->slug) }}">All Products</a></li>
+                        <li><a href="{{ route('storefront.products', $store->slug) }}">All Services</a></li>
                         <li><a href="#about">About Us</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>

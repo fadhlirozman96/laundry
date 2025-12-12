@@ -8,9 +8,9 @@
         <div class="container">
             <div class="hero-slide active">
                 <div class="hero-content">
-                    <h1 class="hero-title">{{ $theme->hero_title ?? 'Holiday Sweaters, Perfected' }}</h1>
-                    <p class="hero-subtitle">{{ $theme->hero_subtitle ?? 'Shop specialized care that keeps your holiday knits looking their absolute best.' }}</p>
-                    <a href="{{ route('storefront.products', $store->slug) }}" class="btn">Shop Now</a>
+                    <h1 class="hero-title">{{ $theme->hero_title ?? 'Professional Laundry Services' }}</h1>
+                    <p class="hero-subtitle">{{ $theme->hero_subtitle ?? 'You Leave It, We Clean It - Quality laundry services for all your needs' }}</p>
+                    <a href="{{ route('storefront.products', $store->slug) }}" class="btn">View Services</a>
                 </div>
                 <div class="hero-image">
                     <div class="hero-products">
@@ -52,21 +52,21 @@
     <section class="gifts-section">
         <div class="container">
             <div class="gifts-grid">
-                <a href="{{ route('storefront.products', [$store->slug, 'price_max' => 25]) }}" class="gift-banner">
-                    <div class="gift-banner-text">GIFTS UNDER</div>
-                    <div class="gift-banner-price">$25</div>
+                <a href="{{ route('storefront.category', [$store->slug, 'normal-wash-dry-services']) }}" class="gift-banner">
+                    <div class="gift-banner-text">WASH & DRY</div>
+                    <div class="gift-banner-price">RM4/kg</div>
                 </a>
-                <a href="{{ route('storefront.products', [$store->slug, 'price_max' => 35]) }}" class="gift-banner">
-                    <div class="gift-banner-text">GIFTS UNDER</div>
-                    <div class="gift-banner-price">$35</div>
+                <a href="{{ route('storefront.category', [$store->slug, 'ironing-services']) }}" class="gift-banner">
+                    <div class="gift-banner-text">IRONING</div>
+                    <div class="gift-banner-price">RM2.50</div>
                 </a>
-                <a href="{{ route('storefront.products', [$store->slug, 'price_max' => 50]) }}" class="gift-banner">
-                    <div class="gift-banner-text">GIFTS UNDER</div>
-                    <div class="gift-banner-price">$50</div>
+                <a href="{{ route('storefront.category', [$store->slug, 'dryclean-services']) }}" class="gift-banner">
+                    <div class="gift-banner-text">DRYCLEAN</div>
+                    <div class="gift-banner-price">RM12</div>
                 </a>
-                <a href="{{ route('storefront.products', [$store->slug, 'price_max' => 100]) }}" class="gift-banner">
-                    <div class="gift-banner-text">GIFTS UNDER</div>
-                    <div class="gift-banner-price">$100</div>
+                <a href="{{ route('storefront.category', [$store->slug, 'hand-wash-services']) }}" class="gift-banner">
+                    <div class="gift-banner-text">HAND WASH</div>
+                    <div class="gift-banner-price">RM6</div>
                 </a>
             </div>
         </div>
@@ -115,8 +115,8 @@
     <section class="featured-products" style="background: var(--off-white); padding: 80px 0;">
         <div class="container">
             <div class="section-header">
-                <h2>Shop All Gifts</h2>
-                <a href="{{ route('storefront.products', $store->slug) }}" class="view-all">View All</a>
+                <h2>Our Services</h2>
+                <a href="{{ route('storefront.products', $store->slug) }}" class="view-all">View All Services</a>
             </div>
             
             <div class="products-grid">
@@ -145,19 +145,19 @@
                                             ? $product->price - ($product->price * $product->discount_value / 100)
                                             : $product->price - $product->discount_value;
                                     @endphp
-                                    <span class="price-old">${{ number_format($product->price, 2) }}</span>
+                                    <span class="price-old">RM{{ number_format($product->price, 2) }}</span>
                                     <span class="price-new">${{ number_format($discountedPrice, 2) }}</span>
                                 @else
-                                    <span class="price">${{ number_format($product->price, 2) }}</span>
+                                    <span class="price">RM{{ number_format($product->price, 2) }}@if($product->unit) / {{ $product->unit->short_name }}@endif</span>
                                 @endif
                             </div>
                         </div>
                     </a>
-                    <button class="btn-add-cart" data-product-id="{{ $product->id }}">Add to Cart</button>
+                    <button class="btn-add-cart" data-product-id="{{ $product->id }}">Book Service</button>
                 </div>
-                @empty
+                        @empty
                 <div class="no-products">
-                    <p>No products available at the moment.</p>
+                    <p>No services available at the moment.</p>
                 </div>
                 @endforelse
             </div>
@@ -168,53 +168,53 @@
     <section class="shop-by-scent">
         <div class="container">
             <div class="section-header" style="text-align: center;">
-                <h2>Shop By Scent</h2>
+                <h2>Service Categories</h2>
             </div>
             <div class="scent-grid">
-                <div class="scent-card">
+                <a href="{{ route('storefront.category', [$store->slug, 'normal-wash-dry-services']) }}" class="scent-card" style="text-decoration: none;">
                     @if(isset($theme) && $theme && $theme->scent_indulgent_image)
                         <div class="scent-card-bg" style="background-image: url('{{ asset('uploads/storefront/' . $theme->scent_indulgent_image) }}'); background-size: cover; background-position: center;"></div>
                     @else
                         <div class="scent-card-bg" style="background: linear-gradient(135deg, #2d1b2e 0%, #1a1a2e 100%);"></div>
                     @endif
                     <div class="scent-card-content">
-                        <h3>Indulgent</h3>
-                        <p>Rich, luxurious fragrances</p>
+                        <h3>Wash & Dry</h3>
+                        <p>Normal and express services</p>
                     </div>
-                </div>
-                <div class="scent-card">
+                </a>
+                <a href="{{ route('storefront.category', [$store->slug, 'ironing-services']) }}" class="scent-card" style="text-decoration: none;">
                     @if(isset($theme) && $theme && $theme->scent_beauty_sleep_image)
                         <div class="scent-card-bg" style="background-image: url('{{ asset('uploads/storefront/' . $theme->scent_beauty_sleep_image) }}'); background-size: cover; background-position: center;"></div>
                     @else
                         <div class="scent-card-bg" style="background: linear-gradient(135deg, #1a2332 0%, #0d1b2a 100%);"></div>
                     @endif
                     <div class="scent-card-content">
-                        <h3>Beauty Sleep</h3>
-                        <p>Serene scents for rest</p>
+                        <h3>Ironing</h3>
+                        <p>Professional pressing</p>
                     </div>
-                </div>
-                <div class="scent-card">
+                </a>
+                <a href="{{ route('storefront.category', [$store->slug, 'dryclean-services']) }}" class="scent-card" style="text-decoration: none;">
                     @if(isset($theme) && $theme && $theme->scent_classic_image)
                         <div class="scent-card-bg" style="background-image: url('{{ asset('uploads/storefront/' . $theme->scent_classic_image) }}'); background-size: cover; background-position: center;"></div>
                     @else
                         <div class="scent-card-bg" style="background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);"></div>
                     @endif
                     <div class="scent-card-content" style="color: var(--dark-green);">
-                        <h3>Classic</h3>
-                        <p>Timeless elegance</p>
+                        <h3>Dryclean</h3>
+                        <p>Expert drycleaning</p>
                     </div>
-                </div>
-                <div class="scent-card">
+                </a>
+                <a href="{{ route('storefront.category', [$store->slug, 'hand-wash-services']) }}" class="scent-card" style="text-decoration: none;">
                     @if(isset($theme) && $theme && $theme->scent_marine_image)
                         <div class="scent-card-bg" style="background-image: url('{{ asset('uploads/storefront/' . $theme->scent_marine_image) }}'); background-size: cover; background-position: center;"></div>
                     @else
                         <div class="scent-card-bg" style="background: linear-gradient(135deg, #a8d5e2 0%, #7bb3c8 100%);"></div>
                     @endif
                     <div class="scent-card-content">
-                        <h3>Marine</h3>
-                        <p>Fresh, oceanic notes</p>
+                        <h3>Hand Wash</h3>
+                        <p>Gentle hand washing</p>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </section>
@@ -223,48 +223,48 @@
     <section class="expert-care-section">
         <div class="container">
             <div class="expert-care-header">
-                <h2>Your go-to source for expert fabric & home care</h2>
+                <h2>Why Choose {{ $store->name }}?</h2>
             </div>
             <div class="articles-grid">
-                <a href="#" class="article-card">
+                <div class="article-card">
                     <div class="article-image">
                         @if(isset($theme) && $theme && $theme->article_image_1)
-                            <img src="{{ asset('uploads/storefront/' . $theme->article_image_1) }}" alt="Article 1" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="{{ asset('uploads/storefront/' . $theme->article_image_1) }}" alt="Quality Service" style="width: 100%; height: 100%; object-fit: cover;">
                         @else
                             <div style="width: 100%; height: 100%; background: var(--secondary-color); display: flex; align-items: center; justify-content: center; color: var(--text-light);">
-                                Article Image
+                                Quality Service
                             </div>
                         @endif
                     </div>
-                    <h3 class="article-title">Inside Our Collection Launch</h3>
-                    <p class="article-excerpt">Discover the inspiration behind our latest product line and the craftsmanship that goes into every bottle.</p>
-                </a>
-                <a href="#" class="article-card">
+                    <h3 class="article-title">Professional Quality</h3>
+                    <p class="article-excerpt">We use premium detergents and professional-grade equipment to ensure your clothes are cleaned to the highest standards.</p>
+                </div>
+                <div class="article-card">
                     <div class="article-image">
                         @if(isset($theme) && $theme && $theme->article_image_2)
-                            <img src="{{ asset('uploads/storefront/' . $theme->article_image_2) }}" alt="Article 2" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="{{ asset('uploads/storefront/' . $theme->article_image_2) }}" alt="Fast Service" style="width: 100%; height: 100%; object-fit: cover;">
                         @else
                             <div style="width: 100%; height: 100%; background: var(--secondary-color); display: flex; align-items: center; justify-content: center; color: var(--text-light);">
-                                Article Image
+                                Fast Service
                             </div>
                         @endif
                     </div>
-                    <h3 class="article-title">The Science of Scent</h3>
-                    <p class="article-excerpt">How laundry detergent can actually change your mood and enhance your daily routine.</p>
-                </a>
-                <a href="#" class="article-card">
+                    <h3 class="article-title">Fast & Reliable</h3>
+                    <p class="article-excerpt">Choose from normal service (1-2 days) or express service (same day) to fit your schedule.</p>
+                </div>
+                <div class="article-card">
                     <div class="article-image">
                         @if(isset($theme) && $theme && $theme->article_image_3)
-                            <img src="{{ asset('uploads/storefront/' . $theme->article_image_3) }}" alt="Article 3" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="{{ asset('uploads/storefront/' . $theme->article_image_3) }}" alt="Wide Range" style="width: 100%; height: 100%; object-fit: cover;">
                         @else
                             <div style="width: 100%; height: 100%; background: var(--secondary-color); display: flex; align-items: center; justify-content: center; color: var(--text-light);">
-                                Article Image
+                                Wide Range
                             </div>
                         @endif
                     </div>
-                    <h3 class="article-title">Laundry Detergent Scent For Every Mood</h3>
-                    <p class="article-excerpt">Find your perfect fragrance match for every occasion and mood.</p>
-                </a>
+                    <h3 class="article-title">Complete Services</h3>
+                    <p class="article-excerpt">From wash & dry to ironing, drycleaning, and hand wash - we handle all your laundry needs.</p>
+                </div>
             </div>
         </div>
     </section>

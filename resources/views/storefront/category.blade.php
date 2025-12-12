@@ -37,19 +37,19 @@
                                             ? $product->price - ($product->price * $product->discount_value / 100)
                                             : $product->price - $product->discount_value;
                                     @endphp
-                                    <span class="price-old">${{ number_format($product->price, 2) }}</span>
+                                    <span class="price-old">RM{{ number_format($product->price, 2) }}</span>
                                     <span class="price-new">${{ number_format($discountedPrice, 2) }}</span>
                                 @else
-                                    <span class="price">${{ number_format($product->price, 2) }}</span>
+                                    <span class="price">RM{{ number_format($product->price, 2) }}@if($product->unit) / {{ $product->unit->short_name }}@endif</span>
                                 @endif
                             </div>
                         </div>
                     </a>
                     <button class="btn-add-cart" data-product-id="{{ $product->id }}">Add to Cart</button>
                 </div>
-                @empty
+                        @empty
                 <div class="no-products">
-                    <p>No products found in this category.</p>
+                    <p>No services found in this category.</p>
                 </div>
                 @endforelse
             </div>

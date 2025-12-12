@@ -63,54 +63,54 @@ class TestAccountsSeeder extends Seeder
 
         // 4. Create Stores for John
         $downtownStore = Store::firstOrCreate(
-            ['slug' => 'johns-restaurant-downtown'],
+            ['slug' => 'bbsb-laundry-downtown'],
             [
-                'name' => "John's Restaurant Downtown",
-                'slug' => 'johns-restaurant-downtown',
-                'email' => 'downtown@johns.com',
-                'phone' => '+1234567890',
-                'address' => '123 Downtown Street, City, Country',
+                'name' => "BBSB Laundry Downtown",
+                'slug' => 'bbsb-laundry-downtown',
+                'email' => 'downtown@bbsblaundry.com',
+                'phone' => '+60123456789',
+                'address' => '123 Downtown Street, Kuala Lumpur, Malaysia',
                 'is_active' => true,
                 'created_by' => $john->id,
             ]
         );
-        $this->command->info("✅ Store created: John's Restaurant Downtown");
+        $this->command->info("✅ Store created: BBSB Laundry Downtown");
 
         $mallStore = Store::firstOrCreate(
-            ['slug' => 'johns-restaurant-mall'],
+            ['slug' => 'bbsb-laundry-mall'],
             [
-                'name' => "John's Restaurant Mall",
-                'slug' => 'johns-restaurant-mall',
-                'email' => 'mall@johns.com',
-                'phone' => '+1234567891',
-                'address' => '456 Mall Road, City, Country',
+                'name' => "BBSB Laundry Mall",
+                'slug' => 'bbsb-laundry-mall',
+                'email' => 'mall@bbsblaundry.com',
+                'phone' => '+60123456790',
+                'address' => '456 Mall Road, Kuala Lumpur, Malaysia',
                 'is_active' => true,
                 'created_by' => $john->id,
             ]
         );
-        $this->command->info("✅ Store created: John's Restaurant Mall");
+        $this->command->info("✅ Store created: BBSB Laundry Mall");
 
         // 5. Create Stores for Emma
         $centralStore = Store::firstOrCreate(
-            ['slug' => 'emmas-boutique-central'],
+            ['slug' => 'emma-laundry-central'],
             [
-                'name' => "Emma's Boutique Central",
-                'slug' => 'emmas-boutique-central',
-                'email' => 'central@emmas.com',
-                'phone' => '+1234567892',
-                'address' => '789 Central Avenue, City, Country',
+                'name' => "Emma Laundry Central",
+                'slug' => 'emma-laundry-central',
+                'email' => 'central@emmalaundry.com',
+                'phone' => '+60123456791',
+                'address' => '789 Central Avenue, Kuala Lumpur, Malaysia',
                 'is_active' => true,
                 'created_by' => $emma->id,
             ]
         );
-        $this->command->info("✅ Store created: Emma's Boutique Central");
+        $this->command->info("✅ Store created: Emma Laundry Central");
 
-        // 6. Create Store Admin for John's Downtown - Mike Manager
+        // 6. Create Store Admin for BBSB Laundry Downtown - Mike Manager
         $mike = User::firstOrCreate(
-            ['email' => 'mike.manager@johns.com'],
+            ['email' => 'mike.manager@bbsblaundry.com'],
             [
                 'name' => 'Mike Manager',
-                'email' => 'mike.manager@johns.com',
+                'email' => 'mike.manager@bbsblaundry.com',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
                 'account_owner_id' => $john->id, // Linked to John (business owner)
@@ -121,14 +121,14 @@ class TestAccountsSeeder extends Seeder
         if (!$mike->stores->contains($downtownStore->id)) {
             $mike->stores()->attach($downtownStore->id);
         }
-        $this->command->info('✅ Store Admin (Mike) created and assigned to Downtown: mike.manager@johns.com');
+        $this->command->info('✅ Store Admin (Mike) created and assigned to Downtown: mike.manager@bbsblaundry.com');
 
-        // 7. Create Staff for John's Downtown - Sarah Cashier
+        // 7. Create Staff for BBSB Laundry Downtown - Sarah Cashier
         $sarah = User::firstOrCreate(
-            ['email' => 'sarah.cashier@johns.com'],
+            ['email' => 'sarah.cashier@bbsblaundry.com'],
             [
                 'name' => 'Sarah Cashier',
-                'email' => 'sarah.cashier@johns.com',
+                'email' => 'sarah.cashier@bbsblaundry.com',
                 'password' => Hash::make('staff123'),
                 'role' => 'staff',
                 'account_owner_id' => $john->id,
@@ -139,14 +139,14 @@ class TestAccountsSeeder extends Seeder
         if (!$sarah->stores->contains($downtownStore->id)) {
             $sarah->stores()->attach($downtownStore->id);
         }
-        $this->command->info('✅ Staff (Sarah) created and assigned to Downtown: sarah.cashier@johns.com');
+        $this->command->info('✅ Staff (Sarah) created and assigned to Downtown: sarah.cashier@bbsblaundry.com');
 
-        // 8. Create Staff for John's Mall - Tom Sales
+        // 8. Create Staff for BBSB Laundry Mall - Tom Sales
         $tom = User::firstOrCreate(
-            ['email' => 'tom.sales@johns.com'],
+            ['email' => 'tom.sales@bbsblaundry.com'],
             [
                 'name' => 'Tom Sales',
-                'email' => 'tom.sales@johns.com',
+                'email' => 'tom.sales@bbsblaundry.com',
                 'password' => Hash::make('staff123'),
                 'role' => 'staff',
                 'account_owner_id' => $john->id,
@@ -157,14 +157,14 @@ class TestAccountsSeeder extends Seeder
         if (!$tom->stores->contains($mallStore->id)) {
             $tom->stores()->attach($mallStore->id);
         }
-        $this->command->info('✅ Staff (Tom) created and assigned to Mall: tom.sales@johns.com');
+        $this->command->info('✅ Staff (Tom) created and assigned to Mall: tom.sales@bbsblaundry.com');
 
-        // 9. Create Store Admin for Emma's Central - Lisa Manager
+        // 9. Create Store Admin for Emma Laundry Central - Lisa Manager
         $lisa = User::firstOrCreate(
-            ['email' => 'lisa.manager@emmas.com'],
+            ['email' => 'lisa.manager@emmalaundry.com'],
             [
                 'name' => 'Lisa Manager',
-                'email' => 'lisa.manager@emmas.com',
+                'email' => 'lisa.manager@emmalaundry.com',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
                 'account_owner_id' => $emma->id,
@@ -175,14 +175,14 @@ class TestAccountsSeeder extends Seeder
         if (!$lisa->stores->contains($centralStore->id)) {
             $lisa->stores()->attach($centralStore->id);
         }
-        $this->command->info('✅ Store Admin (Lisa) created and assigned to Central: lisa.manager@emmas.com');
+        $this->command->info('✅ Store Admin (Lisa) created and assigned to Central: lisa.manager@emmalaundry.com');
 
-        // 10. Create Staff for Emma's Central - Bob Cashier
+        // 10. Create Staff for Emma Laundry Central - Bob Cashier
         $bob = User::firstOrCreate(
-            ['email' => 'bob.cashier@emmas.com'],
+            ['email' => 'bob.cashier@emmalaundry.com'],
             [
                 'name' => 'Bob Cashier',
-                'email' => 'bob.cashier@emmas.com',
+                'email' => 'bob.cashier@emmalaundry.com',
                 'password' => Hash::make('staff123'),
                 'role' => 'staff',
                 'account_owner_id' => $emma->id,
@@ -193,7 +193,7 @@ class TestAccountsSeeder extends Seeder
         if (!$bob->stores->contains($centralStore->id)) {
             $bob->stores()->attach($centralStore->id);
         }
-        $this->command->info('✅ Staff (Bob) created and assigned to Central: bob.cashier@emmas.com');
+        $this->command->info('✅ Staff (Bob) created and assigned to Central: bob.cashier@emmalaundry.com');
 
         $this->command->info('');
         $this->command->info('🎉 Test accounts seeding completed!');
@@ -208,8 +208,13 @@ class TestAccountsSeeder extends Seeder
         $this->command->info('🔑 Quick Login:');
         $this->command->info('   Super Admin: superadmin@dreampos.com / superadmin123');
         $this->command->info('   Business Owner: owner.john@business.com / owner123');
-        $this->command->info('   Store Admin: mike.manager@johns.com / admin123');
-        $this->command->info('   Staff: sarah.cashier@johns.com / staff123');
+        $this->command->info('   Store Admin: mike.manager@bbsblaundry.com / admin123');
+        $this->command->info('   Staff: sarah.cashier@bbsblaundry.com / staff123');
+        $this->command->info('');
+        $this->command->info('🌐 Store Websites:');
+        $this->command->info('   BBSB Laundry Downtown: laundry3.test/bbsb-laundry-downtown');
+        $this->command->info('   BBSB Laundry Mall: laundry3.test/bbsb-laundry-mall');
+        $this->command->info('   Emma Laundry Central: laundry3.test/emma-laundry-central');
     }
 }
 

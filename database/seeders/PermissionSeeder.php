@@ -84,9 +84,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'transfer-inventory', 'display_name' => 'Transfer Inventory', 'group' => 'inventory'],
         ];
 
-        // Create permissions
+        // Create permissions (use firstOrCreate to avoid duplicates)
         foreach ($permissions as $permission) {
-            Permission::create($permission);
+            Permission::firstOrCreate(
+                ['name' => $permission['name']],
+                $permission
+            );
         }
 
         // Define role permissions
@@ -145,12 +148,12 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
-        // Assign permissions to roles
+        // Assign permissions to roles (use insertOrIgnore to avoid duplicates)
         foreach ($rolePermissions as $role => $permissionNames) {
             foreach ($permissionNames as $permissionName) {
                 $permission = Permission::where('name', $permissionName)->first();
                 if ($permission) {
-                    DB::table('role_permissions')->insert([
+                    DB::table('role_permissions')->insertOrIgnore([
                         'role' => $role,
                         'permission_id' => $permission->id,
                         'created_at' => now(),

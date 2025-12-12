@@ -41,11 +41,10 @@ class StoreFrontController extends Controller
         // Get theme settings
         $theme = $this->getStoreTheme($store);
 
-        // Get featured products (active products with stock)
+        // Get featured services (active services)
         $featuredProducts = Product::where('store_id', $store->id)
             ->where('is_active', true)
-            ->where('quantity', '>', 0)
-            ->with(['category', 'brand'])
+            ->with(['category', 'unit'])
             ->orderBy('created_at', 'desc')
             ->limit(12)
             ->get();
@@ -67,16 +66,11 @@ class StoreFrontController extends Controller
 
         $query = Product::where('store_id', $store->id)
             ->where('is_active', true)
-            ->with(['category', 'brand']);
+            ->with(['category', 'unit']);
 
         // Filter by category
         if ($request->has('category') && $request->category) {
             $query->where('category_id', $request->category);
-        }
-
-        // Filter by brand
-        if ($request->has('brand') && $request->brand) {
-            $query->where('brand_id', $request->brand);
         }
 
         // Search
@@ -108,13 +102,10 @@ class StoreFrontController extends Controller
         $categories = Category::whereHas('products', function($q) use ($store) {
             $q->where('store_id', $store->id)->where('is_active', true);
         })->where('is_active', true)->get();
-        $brands = Brand::whereHas('products', function($q) use ($store) {
-            $q->where('store_id', $store->id)->where('is_active', true);
-        })->where('is_active', true)->get();
 
         $theme = $this->getStoreTheme($store);
 
-        return view('storefront.products', compact('store', 'products', 'categories', 'brands', 'theme'));
+        return view('storefront.products', compact('store', 'products', 'categories', 'theme'));
     }
 
     /**
@@ -129,7 +120,7 @@ class StoreFrontController extends Controller
         $product = Product::where('store_id', $store->id)
             ->where('slug', $productSlug)
             ->where('is_active', true)
-            ->with(['category', 'brand', 'unit'])
+            ->with(['category', 'unit'])
             ->firstOrFail();
 
         // Get related products (same category)
@@ -162,7 +153,7 @@ class StoreFrontController extends Controller
         $products = Product::where('store_id', $store->id)
             ->where('category_id', $category->id)
             ->where('is_active', true)
-            ->with(['category', 'brand'])
+            ->with(['category', 'unit'])
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 

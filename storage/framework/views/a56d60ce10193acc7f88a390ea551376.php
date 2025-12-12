@@ -6,6 +6,10 @@
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title><?php echo $__env->yieldContent('title', $store->name ?? 'Store'); ?></title>
     
+    <?php if(isset($theme) && $theme && $theme->favicon): ?>
+    <link rel="icon" type="image/png" href="<?php echo e(asset('uploads/storefront/' . $theme->favicon)); ?>">
+    <?php endif; ?>
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,14 +78,18 @@
             <div class="nav-wrapper">
                 <div class="nav-left">
                     <a href="<?php echo e(route('storefront.index', $store->slug)); ?>" class="logo">
-                        <span class="logo-text"><?php echo e(strtoupper($store->name)); ?></span>
+                        <?php if(isset($theme) && $theme && $theme->logo_image): ?>
+                            <img src="<?php echo e(asset('uploads/storefront/' . $theme->logo_image)); ?>" alt="<?php echo e($store->name); ?>" style="max-height: 40px;">
+                        <?php else: ?>
+                            <span class="logo-text"><?php echo e(strtoupper($store->name)); ?></span>
+                        <?php endif; ?>
                     </a>
                 </div>
                 
                 <div class="nav-center">
                     <ul class="nav-menu">
                         <li class="has-dropdown">
-                            <a href="<?php echo e(route('storefront.products', $store->slug)); ?>">Shop</a>
+                            <a href="<?php echo e(route('storefront.products', $store->slug)); ?>">Services</a>
                             <?php if(isset($categories) && $categories->count() > 0): ?>
                             <ul class="dropdown-menu">
                                 <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -90,10 +98,9 @@
                             </ul>
                             <?php endif; ?>
                         </li>
-                        <li><a href="<?php echo e(route('storefront.products', $store->slug)); ?>">Best Sellers</a></li>
-                        <li><a href="<?php echo e(route('storefront.products', $store->slug)); ?>">Gift Shop</a></li>
-                        <li><a href="#about">Our Story</a></li>
-                        <li><a href="#more">More</a></li>
+                        <li><a href="<?php echo e(route('storefront.products', $store->slug)); ?>">All Services</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
                 
@@ -161,14 +168,18 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4><?php echo e($store->name); ?></h4>
+                    <?php if(isset($theme) && $theme && $theme->footer_logo): ?>
+                        <img src="<?php echo e(asset('uploads/storefront/' . $theme->footer_logo)); ?>" alt="<?php echo e($store->name); ?>" style="max-height: 50px; margin-bottom: 15px;">
+                    <?php else: ?>
+                        <h4><?php echo e($store->name); ?></h4>
+                    <?php endif; ?>
                     <p><?php echo e((isset($theme) && $theme && $theme->footer_text) ? $theme->footer_text : ($store->address ?? 'Premium quality products for your everyday needs.')); ?></p>
                 </div>
                 <div class="footer-section">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="<?php echo e(route('storefront.index', $store->slug)); ?>">Home</a></li>
-                        <li><a href="<?php echo e(route('storefront.products', $store->slug)); ?>">All Products</a></li>
+                        <li><a href="<?php echo e(route('storefront.products', $store->slug)); ?>">All Services</a></li>
                         <li><a href="#about">About Us</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>

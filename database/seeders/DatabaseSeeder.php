@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,      // Seed permissions first
             TestAccountsSeeder::class,    // Seed test accounts and stores
             SuperAdminSeeder::class,      // Keep existing seeder (optional)
-            ProductSeeder::class,
+            LaundryServiceSeeder::class,  // Seed laundry services (replaces ProductSeeder)
         ]);
     }
 }

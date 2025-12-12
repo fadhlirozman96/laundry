@@ -7,8 +7,8 @@
         <div class="container">
             <!-- Page Header -->
             <div class="page-header">
-                <h1>All Products</h1>
-                <p>Discover our complete collection</p>
+                <h1>Our Services</h1>
+                <p>Professional laundry services for all your needs</p>
             </div>
 
             <div class="products-layout">
@@ -20,7 +20,7 @@
                         <!-- Search -->
                         <div class="filter-group">
                             <form action="{{ route('storefront.products', $store->slug) }}" method="GET">
-                                <input type="text" name="search" placeholder="Search products..." value="{{ request('search') }}" class="filter-input">
+                                <input type="text" name="search" placeholder="Search services..." value="{{ request('search') }}" class="filter-input">
                                 <button type="submit" class="btn btn-sm">Search</button>
                             </form>
                         </div>
@@ -47,27 +47,6 @@
                         </div>
                         @endif
 
-                        <!-- Brands -->
-                        @if($brands && $brands->count() > 0)
-                        <div class="filter-group">
-                            <h4>Brands</h4>
-                            <ul class="filter-list">
-                                <li>
-                                    <a href="{{ route('storefront.products', $store->slug) }}" class="{{ !request('brand') ? 'active' : '' }}">
-                                        All Brands
-                                    </a>
-                                </li>
-                                @foreach($brands as $brand)
-                                <li>
-                                    <a href="{{ route('storefront.products', [$store->slug, 'brand' => $brand->id]) }}" 
-                                       class="{{ request('brand') == $brand->id ? 'active' : '' }}">
-                                        {{ $brand->name }}
-                                    </a>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
                     </div>
                 </aside>
 
@@ -75,13 +54,10 @@
                 <div class="products-content">
                     <!-- Sort Bar -->
                     <div class="sort-bar">
-                        <p>{{ $products->total() }} products found</p>
+                        <p>{{ $products->total() }} services found</p>
                         <form method="GET" action="{{ route('storefront.products', $store->slug) }}" class="sort-form">
                             @if(request('category'))
                                 <input type="hidden" name="category" value="{{ request('category') }}">
-                            @endif
-                            @if(request('brand'))
-                                <input type="hidden" name="brand" value="{{ request('brand') }}">
                             @endif
                             @if(request('search'))
                                 <input type="hidden" name="search" value="{{ request('search') }}">
@@ -122,19 +98,19 @@
                                                     ? $product->price - ($product->price * $product->discount_value / 100)
                                                     : $product->price - $product->discount_value;
                                             @endphp
-                                            <span class="price-old">${{ number_format($product->price, 2) }}</span>
+                                            <span class="price-old">RM{{ number_format($product->price, 2) }}</span>
                                             <span class="price-new">${{ number_format($discountedPrice, 2) }}</span>
                                         @else
-                                            <span class="price">${{ number_format($product->price, 2) }}</span>
+                                            <span class="price">RM{{ number_format($product->price, 2) }}@if($product->unit) / {{ $product->unit->short_name }}@endif</span>
                                         @endif
                                     </div>
                                 </div>
                             </a>
-                            <button class="btn-add-cart" data-product-id="{{ $product->id }}">Add to Cart</button>
+                            <button class="btn-add-cart" data-product-id="{{ $product->id }}">Book Service</button>
                         </div>
                         @empty
                         <div class="no-products">
-                            <p>No products found. Try adjusting your filters.</p>
+                            <p>No services found. Try adjusting your filters.</p>
                         </div>
                         @endforelse
                     </div>
