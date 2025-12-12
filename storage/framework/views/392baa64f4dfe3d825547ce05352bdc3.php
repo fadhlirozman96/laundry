@@ -56,7 +56,7 @@
             </li>
             <li class="submenu">
                 <a href="javascript:void(0);"
-                    class="<?php echo e(Request::is('product-list','product-details','edit-product','add-product', 'expired-products', 'low-stocks', 'category-list', 'sub-categories', 'brand-list', 'units', 'varriant-attributes', 'warranty', 'barcode', 'qrcode') ? 'active subdrop' : ''); ?>"><img
+                    class="<?php echo e(Request::is('product-list','product-details','edit-product','add-product', 'category-list', 'units') ? 'active subdrop' : ''); ?>"><img
                         src="<?php echo e(URL::asset('/build/img/icons/product.svg')); ?>" alt="img"><span> Inventory
                     </span> <span class="menu-arrow"></span></a>
                 <ul>
@@ -66,34 +66,26 @@
                     <li><a href="<?php echo e(url('add-product')); ?>"class="<?php echo e(Request::is('add-product','edit-product') ? 'active' : ''); ?>"><span>Create
                                 Product</span></a></li>
                     <li><a
-                            href="<?php echo e(url('expired-products')); ?>"class="<?php echo e(Request::is('expired-products') ? 'active' : ''); ?>"><span>Expired
-                                Products</span></a></li>
-                    <li><a href="<?php echo e(url('low-stocks')); ?>"class="<?php echo e(Request::is('low-stocks') ? 'active' : ''); ?>"><span>Low
-                                Stocks</span></a></li>
-                    <li><a
                             href="<?php echo e(url('category-list')); ?>"class="<?php echo e(Request::is('category-list') ? 'active' : ''); ?>"><span>Category</span></a>
-                    </li>
-                    <li><a
-                            href="<?php echo e(url('sub-categories')); ?>"class="<?php echo e(Request::is('sub-categories') ? 'active' : ''); ?>"><span>Sub
-                                Category</span></a></li>
-                    <li><a
-                            href="<?php echo e(url('brand-list')); ?>"class="<?php echo e(Request::is('brand-list') ? 'active' : ''); ?>"><span>Brands</span></a>
                     </li>
                     <li><a
                             href="<?php echo e(url('units')); ?>"class="<?php echo e(Request::is('units') ? 'active' : ''); ?>"><span>Units</span></a>
                     </li>
-                    <li><a
-                            href="<?php echo e(url('varriant-attributes')); ?>"class="<?php echo e(Request::is('varriant-attributes') ? 'active' : ''); ?>"><span>Variant
-                                Attributes</span></a></li>
-                    <li><a
-                            href="<?php echo e(url('warranty')); ?>"class="<?php echo e(Request::is('warranty') ? 'active' : ''); ?>"><span>Warranties</span></a>
-                    </li>
-                    <li><a href="<?php echo e(url('barcode')); ?>"class="<?php echo e(Request::is('barcode') ? 'active' : ''); ?>"><span>Print
-                                Barcode</span></a></li>
-                    <li><a href="<?php echo e(url('qrcode')); ?>"class="<?php echo e(Request::is('qrcode') ? 'active' : ''); ?>"><span>Print
-                                QR Code</span></a></li>
                 </ul>
             </li>
+            <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
+            <li class="submenu">
+                <a href="javascript:void(0);"
+                    class="<?php echo e(Request::is('store-list') ? 'active subdrop' : ''); ?>"><img
+                        src="<?php echo e(URL::asset('/build/img/icons/app-icon-01.svg')); ?>" alt="img"><span> Stores
+                    </span> <span class="menu-arrow"></span></a>
+                <ul>
+                    <li><a
+                            href="<?php echo e(url('store-list')); ?>"class="<?php echo e(Request::is('store-list') ? 'active' : ''); ?>"><span>Manage Stores</span></a>
+                    </li>
+                </ul>
+            </li>
+            <?php endif; ?>
             <li class="submenu">
                 <a href="javascript:void(0);"
                     class="<?php echo e(Request::is('sales-list', 'invoice-report', 'sales-returns', 'quotation-list', 'pos', 'coupons', 'purchase-list', 'purchase-order-report', 'purchase-returns', 'manage-stocks', 'stock-adjustment', 'stock-transfer', 'expense-list', 'expense-category') ? 'active subdrop' : ''); ?>"><img

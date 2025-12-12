@@ -95,17 +95,6 @@
 
                                         <div class="col-lg-2 col-sm-6 col-12">
                                             <div class="input-blocks">
-                                                <i data-feather="stop-circle" class="info-img"></i>
-                                                <select class="select">
-                                                    <option>All Brand</option>
-                                                    <option>Lenovo</option>
-                                                    <option>Nike</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="input-blocks">
                                                 <i class="fas fa-money-bill info-img"></i>
                                                 <select class="select">
                                                     <option>Price</option>
@@ -139,7 +128,6 @@
                                     <th>Product</th>
                                     <th>SKU</th>
                                     <th>Category</th>
-                                    <th>Brand</th>
                                     <th>Price</th>
                                     <th>Unit</th>
                                     <th>Qty</th>
@@ -280,7 +268,6 @@ $(document).ready(function() {
             { data: 'product', name: 'name' },
             { data: 'sku', name: 'sku' },
             { data: 'category', name: 'category.name' },
-            { data: 'brand', name: 'brand.name' },
             { data: 'price', name: 'price' },
             { data: 'unit', name: 'unit.short_name' },
             { data: 'quantity', name: 'quantity' },

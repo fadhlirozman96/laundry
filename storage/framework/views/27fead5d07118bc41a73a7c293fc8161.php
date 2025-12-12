@@ -11,11 +11,19 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="tablinks nav-link <?php echo e(Request::is('product-list','product-details' ,'edit-product','add-product', 'expired-products', 'low-stocks', 'category-list', 'sub-categories', 'brand-list', 'units', 'varriant-attributes', 'warranty', 'barcode', 'qrcode') ? 'active' : ''); ?>" href="#messages" id="messages-tab" data-bs-toggle="tab"
+                        <a class="tablinks nav-link <?php echo e(Request::is('product-list','product-details' ,'edit-product','add-product', 'category-list', 'units') ? 'active' : ''); ?>" href="#messages" id="messages-tab" data-bs-toggle="tab"
                             data-bs-target="#product" role="tab" aria-selected="false">
                             <img src="<?php echo e(URL::asset('/build/img/icons/product.svg')); ?>" alt="">
                         </a>
                     </li>
+                    <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
+                    <li class="nav-item" role="presentation">
+                        <a class="tablinks nav-link <?php echo e(Request::is('store-list') ? 'active' : ''); ?>" href="#stores" id="stores-tab" data-bs-toggle="tab"
+                            data-bs-target="#stores" role="tab" aria-selected="false">
+                            <img src="<?php echo e(URL::asset('/build/img/icons/app-icon-01.svg')); ?>" alt="">
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li class="nav-item" role="presentation">
                         <a class="tablinks nav-link <?php echo e(Request::is('sales-list','sales-returns', 'quotation-list', 'pos', 'coupons') ? 'active' : ''); ?>" href="#profile" id="profile-tab" data-bs-toggle="tab"
                             data-bs-target="#sales" role="tab" aria-selected="false">
@@ -114,37 +122,25 @@
                         </ul>
                     </li>
                 </ul>
-                <ul class="tab-pane <?php echo e(Request::is('product-list','product-details', 'edit-product','add-product', 'expired-products', 'low-stocks', 'category-list', 'sub-categories', 'brand-list', 'units', 'varriant-attributes', 'warranty', 'barcode', 'qrcode') ? 'active' : ''); ?>"
+                <ul class="tab-pane <?php echo e(Request::is('product-list','product-details', 'edit-product','add-product', 'category-list', 'units') ? 'active' : ''); ?>"
                     id="product" aria-labelledby="messages-tab">
                     <li><a href="<?php echo e(url('product-list')); ?>"
                             class="<?php echo e(Request::is('product-list','product-details') ? 'active' : ''); ?>"><span>Products</span></a></li>
                     <li><a href="<?php echo e(url('add-product')); ?>"
                             class="<?php echo e(Request::is('add-product','edit-product') ? 'active' : ''); ?>"><span>Create Product</span></a>
                     </li>
-                    <li><a href="<?php echo e(url('expired-products')); ?>"
-                            class="<?php echo e(Request::is('expired-products') ? 'active' : ''); ?>"><span>Expired
-                                Products</span></a></li>
-                    <li><a href="<?php echo e(url('low-stocks')); ?>"
-                            class="<?php echo e(Request::is('low-stocks') ? 'active' : ''); ?>"><span>Low Stocks</span></a></li>
                     <li><a href="<?php echo e(url('category-list')); ?>"
                             class="<?php echo e(Request::is('category-list') ? 'active' : ''); ?>"><span>Category</span></a></li>
-                    <li><a href="<?php echo e(url('sub-categories')); ?>"
-                            class="<?php echo e(Request::is('sub-categories') ? 'active' : ''); ?>"><span>Sub Category</span></a>
-                    </li>
-                    <li><a href="<?php echo e(url('brand-list')); ?>"
-                            class="<?php echo e(Request::is('brand-list') ? 'active' : ''); ?>"><span>Brands</span></a></li>
                     <li><a href="<?php echo e(url('units')); ?>"
                             class="<?php echo e(Request::is('units') ? 'active' : ''); ?>"><span>Units</span></a></li>
-                    <li><a href="<?php echo e(url('varriant-attributes')); ?>"
-                            class="<?php echo e(Request::is('varriant-attributes') ? 'active' : ''); ?>"><span>Variant
-                                Attributes</span></a></li>
-                    <li><a href="<?php echo e(url('warranty')); ?>"
-                            class="<?php echo e(Request::is('warranty') ? 'active' : ''); ?>"><span>Warranties</span></a></li>
-                    <li><a href="<?php echo e(url('barcode')); ?>"
-                            class="<?php echo e(Request::is('barcode') ? 'active' : ''); ?>"><span>Print Barcode</span></a></li>
-                    <li><a href="<?php echo e(url('qrcode')); ?>"
-                            class="<?php echo e(Request::is('qrcode') ? 'active' : ''); ?>"><span>Print QR Code</span></a></li>
                 </ul>
+                <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
+                <ul class="tab-pane <?php echo e(Request::is('store-list') ? 'active' : ''); ?>"
+                    id="stores" aria-labelledby="stores-tab">
+                    <li><a href="<?php echo e(url('store-list')); ?>"
+                            class="<?php echo e(Request::is('store-list') ? 'active' : ''); ?>"><span>Manage Stores</span></a></li>
+                </ul>
+                <?php endif; ?>
                 <ul class="tab-pane <?php echo e(Request::is('sales-list', 'sales-returns', 'quotation-list', 'pos', 'coupons') ? 'active' : ''); ?>"
                     id="sales" aria-labelledby="profile-tab">
                     <li><a href="<?php echo e(url('sales-list')); ?>"

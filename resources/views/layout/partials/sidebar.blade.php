@@ -61,36 +61,23 @@
                         <li class="{{ Request::is('add-product','edit-product') ? 'active' : '' }}"><a
                                 href="{{ url('add-product') }}"><i data-feather="plus-square"></i><span>Create
                                     Product</span></a></li>
-                        <li class="{{ Request::is('expired-products') ? 'active' : '' }}"><a
-                                href="{{ url('expired-products') }}"><i data-feather="codesandbox"></i><span>Expired
-                                    Products</span></a></li>
-                        <li class="{{ Request::is('low-stocks') ? 'active' : '' }}"><a
-                                href="{{ url('low-stocks') }}"><i data-feather="trending-down"></i><span>Low
-                                    Stocks</span></a></li>
                         <li class="{{ Request::is('category-list') ? 'active' : '' }}"><a
                                 href="{{ url('category-list') }}"><i
                                     data-feather="codepen"></i><span>Category</span></a></li>
-                        <li class="{{ Request::is('sub-categories') ? 'active' : '' }}"><a
-                                href="{{ url('sub-categories') }}"><i data-feather="speaker"></i><span>Sub
-                                    Category</span></a></li>
-                        <li class="{{ Request::is('brand-list') ? 'active' : '' }}"><a
-                                href="{{ url('brand-list') }}"><i data-feather="tag"></i><span>Brands</span></a></li>
                         <li class="{{ Request::is('units') ? 'active' : '' }}"><a href="{{ url('units') }}"><i
-                                    data-feather="speaker"></i><span>Units</span></a></li>
-                        <li class="{{ Request::is('varriant-attributes') ? 'active' : '' }}"><a
-                                href="{{ url('varriant-attributes') }}"><i data-feather="layers"></i><span>Variant
-                                    Attributes</span></a></li>
-                        <li class="{{ Request::is('warranty') ? 'active' : '' }}"><a href="{{ url('warranty') }}"><i
-                                    data-feather="bookmark"></i><span>Warranties</span></a>
-                        </li>
-                        <li class="{{ Request::is('barcode') ? 'active' : '' }}"><a href="{{ url('barcode') }}"><i
-                                    data-feather="align-justify"></i><span>Print
-                                    Barcode</span></a></li>
-                        <li class="{{ Request::is('qrcode') ? 'active' : '' }}"><a href="{{ url('qrcode') }}"><i
-                                    data-feather="maximize"></i><span>Print QR Code</span></a>
+                                    data-feather="layers"></i><span>Units</span></a></li>
+                    </ul>
+                </li>
+                @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner()))
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Stores</h6>
+                    <ul>
+                        <li class="{{ Request::is('store-list') ? 'active' : '' }}"><a
+                                href="{{ url('store-list') }}"><i data-feather="home"></i><span>Manage Stores</span></a>
                         </li>
                     </ul>
                 </li>
+                @endif
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Stock</h6>
                     <ul>

@@ -61,36 +61,23 @@
                         <li class="<?php echo e(Request::is('add-product','edit-product') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('add-product')); ?>"><i data-feather="plus-square"></i><span>Create
                                     Product</span></a></li>
-                        <li class="<?php echo e(Request::is('expired-products') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('expired-products')); ?>"><i data-feather="codesandbox"></i><span>Expired
-                                    Products</span></a></li>
-                        <li class="<?php echo e(Request::is('low-stocks') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('low-stocks')); ?>"><i data-feather="trending-down"></i><span>Low
-                                    Stocks</span></a></li>
                         <li class="<?php echo e(Request::is('category-list') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('category-list')); ?>"><i
                                     data-feather="codepen"></i><span>Category</span></a></li>
-                        <li class="<?php echo e(Request::is('sub-categories') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('sub-categories')); ?>"><i data-feather="speaker"></i><span>Sub
-                                    Category</span></a></li>
-                        <li class="<?php echo e(Request::is('brand-list') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('brand-list')); ?>"><i data-feather="tag"></i><span>Brands</span></a></li>
                         <li class="<?php echo e(Request::is('units') ? 'active' : ''); ?>"><a href="<?php echo e(url('units')); ?>"><i
-                                    data-feather="speaker"></i><span>Units</span></a></li>
-                        <li class="<?php echo e(Request::is('varriant-attributes') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('varriant-attributes')); ?>"><i data-feather="layers"></i><span>Variant
-                                    Attributes</span></a></li>
-                        <li class="<?php echo e(Request::is('warranty') ? 'active' : ''); ?>"><a href="<?php echo e(url('warranty')); ?>"><i
-                                    data-feather="bookmark"></i><span>Warranties</span></a>
-                        </li>
-                        <li class="<?php echo e(Request::is('barcode') ? 'active' : ''); ?>"><a href="<?php echo e(url('barcode')); ?>"><i
-                                    data-feather="align-justify"></i><span>Print
-                                    Barcode</span></a></li>
-                        <li class="<?php echo e(Request::is('qrcode') ? 'active' : ''); ?>"><a href="<?php echo e(url('qrcode')); ?>"><i
-                                    data-feather="maximize"></i><span>Print QR Code</span></a>
+                                    data-feather="layers"></i><span>Units</span></a></li>
+                    </ul>
+                </li>
+                <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Stores</h6>
+                    <ul>
+                        <li class="<?php echo e(Request::is('store-list') ? 'active' : ''); ?>"><a
+                                href="<?php echo e(url('store-list')); ?>"><i data-feather="home"></i><span>Manage Stores</span></a>
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Stock</h6>
                     <ul>
@@ -180,6 +167,34 @@
                         <li class="<?php echo e(Request::is('warehouse') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('warehouse')); ?>"><i
                                     data-feather="archive"></i><span>Warehouses</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Website</h6>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="<?php echo e(Request::is('storefront-preview', 'storefront-cms', 'storefront-theme') ? 'active subdrop' : ''); ?>"><i
+                                    data-feather="globe"></i><span>Storefront</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <?php
+                                    $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : (auth()->user()->getAccessibleStores()->first() ?? null);
+                                ?>
+                                <?php if($selectedStore): ?>
+                                <li><a href="<?php echo e(route('storefront.index', $selectedStore->slug)); ?>" target="_blank"
+                                        class="<?php echo e(Request::is('storefront-preview') ? 'active' : ''); ?>">
+                                        <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>Preview Website</a>
+                                </li>
+                                <li><a href="<?php echo e(route('storefront-cms', ['store_id' => $selectedStore->id])); ?>"
+                                        class="<?php echo e(Request::is('storefront-cms', 'storefront-theme') ? 'active' : ''); ?>">Theme & CMS</a>
+                                </li>
+                                <?php else: ?>
+                                <li><a href="<?php echo e(route('storefront-cms')); ?>"
+                                        class="<?php echo e(Request::is('storefront-cms', 'storefront-theme') ? 'active' : ''); ?>">Theme & CMS</a>
+                                </li>
+                                <?php endif; ?>
+                            </ul>
                         </li>
                     </ul>
                 </li>

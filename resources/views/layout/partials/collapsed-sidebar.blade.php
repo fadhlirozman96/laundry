@@ -11,11 +11,19 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="tablinks nav-link {{ Request::is('product-list','product-details' ,'edit-product','add-product', 'expired-products', 'low-stocks', 'category-list', 'sub-categories', 'brand-list', 'units', 'varriant-attributes', 'warranty', 'barcode', 'qrcode') ? 'active' : '' }}" href="#messages" id="messages-tab" data-bs-toggle="tab"
+                        <a class="tablinks nav-link {{ Request::is('product-list','product-details' ,'edit-product','add-product', 'category-list', 'units') ? 'active' : '' }}" href="#messages" id="messages-tab" data-bs-toggle="tab"
                             data-bs-target="#product" role="tab" aria-selected="false">
                             <img src="{{ URL::asset('/build/img/icons/product.svg')}}" alt="">
                         </a>
                     </li>
+                    @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner()))
+                    <li class="nav-item" role="presentation">
+                        <a class="tablinks nav-link {{ Request::is('store-list') ? 'active' : '' }}" href="#stores" id="stores-tab" data-bs-toggle="tab"
+                            data-bs-target="#stores" role="tab" aria-selected="false">
+                            <img src="{{ URL::asset('/build/img/icons/app-icon-01.svg')}}" alt="">
+                        </a>
+                    </li>
+                    @endif
                     <li class="nav-item" role="presentation">
                         <a class="tablinks nav-link {{ Request::is('sales-list','sales-returns', 'quotation-list', 'pos', 'coupons') ? 'active' : '' }}" href="#profile" id="profile-tab" data-bs-toggle="tab"
                             data-bs-target="#sales" role="tab" aria-selected="false">
@@ -114,37 +122,25 @@
                         </ul>
                     </li>
                 </ul>
-                <ul class="tab-pane {{ Request::is('product-list','product-details', 'edit-product','add-product', 'expired-products', 'low-stocks', 'category-list', 'sub-categories', 'brand-list', 'units', 'varriant-attributes', 'warranty', 'barcode', 'qrcode') ? 'active' : '' }}"
+                <ul class="tab-pane {{ Request::is('product-list','product-details', 'edit-product','add-product', 'category-list', 'units') ? 'active' : '' }}"
                     id="product" aria-labelledby="messages-tab">
                     <li><a href="{{ url('product-list') }}"
                             class="{{ Request::is('product-list','product-details') ? 'active' : '' }}"><span>Products</span></a></li>
                     <li><a href="{{ url('add-product') }}"
                             class="{{ Request::is('add-product','edit-product') ? 'active' : '' }}"><span>Create Product</span></a>
                     </li>
-                    <li><a href="{{ url('expired-products') }}"
-                            class="{{ Request::is('expired-products') ? 'active' : '' }}"><span>Expired
-                                Products</span></a></li>
-                    <li><a href="{{ url('low-stocks') }}"
-                            class="{{ Request::is('low-stocks') ? 'active' : '' }}"><span>Low Stocks</span></a></li>
                     <li><a href="{{ url('category-list') }}"
                             class="{{ Request::is('category-list') ? 'active' : '' }}"><span>Category</span></a></li>
-                    <li><a href="{{ url('sub-categories') }}"
-                            class="{{ Request::is('sub-categories') ? 'active' : '' }}"><span>Sub Category</span></a>
-                    </li>
-                    <li><a href="{{ url('brand-list') }}"
-                            class="{{ Request::is('brand-list') ? 'active' : '' }}"><span>Brands</span></a></li>
                     <li><a href="{{ url('units') }}"
                             class="{{ Request::is('units') ? 'active' : '' }}"><span>Units</span></a></li>
-                    <li><a href="{{ url('varriant-attributes') }}"
-                            class="{{ Request::is('varriant-attributes') ? 'active' : '' }}"><span>Variant
-                                Attributes</span></a></li>
-                    <li><a href="{{ url('warranty') }}"
-                            class="{{ Request::is('warranty') ? 'active' : '' }}"><span>Warranties</span></a></li>
-                    <li><a href="{{ url('barcode') }}"
-                            class="{{ Request::is('barcode') ? 'active' : '' }}"><span>Print Barcode</span></a></li>
-                    <li><a href="{{ url('qrcode') }}"
-                            class="{{ Request::is('qrcode') ? 'active' : '' }}"><span>Print QR Code</span></a></li>
                 </ul>
+                @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner()))
+                <ul class="tab-pane {{ Request::is('store-list') ? 'active' : '' }}"
+                    id="stores" aria-labelledby="stores-tab">
+                    <li><a href="{{ url('store-list') }}"
+                            class="{{ Request::is('store-list') ? 'active' : '' }}"><span>Manage Stores</span></a></li>
+                </ul>
+                @endif
                 <ul class="tab-pane {{ Request::is('sales-list', 'sales-returns', 'quotation-list', 'pos', 'coupons') ? 'active' : '' }}"
                     id="sales" aria-labelledby="profile-tab">
                     <li><a href="{{ url('sales-list') }}"

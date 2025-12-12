@@ -56,6 +56,60 @@
                 @method('PUT')
                 <div class="card">
                     <div class="card-body add-product pb-0">
+                        <div class="accordion-card-one accordion" id="accordionExample0">
+                            <div class="accordion-item">
+                                <div class="accordion-header" id="headingImage">
+                                    <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseImage"
+                                        aria-controls="collapseImage">
+                                        <div class="addproduct-icon list">
+                                            <h5><i data-feather="image" class="add-info"></i><span>Product Image</span></h5>
+                                            <a href="javascript:void(0);"><i data-feather="chevron-down"
+                                                    class="chevron-down-add"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="collapseImage" class="accordion-collapse collapse show"
+                                    aria-labelledby="headingImage" data-bs-parent="#accordionExample0">
+                                    <div class="accordion-body">
+                                        <div class="text-editor add-list add">
+                                            <div class="col-lg-12">
+                                                <div class="add-choosen" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start;">
+                                                    <div class="input-blocks">
+                                                        <div class="image-upload" id="image-upload-wrapper-edit">
+                                                            <input type="file" name="image" id="image-input-edit" accept="image/*">
+                                                            <div class="image-uploads">
+                                                                <i data-feather="plus-circle"
+                                                                    class="plus-down-add me-0"></i>
+                                                                <h4>{{ $product->image ? 'Change Image' : 'Add Images' }}</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    @if($product->image)
+                                                    <div id="current-image-container">
+                                                        <div class="phone-img" style="position: relative !important; display: block !important; width: 150px !important; height: 150px !important;">
+                                                            <img src="{{ URL::asset($product->image) }}" alt="Current Image" style="width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 10px !important; border: 2px solid #ddd !important; background: #f9f9f9 !important;">
+                                                            <small class="d-block text-center mt-1">Current Image</small>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+
+                                                    <div id="image-preview-container-edit" class="image-preview-box" style="display: none !important;">
+                                                        <div class="phone-img" style="position: relative !important; display: block !important; width: 150px !important; height: 150px !important;">
+                                                            <img id="image-preview-edit" src="" alt="Preview" style="width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 10px !important; border: 2px solid #ddd !important; background: #f9f9f9 !important;">
+                                                            <a href="javascript:void(0);" onclick="removeImageEdit()" style="position: absolute !important; top: -8px !important; right: -8px !important; background: #ea5455 !important; border-radius: 50% !important; width: 28px !important; height: 28px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important; cursor: pointer !important; z-index: 999 !important;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                            </a>
+                                                            <small class="d-block text-center mt-1">New Image</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="accordion-card-one accordion" id="accordionExample">
                             <div class="accordion-item">
                                 <div class="accordion-header" id="headingOne">
@@ -86,24 +140,18 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
+                                            <div class="col-lg-5 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
-                                                    <label class="form-label">Product Name</label>
+                                                    <label class="form-label">Product Name <span class="text-danger">*</span></label>
                                                     <input type="text" name="name" class="form-control" value="{{ old('name', $product->name) }}" required>
                                                     @error('name')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <label class="form-label">Slug</label>
-                                                    <input type="text" name="slug" class="form-control" value="{{ old('slug', $product->slug) }}" placeholder="Auto-generated from name">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
+                                            <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product list">
-                                                    <label>SKU</label>
+                                                    <label>SKU <span class="text-danger">*</span></label>
                                                     <input type="text" name="sku" class="form-control list" placeholder="Enter SKU" value="{{ old('sku', $product->sku) }}" required>
                                                     <button type="button" class="btn btn-primaryadd" onclick="generateSKU()">
                                                         Generate Code
@@ -114,114 +162,59 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="addservice-info">
-                                            <div class="row">
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="mb-3 add-product">
-                                                        <div class="add-newplus">
-                                                            <label class="form-label">Category</label>
-                                                            <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                                data-bs-target="#add-units-category"><i
-                                                                    data-feather="plus-circle"
-                                                                    class="plus-down-add"></i><span>Add
-                                                                    New</span></a>
-                                                        </div>
-                                                        <select name="category_id" class="select">
-                                                            <option value="">Choose</option>
-                                                            @foreach($categories as $category)
-                                                                <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
-                                                                    {{ $category->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="add-product-new">
-                                            <div class="row">
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="mb-3 add-product">
-                                                        <div class="add-newplus">
-                                                            <label class="form-label">Brand</label>
-                                                            <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                                data-bs-target="#add-units-brand"><i
-                                                                    data-feather="plus-circle"
-                                                                    class="plus-down-add"></i><span>Add
-                                                                    new</span></a>
-                                                        </div>
-                                                        <select name="brand_id" class="select">
-                                                            <option value="">Choose</option>
-                                                            @foreach($brands as $brand)
-                                                                <option value="{{ $brand->id }}" {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
-                                                                    {{ $brand->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="mb-3 add-product">
-
-                                                        <div class="add-newplus">
-                                                            <label class="form-label">Unit</label>
-                                                            <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                                data-bs-target="#add-unit"><i data-feather="plus-circle"
-                                                                    class="plus-down-add"></i><span>Add New</span></a>
-                                                        </div>
-                                                        <select name="unit_id" class="select">
-                                                            <option value="">Choose</option>
-                                                            @foreach($units as $unit)
-                                                                <option value="{{ $unit->id }}" {{ old('unit_id', $product->unit_id) == $unit->id ? 'selected' : '' }}>
-                                                                    {{ $unit->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="mb-3 add-product">
-                                                        <label class="form-label">Selling Type</label>
-                                                        <select class="select">
-                                                            <option>Transactional selling</option>
-                                                            <option>Solution selling</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="row">
-                                            <div class="col-lg-6 col-sm-6 col-12">
+                                            <div class="col-lg-4 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
-                                                    <label class="form-label">Barcode Symbology</label>
-                                                    <select class="select">
-                                                        <option>Code34</option>
-                                                        <option>Code35</option>
-                                                        <option>Code36</option>
+                                                    <div class="add-newplus">
+                                                        <label class="form-label">Category</label>
+                                                        <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                            data-bs-target="#add-units-category"><i
+                                                                data-feather="plus-circle"
+                                                                class="plus-down-add"></i><span>Add New</span></a>
+                                                    </div>
+                                                    <select name="category_id" class="select">
+                                                        <option value="">Choose</option>
+                                                        @foreach($categories as $category)
+                                                            <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                                                {{ $category->name }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-sm-6 col-12">
-                                                <div class="input-blocks add-product list">
-                                                    <label>Barcode</label>
-                                                    <input type="text" name="barcode" class="form-control list"
-                                                        placeholder="Please Enter Barcode" value="{{ old('barcode', $product->barcode) }}">
-                                                    <button type="button" class="btn btn-primaryadd" onclick="generateBarcode()">
-                                                        Generate Code
-                                                    </button>
+                                            <div class="col-lg-4 col-sm-6 col-12">
+                                                <div class="mb-3 add-product">
+                                                    <div class="add-newplus">
+                                                        <label class="form-label">Unit</label>
+                                                        <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                            data-bs-target="#add-unit"><i data-feather="plus-circle"
+                                                                class="plus-down-add"></i><span>Add New</span></a>
+                                                    </div>
+                                                    <select name="unit_id" class="select">
+                                                        <option value="">Choose</option>
+                                                        @foreach($units as $unit)
+                                                            <option value="{{ $unit->id }}" {{ old('unit_id', $product->unit_id) == $unit->id ? 'selected' : '' }}>
+                                                                {{ $unit->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-sm-6 col-12">
+                                                <div class="mb-3 add-product">
+                                                    <label class="form-label">Slug</label>
+                                                    <input type="text" name="slug" class="form-control" value="{{ old('slug', $product->slug) }}" placeholder="Auto-generated from name">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <!-- Editor -->
                                             <div class="col-lg-12">
                                                 <div class="input-blocks summer-description-box transfer mb-3">
                                                     <label>Description</label>
-                                                    <textarea name="description" class="form-control h-100" rows="5">{{ old('description', $product->description) }}</textarea>
+                                                    <textarea name="description" class="form-control h-100" rows="3">{{ old('description', $product->description) }}</textarea>
                                                     <p class="mt-1">Maximum 60 Characters</p>
                                                 </div>
                                             </div>
-                                            <!-- /Editor -->
                                         </div>
                                     </div>
                                 </div>
@@ -245,418 +238,63 @@
                                 <div id="collapseTwo" class="accordion-collapse collapse show"
                                     aria-labelledby="headingTwo" data-bs-parent="#accordionExample2">
                                     <div class="accordion-body">
-                                        <div class="input-blocks add-products">
-                                            <label class="d-block">Product Type</label>
-                                            <div class="single-pill-product">
-                                                <ul class="nav nav-pills" id="pills-tab1" role="tablist">
-                                                    <li class="nav-item" role="presentation">
-                                                        <span class="custom_radio me-4 mb-0 active" id="pills-home-tab"
-                                                            data-bs-toggle="pill" data-bs-target="#pills-home"
-                                                            role="tab" aria-controls="pills-home"
-                                                            aria-selected="true">
-                                                            <input type="radio" class="form-control" name="payment">
-                                                            <span class="checkmark"></span> Single Product</span>
-                                                    </li>
-                                                    <li class="nav-item" role="presentation">
-                                                        <span class="custom_radio me-2 mb-0" id="pills-profile-tab"
-                                                            data-bs-toggle="pill" data-bs-target="#pills-profile"
-                                                            role="tab" aria-controls="pills-profile"
-                                                            aria-selected="false">
-                                                            <input type="radio" class="form-control" name="sign">
-                                                            <span class="checkmark"></span> Variable Product</span>
-                                                    </li>
-                                                </ul>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label>Quantity <span class="text-danger">*</span></label>
+                                                    <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}" required>
+                                                    @error('quantity')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label>Price <span class="text-danger">*</span></label>
+                                                    <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $product->price) }}" required>
+                                                    @error('price')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label>Cost</label>
+                                                    <input type="number" step="0.01" name="cost" class="form-control" value="{{ old('cost', $product->cost) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label>Tax Type</label>
+                                                    <select name="tax_type" class="select">
+                                                        <option value="Exclusive" {{ old('tax_type', $product->tax_type) == 'Exclusive' ? 'selected' : '' }}>Exclusive</option>
+                                                        <option value="Inclusive" {{ old('tax_type', $product->tax_type) == 'Inclusive' ? 'selected' : '' }}>Inclusive</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="tab-content" id="pills-tabContent">
-                                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
-                                                aria-labelledby="pills-home-tab">
-                                                <div class="row">
-                                                    <div class="col-lg-4 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Quantity</label>
-                                                            <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}" required>
-                                                            @error('quantity')
-                                                                <span class="text-danger">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-4 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Price</label>
-                                                            <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $product->price) }}" required>
-                                                            @error('price')
-                                                                <span class="text-danger">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-4 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Cost</label>
-                                                            <input type="number" step="0.01" name="cost" class="form-control" value="{{ old('cost', $product->cost) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-4 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Tax Type</label>
-                                                            <select name="tax_type" class="select">
-                                                                <option value="Exclusive" {{ old('tax_type', $product->tax_type) == 'Exclusive' ? 'selected' : '' }}>Exclusive</option>
-                                                                <option value="Inclusive" {{ old('tax_type', $product->tax_type) == 'Inclusive' ? 'selected' : '' }}>Inclusive</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-8 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Quantity Alert</label>
-                                                            <input type="number" name="alert_quantity" class="form-control" value="{{ old('alert_quantity', $product->alert_quantity) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-6 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Discount Type</label>
-                                                            <select name="discount_type" class="select">
-                                                                <option value="fixed" {{ old('discount_type', $product->discount_type) == 'fixed' ? 'selected' : '' }}>Fixed</option>
-                                                                <option value="percentage" {{ old('discount_type', $product->discount_type) == 'percentage' ? 'selected' : '' }}>Percentage</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Discount Value</label>
-                                                            <input type="number" step="0.01" name="discount_value" class="form-control" value="{{ old('discount_value', $product->discount_value) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="accordion-card-one accordion" id="accordionExample3">
-                                                    <div class="accordion-item">
-                                                        <div class="accordion-header" id="headingThree">
-                                                            <div class="accordion-button" data-bs-toggle="collapse"
-                                                                data-bs-target="#collapseThree"
-                                                                aria-controls="collapseThree">
-                                                                <div class="addproduct-icon list">
-                                                                    <h5><i data-feather="image"
-                                                                            class="add-info"></i><span>Images</span></h5>
-                                                                    <a href="javascript:void(0);"><i
-                                                                            data-feather="chevron-down"
-                                                                            class="chevron-down-add"></i></a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div id="collapseThree" class="accordion-collapse collapse show"
-                                                            aria-labelledby="headingThree"
-                                                            data-bs-parent="#accordionExample3">
-                                                            <div class="accordion-body">
-                                                                <div class="text-editor add-list add">
-                                                                    <div class="col-lg-12">
-                                                                        <div class="add-choosen" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start;">
-                                                                            <div class="input-blocks">
-                                                                                <div class="image-upload" id="image-upload-wrapper-edit">
-                                                                                    <input type="file" name="image" id="image-input-edit" accept="image/*">
-                                                                                    <div class="image-uploads">
-                                                                                        <i data-feather="plus-circle"
-                                                                                            class="plus-down-add me-0"></i>
-                                                                                        <h4>{{ $product->image ? 'Change Image' : 'Add Images' }}</h4>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            
-                                                                            @if($product->image)
-                                                                            <div id="current-image-container">
-                                                                                <div class="phone-img" style="position: relative !important; display: block !important; width: 150px !important; height: 150px !important;">
-                                                                                    <img src="{{ URL::asset($product->image) }}" alt="Current Image" style="width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 10px !important; border: 2px solid #ddd !important; background: #f9f9f9 !important;">
-                                                                                    <small class="d-block text-center mt-1">Current Image</small>
-                                                                                </div>
-                                                                            </div>
-                                                                            @endif
-
-                                                                            <div id="image-preview-container-edit" class="image-preview-box" style="display: none !important;">
-                                                                                <div class="phone-img" style="position: relative !important; display: block !important; width: 150px !important; height: 150px !important;">
-                                                                                    <img id="image-preview-edit" src="" alt="Preview" style="width: 100% !important; height: 100% !important; object-fit: contain !important; border-radius: 10px !important; border: 2px solid #ddd !important; background: #f9f9f9 !important;">
-                                                                                    <a href="javascript:void(0);" onclick="removeImageEdit()" style="position: absolute !important; top: -8px !important; right: -8px !important; background: #ea5455 !important; border-radius: 50% !important; width: 28px !important; height: 28px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important; cursor: pointer !important; z-index: 999 !important;">
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                                                                    </a>
-                                                                                    <small class="d-block text-center mt-1">New Image</small>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label>Quantity Alert</label>
+                                                    <input type="number" name="alert_quantity" class="form-control" value="{{ old('alert_quantity', $product->alert_quantity) }}">
                                                 </div>
                                             </div>
-                                            <div class="tab-pane fade" id="pills-profile" role="tabpanel"
-                                                aria-labelledby="pills-profile-tab">
-                                                <div class="row select-color-add">
-                                                    <div class="col-lg-6 col-sm-6 col-12">
-                                                        <div class="input-blocks add-product">
-                                                            <label>Variant Attribute</label>
-                                                            <div class="row">
-                                                                <div class="col-lg-10 col-sm-10 col-10">
-                                                                    <select
-                                                                        class="form-control variant-select select-option"
-                                                                        id="colorSelect">
-                                                                        <option>Choose</option>
-                                                                        <option>Color</option>
-                                                                        <option value="red">Red</option>
-                                                                        <option value="black">Black</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                                                    <div class="add-icon tab">
-                                                                        <a class="btn btn-filter" data-bs-toggle="modal"
-                                                                            data-bs-target="#add-units"><i
-                                                                                class="feather feather-plus-circle"></i></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="selected-hide-color" id="input-show">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-sm-10">
-                                                                    <div class="input-blocks">
-                                                                        <input class="input-tags form-control"
-                                                                            id="inputBox" type="text"
-                                                                            data-role="tagsinput" name="specialist"
-                                                                            value="red, black">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-2">
-                                                                    <div class="input-blocks ">
-                                                                        <a href="javascript:void(0);"
-                                                                            class="remove-color"><i
-                                                                                class="far fa-trash-alt"></i></a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="modal-body-table variant-table" id="variant-table">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Variantion</th>
-                                                                    <th>Variant Value</th>
-                                                                    <th>SKU</th>
-                                                                    <th>Quantity</th>
-                                                                    <th>Price</th>
-                                                                    <th class="no-sort">Action</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="color">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="red">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="1234">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="product-quantity">
-                                                                            <span class="quantity-btn"><i
-                                                                                    data-feather="minus-circle"
-                                                                                    class="feather-search"></i></span>
-                                                                            <input type="text" class="quntity-input"
-                                                                                value="2">
-                                                                            <span class="quantity-btn">+<i
-                                                                                    data-feather="plus-circle"
-                                                                                    class="plus-circle"></i></span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="50000">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="action-table-data">
-                                                                        <div class="edit-delete-action">
-                                                                            <div class="input-block add-lists">
-                                                                                <label class="checkboxs">
-                                                                                    <input type="checkbox" checked>
-                                                                                    <span class="checkmarks"></span>
-                                                                                </label>
-                                                                            </div>
-                                                                            <a class="me-2 p-2" href="javascript:void(0);"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#add-variation">
-                                                                                <i data-feather="plus"
-                                                                                    class="feather-edit"></i>
-                                                                            </a>
-                                                                            <a class="confirm-text p-2"
-                                                                                href="javascript:void(0);">
-                                                                                <i data-feather="trash-2"
-                                                                                    class="feather-trash-2"></i>
-                                                                            </a>
-                                                                        </div>
-
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="color">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="black">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="2345">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="product-quantity">
-                                                                            <span class="quantity-btn"><i
-                                                                                    data-feather="minus-circle"
-                                                                                    class="feather-search"></i></span>
-                                                                            <input type="text" class="quntity-input"
-                                                                                value="3">
-                                                                            <span class="quantity-btn">+<i
-                                                                                    data-feather="plus-circle"
-                                                                                    class="plus-circle"></i></span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="add-product">
-                                                                            <input type="text" class="form-control"
-                                                                                value="50000">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="action-table-data">
-                                                                        <div class="edit-delete-action">
-                                                                            <div class="input-block add-lists">
-                                                                                <label class="checkboxs">
-                                                                                    <input type="checkbox" checked>
-                                                                                    <span class="checkmarks"></span>
-                                                                                </label>
-                                                                            </div>
-                                                                            <a class="me-2 p-2" href="#"
-                                                                                data-bs-toggle="modal"
-                                                                                data-bs-target="#edit-units">
-                                                                                <i data-feather="plus"
-                                                                                    class="feather-edit"></i>
-                                                                            </a>
-                                                                            <a class="confirm-text p-2"
-                                                                                href="javascript:void(0);">
-                                                                                <i data-feather="trash-2"
-                                                                                    class="feather-trash-2"></i>
-                                                                            </a>
-                                                                        </div>
-
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-card-one accordion" id="accordionExample4">
-                            <div class="accordion-item">
-                                <div class="accordion-header" id="headingFour">
-                                    <div class="accordion-button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseFour" aria-controls="collapseFour">
-                                        <div class="text-editor add-list">
-                                            <div class="addproduct-icon list">
-                                                <h5><i data-feather="list" class="add-info"></i><span>Custom Fields</span>
-                                                </h5>
-                                                <a href="javascript:void(0);"><i data-feather="chevron-down"
-                                                        class="chevron-down-add"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="collapseFour" class="accordion-collapse collapse show"
-                                    aria-labelledby="headingFour" data-bs-parent="#accordionExample4">
-                                    <div class="accordion-body">
-                                        <div class="text-editor add-list add">
-                                            <div class="custom-filed">
-                                                <div class="input-block add-lists">
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>Warranties
-                                                    </label>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>Manufacturer
-                                                    </label>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>Expiry
-                                                    </label>
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label>Discount Type</label>
+                                                    <select name="discount_type" class="select">
+                                                        <option value="fixed" {{ old('discount_type', $product->discount_type) == 'fixed' ? 'selected' : '' }}>Fixed</option>
+                                                        <option value="percentage" {{ old('discount_type', $product->discount_type) == 'percentage' ? 'selected' : '' }}>Percentage</option>
+                                                    </select>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Discount Type</label>
-                                                        <select class="select">
-                                                            <option>Percentage</option>
-                                                            <option>Cash</option>
-                                                        </select>
-                                                    </div>
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label>Discount Value</label>
+                                                    <input type="number" step="0.01" name="discount_value" class="form-control" value="{{ old('discount_value', $product->discount_value) }}">
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Quantity Alert</label>
-                                                        <input type="text" class="form-control" value="100">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks">
-                                                        <label>Manufactured Date</label>
-
-                                                        <div class="input-groupicon calender-input">
-                                                            <i data-feather="calendar" class="info-img"></i>
-                                                            <input type="text" class="datetimepicker"
-                                                                placeholder="Choose Date">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks">
-                                                        <label>Expiry On</label>
-
-                                                        <div class="input-groupicon calender-input">
-                                                            <i data-feather="calendar" class="info-img"></i>
-                                                            <input type="text" class="datetimepicker"
-                                                                placeholder="Choose Date">
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -701,11 +339,6 @@ function generateSKU() {
     $('input[name="sku"]').val(prefix + random);
 }
 
-// Generate Barcode
-function generateBarcode() {
-    var barcode = Math.floor(100000000000 + Math.random() * 900000000000);
-    $('input[name="barcode"]').val(barcode);
-}
 
 // Image preview for edit page
 $('body').on('change', '#image-input-edit', function(e) {

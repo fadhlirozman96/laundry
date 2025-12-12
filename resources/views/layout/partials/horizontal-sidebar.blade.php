@@ -56,7 +56,7 @@
             </li>
             <li class="submenu">
                 <a href="javascript:void(0);"
-                    class="{{ Request::is('product-list','product-details','edit-product','add-product', 'expired-products', 'low-stocks', 'category-list', 'sub-categories', 'brand-list', 'units', 'varriant-attributes', 'warranty', 'barcode', 'qrcode') ? 'active subdrop' : '' }}"><img
+                    class="{{ Request::is('product-list','product-details','edit-product','add-product', 'category-list', 'units') ? 'active subdrop' : '' }}"><img
                         src="{{ URL::asset('/build/img/icons/product.svg')}}" alt="img"><span> Inventory
                     </span> <span class="menu-arrow"></span></a>
                 <ul>
@@ -66,34 +66,26 @@
                     <li><a href="{{ url('add-product') }}"class="{{ Request::is('add-product','edit-product') ? 'active' : '' }}"><span>Create
                                 Product</span></a></li>
                     <li><a
-                            href="{{ url('expired-products') }}"class="{{ Request::is('expired-products') ? 'active' : '' }}"><span>Expired
-                                Products</span></a></li>
-                    <li><a href="{{ url('low-stocks') }}"class="{{ Request::is('low-stocks') ? 'active' : '' }}"><span>Low
-                                Stocks</span></a></li>
-                    <li><a
                             href="{{ url('category-list') }}"class="{{ Request::is('category-list') ? 'active' : '' }}"><span>Category</span></a>
-                    </li>
-                    <li><a
-                            href="{{ url('sub-categories') }}"class="{{ Request::is('sub-categories') ? 'active' : '' }}"><span>Sub
-                                Category</span></a></li>
-                    <li><a
-                            href="{{ url('brand-list') }}"class="{{ Request::is('brand-list') ? 'active' : '' }}"><span>Brands</span></a>
                     </li>
                     <li><a
                             href="{{ url('units') }}"class="{{ Request::is('units') ? 'active' : '' }}"><span>Units</span></a>
                     </li>
-                    <li><a
-                            href="{{ url('varriant-attributes') }}"class="{{ Request::is('varriant-attributes') ? 'active' : '' }}"><span>Variant
-                                Attributes</span></a></li>
-                    <li><a
-                            href="{{ url('warranty') }}"class="{{ Request::is('warranty') ? 'active' : '' }}"><span>Warranties</span></a>
-                    </li>
-                    <li><a href="{{ url('barcode') }}"class="{{ Request::is('barcode') ? 'active' : '' }}"><span>Print
-                                Barcode</span></a></li>
-                    <li><a href="{{ url('qrcode') }}"class="{{ Request::is('qrcode') ? 'active' : '' }}"><span>Print
-                                QR Code</span></a></li>
                 </ul>
             </li>
+            @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner()))
+            <li class="submenu">
+                <a href="javascript:void(0);"
+                    class="{{ Request::is('store-list') ? 'active subdrop' : '' }}"><img
+                        src="{{ URL::asset('/build/img/icons/app-icon-01.svg')}}" alt="img"><span> Stores
+                    </span> <span class="menu-arrow"></span></a>
+                <ul>
+                    <li><a
+                            href="{{ url('store-list') }}"class="{{ Request::is('store-list') ? 'active' : '' }}"><span>Manage Stores</span></a>
+                    </li>
+                </ul>
+            </li>
+            @endif
             <li class="submenu">
                 <a href="javascript:void(0);"
                     class="{{ Request::is('sales-list', 'invoice-report', 'sales-returns', 'quotation-list', 'pos', 'coupons', 'purchase-list', 'purchase-order-report', 'purchase-returns', 'manage-stocks', 'stock-adjustment', 'stock-transfer', 'expense-list', 'expense-category') ? 'active subdrop' : '' }}"><img

@@ -15,7 +15,6 @@ class Product extends Model
         'name',
         'slug',
         'category_id',
-        'brand_id',
         'unit_id',
         'description',
         'price',
@@ -24,7 +23,6 @@ class Product extends Model
         'alert_quantity',
         'image',
         'images',
-        'barcode',
         'tax_type',
         'discount_value',
         'discount_type',
@@ -48,11 +46,6 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function brand()
-    {
-        return $this->belongsTo(Brand::class);
     }
 
     public function unit()

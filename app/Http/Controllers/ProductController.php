@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Brand;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +15,7 @@ class ProductController extends Controller
     {
         // Handle DataTables AJAX request
         if ($request->ajax() || $request->has('draw')) {
-            $query = Product::with(['category', 'brand', 'unit', 'creator', 'store']);
+            $query = Product::with(['category', 'unit', 'creator', 'store']);
 
             // Filter by user's accessible stores
             $user = auth()->user();
@@ -36,8 +35,7 @@ class ProductController extends Controller
                 $search = $request->search['value'];
                 $query->where(function($q) use ($search) {
                     $q->where('name', 'like', '%' . $search . '%')
-                      ->orWhere('sku', 'like', '%' . $search . '%')
-                      ->orWhere('barcode', 'like', '%' . $search . '%');
+                      ->orWhere('sku', 'like', '%' . $search . '%');
                 });
             }
 
@@ -58,8 +56,8 @@ class ProductController extends Controller
                 $orderColumnIndex = $request->order[0]['column'];
                 $orderDirection = $request->order[0]['dir'];
                 
-                // Column mapping: 0=checkbox, 1=name, 2=sku, 3=category, 4=brand, 5=price, 6=unit, 7=quantity, 8=creator, 9=action
-                $columns = ['id', 'name', 'sku', 'category_id', 'brand_id', 'price', 'unit_id', 'quantity', 'created_by', 'id'];
+                // Column mapping: 0=checkbox, 1=name, 2=sku, 3=category, 4=price, 5=unit, 6=quantity, 7=creator, 8=action
+                $columns = ['id', 'name', 'sku', 'category_id', 'price', 'unit_id', 'quantity', 'created_by', 'id'];
                 if ($orderColumnIndex > 0 && $orderColumnIndex < 9) {
                     $query->orderBy($columns[$orderColumnIndex], $orderDirection);
                 }
@@ -88,7 +86,6 @@ class ProductController extends Controller
                                   </div>',
                     'sku' => $product->sku,
                     'category' => $product->category->name ?? 'N/A',
-                    'brand' => $product->brand->name ?? 'N/A',
                     'price' => '$' . number_format($product->price, 2),
                     'unit' => $product->unit->short_name ?? 'Pc',
                     'quantity' => $product->quantity,
@@ -123,21 +120,19 @@ class ProductController extends Controller
 
         // Regular page load
         $categories = Category::where('is_active', true)->get();
-        $brands = Brand::where('is_active', true)->get();
         $units = Unit::where('is_active', true)->get();
         $stores = auth()->user()->getAccessibleStores();
-        return view('product-list', compact('categories', 'brands', 'units', 'stores'));
+        return view('product-list', compact('categories', 'units', 'stores'));
     }
 
     public function create()
     {
         $categories = Category::where('is_active', true)->get();
-        $brands = Brand::where('is_active', true)->get();
         $units = Unit::where('is_active', true)->get();
         $stores = auth()->user()->getAccessibleStores();
         $selectedStoreId = session('selected_store_id');
 
-        return view('add-product', compact('categories', 'brands', 'units', 'stores', 'selectedStoreId'));
+        return view('add-product', compact('categories', 'units', 'stores', 'selectedStoreId'));
     }
 
     public function store(Request $request)
@@ -147,7 +142,6 @@ class ProductController extends Controller
             'sku' => 'required|string|unique:products,sku',
             'store_id' => 'nullable|exists:stores,id',
             'category_id' => 'nullable|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
             'unit_id' => 'nullable|exists:units,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
@@ -155,7 +149,6 @@ class ProductController extends Controller
             'alert_quantity' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'barcode' => 'nullable|string',
         ]);
 
         $data = $request->all();
@@ -190,7 +183,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['category', 'brand', 'unit', 'creator', 'store'])->findOrFail($id);
+        $product = Product::with(['category', 'unit', 'creator', 'store'])->findOrFail($id);
         
         // Check if user has access to this product's store
         $user = auth()->user();
@@ -218,11 +211,10 @@ class ProductController extends Controller
         }
         
         $categories = Category::where('is_active', true)->get();
-        $brands = Brand::where('is_active', true)->get();
         $units = Unit::where('is_active', true)->get();
         $stores = auth()->user()->getAccessibleStores();
 
-        return view('edit-product', compact('product', 'categories', 'brands', 'units', 'stores'));
+        return view('edit-product', compact('product', 'categories', 'units', 'stores'));
     }
 
     public function update(Request $request, $id)
@@ -243,7 +235,6 @@ class ProductController extends Controller
             'sku' => 'required|string|unique:products,sku,' . $id,
             'store_id' => 'nullable|exists:stores,id',
             'category_id' => 'nullable|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
             'unit_id' => 'nullable|exists:units,id',
             'price' => 'required|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
@@ -251,7 +242,6 @@ class ProductController extends Controller
             'alert_quantity' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'barcode' => 'nullable|string',
         ]);
 
         // Validate user has access to the new store

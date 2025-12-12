@@ -10,7 +10,15 @@ $(document).ready(function(){
 	var $wrapper = $('.main-wrapper');
 	var $slimScrolls = $('.slimscroll');
 	var $pageWrapper = $('.page-wrapper');
-	feather.replace();
+	
+	// Initialize Feather icons safely
+	try {
+		if (typeof feather !== 'undefined') {
+			feather.replace();
+		}
+	} catch (e) {
+		console.warn('Feather icons initialization error:', e);
+	}
 
 	// Page Content Height Resize
 	$(window).resize(function () {

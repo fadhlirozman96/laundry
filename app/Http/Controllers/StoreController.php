@@ -14,15 +14,17 @@ class StoreController extends Controller
     {
         $user = auth()->user();
         
+        // Only Super Admin and Business Owners can access store management
+        if (!$user->isSuperAdmin() && !$user->isBusinessOwner()) {
+            abort(403, 'Unauthorized access. Only Super Admin and Business Owners can manage stores.');
+        }
+        
         if ($user->isSuperAdmin()) {
             // Super admin sees ALL stores from ALL business owners
             $stores = Store::with(['users', 'owner'])->get();
-        } elseif ($user->isBusinessOwner()) {
+        } else {
             // Business owner sees only their stores
             $stores = Store::where('created_by', $user->id)->with('users')->get();
-        } else {
-            // Staff sees only their assigned stores
-            $stores = $user->stores()->with('users')->get();
         }
 
         return view('store-list', compact('stores'));
