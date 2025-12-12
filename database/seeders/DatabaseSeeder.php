@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
         // ]);
         
         $this->call([
-            SuperAdminSeeder::class,
+            PermissionSeeder::class,      // Seed permissions first
+            TestAccountsSeeder::class,    // Seed test accounts and stores
+            SuperAdminSeeder::class,      // Keep existing seeder (optional)
             ProductSeeder::class,
         ]);
     }

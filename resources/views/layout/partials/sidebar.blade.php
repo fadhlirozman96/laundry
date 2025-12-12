@@ -184,6 +184,34 @@
                     </ul>
                 </li>
                 <li class="submenu-open">
+                    <h6 class="submenu-hdr">Website</h6>
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="{{ Request::is('storefront-preview', 'storefront-cms', 'storefront-theme') ? 'active subdrop' : '' }}"><i
+                                    data-feather="globe"></i><span>Storefront</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                @php
+                                    $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : (auth()->user()->getAccessibleStores()->first() ?? null);
+                                @endphp
+                                @if($selectedStore)
+                                <li><a href="{{ route('storefront.index', $selectedStore->slug) }}" target="_blank"
+                                        class="{{ Request::is('storefront-preview') ? 'active' : '' }}">
+                                        <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>Preview Website</a>
+                                </li>
+                                <li><a href="{{ route('storefront-cms', ['store_id' => $selectedStore->id]) }}"
+                                        class="{{ Request::is('storefront-cms', 'storefront-theme') ? 'active' : '' }}">Theme & CMS</a>
+                                </li>
+                                @else
+                                <li><a href="{{ route('storefront-cms') }}"
+                                        class="{{ Request::is('storefront-cms', 'storefront-theme') ? 'active' : '' }}">Theme & CMS</a>
+                                </li>
+                                @endif
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
                     <h6 class="submenu-hdr">HRM</h6>
                     <ul>
                         <li class="{{ Request::is('employees-grid','employees-list','edit-employee','add-employee') ? 'active' : '' }}"><a

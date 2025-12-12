@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\StoreFrontController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,8 @@ use App\Http\Controllers\CustomAuthController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// Auth Routes
 // Route::get('index', [CustomAuthController::class, 'dashboard']); 
 Route::get('/', [CustomAuthController::class, 'index'])->name('signin')->middleware('guest');
 Route::post('custom-login', [CustomAuthController::class, 'customSignin'])->name('signin.custom'); 
@@ -266,7 +269,21 @@ Route::delete('/stores/{id}', [App\Http\Controllers\StoreController::class, 'des
 Route::post('/stores/{id}/assign-user', [App\Http\Controllers\StoreController::class, 'assignUser'])->name('stores.assign-user')->middleware('auth');
 Route::delete('/stores/{storeId}/remove-user/{userId}', [App\Http\Controllers\StoreController::class, 'removeUser'])->name('stores.remove-user')->middleware('auth');
 Route::post('/stores/{id}/create-user', [App\Http\Controllers\StoreController::class, 'createStoreUser'])->name('stores.create-user')->middleware('auth');
-Route::get('/select-store/{id}', [App\Http\Controllers\StoreController::class, 'selectStore'])->name('select-store')->middleware('auth');  
+Route::get('/select-store/{id}', [App\Http\Controllers\StoreController::class, 'selectStore'])->name('select-store')->middleware('auth');
+
+// Storefront CMS Routes (must be before storefront routes)
+Route::get('/storefront-cms', [App\Http\Controllers\StoreThemeController::class, 'index'])->name('storefront-cms')->middleware('auth');
+Route::put('/storefront-theme/{storeId}', [App\Http\Controllers\StoreThemeController::class, 'update'])->name('storefront-theme.update')->middleware('auth');
+Route::get('/storefront-preview/{storeId}', [App\Http\Controllers\StoreThemeController::class, 'preview'])->name('storefront-preview')->middleware('auth');
+
+// Store Frontend Routes (must be after CMS routes to avoid conflicts)
+// Exclude common admin routes from being matched as store slugs
+Route::prefix('{slug}')->where(['slug' => '^(?!index|product-list|add-product|store-list|pos|login|logout|signin|signout|register|api|admin|storefront-cms|storefront-theme|storefront-preview).*$'])->group(function () {
+    Route::get('/', [StoreFrontController::class, 'index'])->name('storefront.index');
+    Route::get('/products', [StoreFrontController::class, 'products'])->name('storefront.products');
+    Route::get('/product/{productSlug}', [StoreFrontController::class, 'product'])->name('storefront.product');
+    Route::get('/category/{categorySlug}', [StoreFrontController::class, 'category'])->name('storefront.category');
+});  
 
 Route::get('/warehouse', function () {                         
     return view('warehouse');
