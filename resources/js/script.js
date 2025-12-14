@@ -14,7 +14,7 @@ $(document).ready(function(){
 	// Initialize Feather icons safely
 	try {
 		if (typeof feather !== 'undefined') {
-			feather.replace();
+	feather.replace();
 		}
 	} catch (e) {
 		console.warn('Feather icons initialization error:', e);

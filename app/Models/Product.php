@@ -20,6 +20,7 @@ class Product extends Model
         'price',
         'cost',
         'quantity',
+        'track_quantity',
         'alert_quantity',
         'image',
         'images',
@@ -35,6 +36,7 @@ class Product extends Model
         'cost' => 'decimal:2',
         'discount_value' => 'decimal:2',
         'is_active' => 'boolean',
+        'track_quantity' => 'boolean',
         'images' => 'array',
     ];
 

@@ -33,7 +33,7 @@
         <li class="nav-item" style="flex: 1; max-width: 400px;">
             
             <a href="{{ url('pos') }}" >
-                <button type="button" class="btn btn-warning"><i data-feather="shopping-cart" class="feather-18 me-2"></i>
+                <button type="button" class="btn btn-primary"><i data-feather="shopping-cart" class="feather-18 me-2"></i>
                 POS SYSTEM</button>
                 
             </a>

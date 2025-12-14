@@ -406,18 +406,18 @@
     }
     
     .payment-method .payment-method-btn:hover {
-        border-color: #ffd89b !important;
-        background: #fffbf5 !important;
+        border-color: #50b0ff !important;
+        background: #f0f9ff !important;
         transform: translateY(-3px) !important;
-        box-shadow: 0 6px 15px rgba(255, 159, 67, 0.2) !important;
+        box-shadow: 0 6px 15px rgba(0, 103, 226, 0.2) !important;
     }
     
     /* Active state */
     .payment-method .payment-method-btn.active,
     .payment-method a.payment-method-btn.active {
-        border-color: #FF9F43 !important;
-        background: linear-gradient(135deg, #fff8f0 0%, #fff3e6 100%) !important;
-        box-shadow: 0 6px 20px rgba(255, 159, 67, 0.5) !important;
+        border-color: #0067e2 !important;
+        background: linear-gradient(135deg, #e6f2ff 0%, #cce5ff 100%) !important;
+        box-shadow: 0 6px 20px rgba(0, 103, 226, 0.5) !important;
         transform: translateY(-3px) scale(1.02) !important;
     }
     
@@ -428,7 +428,7 @@
         position: absolute;
         top: 8px;
         right: 8px;
-        background: linear-gradient(135deg, #FF9F43 0%, #ff8800 100%);
+        background: linear-gradient(135deg, #0067e2 0%, #50b0ff 100%);
         color: white;
         width: 30px;
         height: 30px;
@@ -441,7 +441,7 @@
         line-height: 30px;
         text-align: center;
         z-index: 10;
-        box-shadow: 0 2px 8px rgba(255, 159, 67, 0.4);
+        box-shadow: 0 2px 8px rgba(0, 103, 226, 0.4);
         animation: checkmarkPop 0.3s ease-out;
     }
     
@@ -473,7 +473,7 @@
     }
     
     .payment-method .payment-method-btn.active span {
-        color: #FF9F43 !important;
+        color: #0067e2 !important;
         font-weight: 700;
     }
 </style>
@@ -1230,14 +1230,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add active class and styles to clicked method
         $(this).addClass('active');
         $(this).css({
-            'border': '3px solid #FF9F43',
-            'background': 'linear-gradient(135deg, #fff8f0 0%, #fff3e6 100%)',
-            'box-shadow': '0 6px 20px rgba(255, 159, 67, 0.5)',
+            'border': '3px solid #0067e2',
+            'background': 'linear-gradient(135deg, #e6f2ff 0%, #cce5ff 100%)',
+            'box-shadow': '0 6px 20px rgba(0, 103, 226, 0.5)',
             'transform': 'translateY(-3px) scale(1.02)'
         });
         
         // Change text color to orange
-        $(this).find('span').css('color', '#FF9F43');
+        $(this).find('span').css('color', '#0067e2');
         $(this).find('span').css('font-weight', '700');
         
         // Remove grayscale from icon

@@ -154,6 +154,7 @@ class ProductController extends Controller
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
         $data['created_by'] = Auth::id();
+        $data['track_quantity'] = $request->has('track_quantity') ? true : false;
 
         // If no store_id provided, use selected store from session
         if (empty($data['store_id']) && session('selected_store_id')) {
@@ -254,6 +255,7 @@ class ProductController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
+        $data['track_quantity'] = $request->has('track_quantity') ? true : false;
 
         // Handle image upload
         if ($request->hasFile('image')) {

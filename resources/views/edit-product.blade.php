@@ -241,8 +241,8 @@
                                         <div class="row">
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
-                                                    <label>Quantity <span class="text-danger">*</span></label>
-                                                    <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}" required>
+                                                    <label style="color: #000000 !important;">Quantity <span class="text-danger">*</span></label>
+                                                    <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}" required style="color: #000000 !important;">
                                                     @error('quantity')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -250,8 +250,22 @@
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
-                                                    <label>Price <span class="text-danger">*</span></label>
-                                                    <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $product->price) }}" required>
+                                                    <label style="color: #000000 !important;">Track Quantity</label>
+                                                    <div class="form-check form-switch" style="padding-top: 10px;">
+                                                        <input class="form-check-input" type="checkbox" name="track_quantity" id="track_quantity" value="1" {{ old('track_quantity', $product->track_quantity ?? false) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="track_quantity" style="color: #000000 !important; margin-left: 10px;">
+                                                            Enable quantity tracking
+                                                        </label>
+                                                    </div>
+                                                    <small class="text-muted" style="color: #6c757d !important;">Enable this for products that need stock management</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label style="color: #000000 !important;">Price <span class="text-danger">*</span></label>
+                                                    <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $product->price) }}" required style="color: #000000 !important;">
                                                     @error('price')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -259,31 +273,32 @@
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
-                                                    <label>Cost</label>
-                                                    <input type="number" step="0.01" name="cost" class="form-control" value="{{ old('cost', $product->cost) }}">
+                                                    <label style="color: #000000 !important;">Cost</label>
+                                                    <input type="number" step="0.01" name="cost" class="form-control" value="{{ old('cost', $product->cost) }}" style="color: #000000 !important;">
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
-                                                    <label>Tax Type</label>
-                                                    <select name="tax_type" class="select">
+                                                    <label style="color: #000000 !important;">Tax Type</label>
+                                                    <select name="tax_type" class="select" style="color: #000000 !important;">
                                                         <option value="Exclusive" {{ old('tax_type', $product->tax_type) == 'Exclusive' ? 'selected' : '' }}>Exclusive</option>
                                                         <option value="Inclusive" {{ old('tax_type', $product->tax_type) == 'Inclusive' ? 'selected' : '' }}>Inclusive</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
+                                            <div class="col-lg-3 col-sm-6 col-12">
+                                                <div class="input-blocks add-product">
+                                                    <label style="color: #000000 !important;">Quantity Alert</label>
+                                                    <input type="number" name="alert_quantity" class="form-control" value="{{ old('alert_quantity', $product->alert_quantity) }}" style="color: #000000 !important;">
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
-                                                    <label>Quantity Alert</label>
-                                                    <input type="number" name="alert_quantity" class="form-control" value="{{ old('alert_quantity', $product->alert_quantity) }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 col-12">
-                                                <div class="input-blocks add-product">
-                                                    <label>Discount Type</label>
-                                                    <select name="discount_type" class="select">
+                                                    <label style="color: #000000 !important;">Discount Type</label>
+                                                    <select name="discount_type" class="select" style="color: #000000 !important;">
                                                         <option value="fixed" {{ old('discount_type', $product->discount_type) == 'fixed' ? 'selected' : '' }}>Fixed</option>
                                                         <option value="percentage" {{ old('discount_type', $product->discount_type) == 'percentage' ? 'selected' : '' }}>Percentage</option>
                                                     </select>
@@ -291,8 +306,8 @@
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
-                                                    <label>Discount Value</label>
-                                                    <input type="number" step="0.01" name="discount_value" class="form-control" value="{{ old('discount_value', $product->discount_value) }}">
+                                                    <label style="color: #000000 !important;">Discount Value</label>
+                                                    <input type="number" step="0.01" name="discount_value" class="form-control" value="{{ old('discount_value', $product->discount_value) }}" style="color: #000000 !important;">
                                                 </div>
                                             </div>
                                                 </div>

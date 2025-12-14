@@ -1,45 +1,46 @@
 <?php $page = 'add-product'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <div class="page-wrapper">
         <div class="content">
-            @component('components.breadcrumb')
-                @slot('title')
+            <?php $__env->startComponent('components.breadcrumb'); ?>
+                <?php $__env->slot('title'); ?>
                     New Product
-                @endslot
-                @slot('li_1')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_1'); ?>
                     Create new product
-                @endslot
-                @slot('li_2')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_2'); ?>
                     product-list
-                @endslot
-                @slot('li_3')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_3'); ?>
                     Back to Product
-                @endslot
-            @endcomponent
+                <?php $__env->endSlot(); ?>
+            <?php echo $__env->renderComponent(); ?>
             <!-- /add -->
             
-            @if($errors->any())
+            <?php if($errors->any()): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Validation Errors:</strong>
                     <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
+                    <?php echo e(session('success')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
+            <form action="<?php echo e(route('products.store')); ?>" method="POST" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <div class="card">
                     <div class="card-body add-product pb-0">
                         <div class="accordion-card-one accordion" id="accordionExample0">
@@ -107,24 +108,39 @@
                                                     <label class="form-label">Store <span class="text-danger">*</span></label>
                                                     <select name="store_id" class="select" required>
                                                         <option value="">Choose Store</option>
-                                                        @foreach($stores as $store)
-                                                            <option value="{{ $store->id }}" {{ (old('store_id') == $store->id || (isset($selectedStoreId) && $selectedStoreId == $store->id)) ? 'selected' : '' }}>
-                                                                {{ $store->name }}
+                                                        <?php $__currentLoopData = $stores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <option value="<?php echo e($store->id); ?>" <?php echo e((old('store_id') == $store->id || (isset($selectedStoreId) && $selectedStoreId == $store->id)) ? 'selected' : ''); ?>>
+                                                                <?php echo e($store->name); ?>
+
                                                             </option>
-                                                        @endforeach
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </select>
-                                                    @error('store_id')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                    <?php $__errorArgs = ['store_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                                 </div>
                                             </div>
                                             <div class="col-lg-5 col-sm-6 col-12">
                                                 <div class="mb-3 add-product">
                                                     <label class="form-label">Product Name <span class="text-danger">*</span></label>
                                                     <input type="text" name="name" class="form-control" required>
-                                                    @error('name')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
@@ -134,9 +150,16 @@
                                                     <button type="button" class="btn btn-primaryadd" onclick="generateSKU()">
                                                         Generate Code
                                                     </button>
-                                                    @error('sku')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                    <?php $__errorArgs = ['sku'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -152,9 +175,9 @@
                                                     </div>
                                                     <select name="category_id" class="select">
                                                         <option value="">Choose</option>
-                                                        @foreach($categories as $category)
-                                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                        @endforeach
+                                                        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -168,9 +191,9 @@
                                                     </div>
                                                     <select name="unit_id" class="select">
                                                         <option value="">Choose</option>
-                                                        @foreach($units as $unit)
-                                                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                                                        @endforeach
+                                                        <?php $__currentLoopData = $units; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <option value="<?php echo e($unit->id); ?>"><?php echo e($unit->name); ?></option>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -217,9 +240,16 @@
                                                 <div class="input-blocks add-product">
                                                     <label style="color: #000000 !important;">Quantity <span class="text-danger">*</span></label>
                                                     <input type="number" name="quantity" class="form-control" value="0" required style="color: #000000 !important;">
-                                                    @error('quantity')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                    <?php $__errorArgs = ['quantity'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
@@ -240,9 +270,16 @@
                                                 <div class="input-blocks add-product">
                                                     <label style="color: #000000 !important;">Price <span class="text-danger">*</span></label>
                                                     <input type="number" step="0.01" name="price" class="form-control" required style="color: #000000 !important;">
-                                                    @error('price')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                    <?php $__errorArgs = ['price'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
@@ -578,9 +615,9 @@
 
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 console.log('Add Product Scripts Loaded');
 
@@ -658,7 +695,9 @@ function removeImage() {
 
 // Main form Cancel button only (not modal cancel buttons)
 $('.btn-addproduct .btn-cancel').on('click', function() {
-    window.location.href = "{{ route('product-list') }}";
+    window.location.href = "<?php echo e(route('product-list')); ?>";
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/add-product.blade.php ENDPATH**/ ?>

@@ -30,9 +30,10 @@ class POSController extends Controller
         $query = Category::where('is_active', true);
         
         // Filter products by user's accessible stores
+        // Only show products with quantity tracking disabled (for laundry services)
         $productQuery = Product::with(['category', 'unit'])
             ->where('is_active', true)
-            ->where('quantity', '>', 0);
+            ->where('track_quantity', false);
         
         // Apply store filtering
         if (!$user->isSuperAdmin()) {
@@ -60,7 +61,7 @@ class POSController extends Controller
         
         $categories = $categoriesQuery->withCount(['products' => function($q) use ($user) {
                 $q->where('is_active', true)
-                  ->where('quantity', '>', 0);
+                  ->where('track_quantity', false);
                 if (!$user->isSuperAdmin()) {
                     $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
                     $q->whereIn('store_id', $accessibleStoreIds);
@@ -80,7 +81,7 @@ class POSController extends Controller
         
         $query = Product::with(['category', 'unit'])
             ->where('is_active', true)
-            ->where('quantity', '>', 0);
+            ->where('track_quantity', false);
 
         // Apply store filtering
         if (!$user->isSuperAdmin()) {
