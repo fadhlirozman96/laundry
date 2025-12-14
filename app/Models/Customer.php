@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Store extends Model
+class Customer extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'store_id',
         'name',
-        'slug',
         'email',
         'phone',
         'address',
+        'city',
+        'country',
         'is_active',
         'created_by',
     ];
@@ -23,29 +25,20 @@ class Store extends Model
         'is_active' => 'boolean',
     ];
 
-    public function products()
+    // Relationships
+    public function store()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Store::class);
     }
 
-    public function customers()
-    {
-        return $this->hasMany(Customer::class);
-    }
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'store_user')->withTimestamps();
-    }
-
-    public function owner()
+    public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function theme()
+    public function orders()
     {
-        return $this->hasOne(StoreTheme::class);
+        return $this->hasMany(Order::class);
     }
 }
 

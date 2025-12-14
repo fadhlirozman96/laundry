@@ -86,7 +86,7 @@ class ProductController extends Controller
                                   </div>',
                     'sku' => $product->sku,
                     'category' => $product->category->name ?? 'N/A',
-                    'price' => '$' . number_format($product->price, 2),
+                    'price' => 'MYR ' . number_format($product->price, 2),
                     'unit' => $product->unit->short_name ?? 'Pc',
                     'quantity' => $product->quantity,
                     'store' => '<span class="badge bg-outline-primary">' . ($product->store->name ?? 'No Store') . '</span>',

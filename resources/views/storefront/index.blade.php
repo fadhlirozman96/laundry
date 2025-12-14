@@ -54,19 +54,19 @@
             <div class="gifts-grid">
                 <a href="{{ route('storefront.category', [$store->slug, 'normal-wash-dry-services']) }}" class="gift-banner">
                     <div class="gift-banner-text">WASH & DRY</div>
-                    <div class="gift-banner-price">RM4/kg</div>
+                    <div class="gift-banner-price">MYR 4/kg</div>
                 </a>
                 <a href="{{ route('storefront.category', [$store->slug, 'ironing-services']) }}" class="gift-banner">
                     <div class="gift-banner-text">IRONING</div>
-                    <div class="gift-banner-price">RM2.50</div>
+                    <div class="gift-banner-price">MYR 2.50</div>
                 </a>
                 <a href="{{ route('storefront.category', [$store->slug, 'dryclean-services']) }}" class="gift-banner">
                     <div class="gift-banner-text">DRYCLEAN</div>
-                    <div class="gift-banner-price">RM12</div>
+                    <div class="gift-banner-price">MYR 12</div>
                 </a>
                 <a href="{{ route('storefront.category', [$store->slug, 'hand-wash-services']) }}" class="gift-banner">
                     <div class="gift-banner-text">HAND WASH</div>
-                    <div class="gift-banner-price">RM6</div>
+                    <div class="gift-banner-price">MYR 6</div>
                 </a>
             </div>
         </div>
@@ -145,10 +145,10 @@
                                             ? $product->price - ($product->price * $product->discount_value / 100)
                                             : $product->price - $product->discount_value;
                                     @endphp
-                                    <span class="price-old">RM{{ number_format($product->price, 2) }}</span>
-                                    <span class="price-new">${{ number_format($discountedPrice, 2) }}</span>
+                                    <span class="price-old">MYR {{ number_format($product->price, 2) }}</span>
+                                    <span class="price-new">MYR {{ number_format($discountedPrice, 2) }}</span>
                                 @else
-                                    <span class="price">RM{{ number_format($product->price, 2) }}@if($product->unit) / {{ $product->unit->short_name }}@endif</span>
+                                    <span class="price">MYR {{ number_format($product->price, 2) }}@if($product->unit) / {{ $product->unit->short_name }}@endif</span>
                                 @endif
                             </div>
                         </div>

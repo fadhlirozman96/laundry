@@ -10,7 +10,7 @@
                             <span><img src="{{ URL::asset('/build/img/icons/dash1.svg') }}" alt="img"></span>
                         </div>
                         <div class="dash-widgetcontent">
-                            <h5>$<span class="counters" data-count="307144.00">$307,144.00</span></h5>
+                            <h5>MYR <span class="counters" data-count="307144.00">307,144.00</span></h5>
                             <h6>Total Purchase Due</h6>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                             <span><img src="{{ URL::asset('/build/img/icons/dash2.svg') }}" alt="img"></span>
                         </div>
                         <div class="dash-widgetcontent">
-                            <h5>$<span class="counters" data-count="4385.00">$4,385.00</span></h5>
+                            <h5>MYR <span class="counters" data-count="4385.00">4,385.00</span></h5>
                             <h6>Total Sales Due</h6>
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                             <span><img src="{{ URL::asset('/build/img/icons/dash3.svg') }}" alt="img"></span>
                         </div>
                         <div class="dash-widgetcontent">
-                            <h5>$<span class="counters" data-count="385656.50">$385,656.50</span></h5>
+                            <h5>MYR <span class="counters" data-count="385656.50">385,656.50</span></h5>
                             <h6>Total Sale Amount</h6>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                             <span><img src="{{ URL::asset('/build/img/icons/dash4.svg') }}" alt="img"></span>
                         </div>
                         <div class="dash-widgetcontent">
-                            <h5>$<span class="counters" data-count="40000.00">$400.00</span></h5>
+                            <h5>MYR <span class="counters" data-count="40000.00">400.00</span></h5>
                             <h6>Total Expense Amount</h6>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                                                 </a>
                                                 <a href="{{ url('product-list') }}">Lenevo 3rd Generation</a>
                                             </td>
-                                            <td>$12500</td>
+                                            <td>MYR 12500</td>
                                         </tr>
                                         <tr>
                                             <td>2</td>
@@ -176,7 +176,7 @@
                                                 </a>
                                                 <a href="{{ url('product-list') }}">Bold V3.2</a>
                                             </td>
-                                            <td>$1600</td>
+                                            <td>MYR 1600</td>
                                         </tr>
                                         <tr>
                                             <td>3</td>
@@ -187,7 +187,7 @@
                                                 </a>
                                                 <a href="{{ url('product-list') }}">Nike Jordan</a>
                                             </td>
-                                            <td>$2000</td>
+                                            <td>MYR 2000</td>
                                         </tr>
                                         <tr>
                                             <td>4</td>
@@ -198,7 +198,7 @@
                                                 </a>
                                                 <a href="{{ url('product-list') }}">Apple Series 5 Watch</a>
                                             </td>
-                                            <td>$800</td>
+                                            <td>MYR 800</td>
                                         </tr>
                                     </tbody>
                                 </table>

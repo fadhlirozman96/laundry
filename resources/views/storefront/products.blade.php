@@ -98,10 +98,10 @@
                                                     ? $product->price - ($product->price * $product->discount_value / 100)
                                                     : $product->price - $product->discount_value;
                                             @endphp
-                                            <span class="price-old">RM{{ number_format($product->price, 2) }}</span>
-                                            <span class="price-new">${{ number_format($discountedPrice, 2) }}</span>
+                                            <span class="price-old">MYR {{ number_format($product->price, 2) }}</span>
+                                            <span class="price-new">MYR {{ number_format($discountedPrice, 2) }}</span>
                                         @else
-                                            <span class="price">RM{{ number_format($product->price, 2) }}@if($product->unit) / {{ $product->unit->short_name }}@endif</span>
+                                            <span class="price">MYR {{ number_format($product->price, 2) }}@if($product->unit) / {{ $product->unit->short_name }}@endif</span>
                                         @endif
                                     </div>
                                 </div>

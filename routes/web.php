@@ -154,9 +154,7 @@ Route::get('/stock-transfer', function () {
     return view('stock-transfer');
 })->name('stock-transfer'); 
 
-Route::get('/purchase-list', function () {                         
-    return view('purchase-list');
-})->name('purchase-list'); 
+Route::get('/purchase-list', [App\Http\Controllers\OrderController::class, 'index'])->name('purchase-list')->middleware('auth'); 
 
 Route::get('/purchase-order-report', function () {                         
     return view('purchase-order-report');
@@ -251,7 +249,13 @@ Route::get('/quotation-list', function () {
 Route::get('/pos', [App\Http\Controllers\POSController::class, 'index'])->name('pos')->middleware('auth');
 Route::get('/pos/products', [App\Http\Controllers\POSController::class, 'getProducts'])->name('pos.products')->middleware('auth');
 Route::get('/pos/product/{id}', [App\Http\Controllers\POSController::class, 'getProduct'])->name('pos.product')->middleware('auth');
-Route::post('/pos/checkout', [App\Http\Controllers\POSController::class, 'checkout'])->name('pos.checkout')->middleware('auth');  
+Route::post('/pos/checkout', [App\Http\Controllers\POSController::class, 'checkout'])->name('pos.checkout')->middleware('auth');
+Route::get('/pos/orders', [App\Http\Controllers\POSController::class, 'getOrders'])->name('pos.orders')->middleware('auth');
+Route::get('/pos/order/{id}', [App\Http\Controllers\POSController::class, 'getOrder'])->name('pos.order')->middleware('auth');
+
+// Customer API Routes (for POS)
+Route::get('/pos/customers', [App\Http\Controllers\CustomerController::class, 'getCustomers'])->name('customers.list')->middleware('auth');
+Route::post('/pos/customers', [App\Http\Controllers\CustomerController::class, 'store'])->name('customers.store')->middleware('auth');  
 
 Route::get('/coupons', function () {                         
     return view('coupons');

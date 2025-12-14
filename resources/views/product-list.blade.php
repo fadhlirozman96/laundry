@@ -98,8 +98,8 @@
                                                 <i class="fas fa-money-bill info-img"></i>
                                                 <select class="select">
                                                     <option>Price</option>
-                                                    <option>$12500.00</option>
-                                                    <option>$12500.00</option>
+                                                    <option>MYR 12500.00</option>
+                                                    <option>MYR 12500.00</option>
                                                 </select>
                                             </div>
                                         </div>

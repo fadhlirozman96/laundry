@@ -16,6 +16,16 @@ class POSController extends Controller
     {
         $user = auth()->user();
         
+        // Auto-set store in session if not already set
+        if (!session('selected_store_id')) {
+            $userStores = $user->getAccessibleStores();
+            if ($userStores->count() > 0) {
+                $firstStore = $userStores->first();
+                session(['selected_store_id' => $firstStore->id]);
+                session(['selected_store_name' => $firstStore->name]);
+            }
+        }
+        
         // Filter categories by user's accessible stores
         $query = Category::where('is_active', true);
         
@@ -158,10 +168,28 @@ class POSController extends Controller
             // Generate order number
             $orderNumber = 'ORD-' . date('Ymd') . '-' . str_pad(Order::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
 
+            // Get store_id from session or from user's first accessible store
+            $storeId = session('selected_store_id');
+            if (!$storeId) {
+                $userStores = $user->getAccessibleStores();
+                if ($userStores->count() > 0) {
+                    $storeId = $userStores->first()->id;
+                } else {
+                    throw new \Exception('No store available for this user. Please contact administrator.');
+                }
+            }
+
+            // Verify the store exists
+            $store = \App\Models\Store::find($storeId);
+            if (!$store) {
+                throw new \Exception('Invalid store selected.');
+            }
+
             // Create order
             $order = Order::create([
                 'order_number' => $orderNumber,
                 'user_id' => Auth::id(),
+                'store_id' => $storeId,
                 'customer_name' => $request->customer_name,
                 'customer_email' => $request->customer_email,
                 'customer_phone' => $request->customer_phone,
@@ -240,9 +268,44 @@ class POSController extends Controller
 
     public function getOrders(Request $request)
     {
-        $orders = Order::with(['items', 'user'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $user = auth()->user();
+        $query = Order::with(['items.product', 'user', 'store']);
+        
+        // Filter by user's accessible stores
+        if (!$user->isSuperAdmin()) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            $query->whereIn('store_id', $accessibleStoreIds);
+        }
+        
+        // If a specific store is selected in session, filter by that store
+        if (session('selected_store_id')) {
+            $query->where('store_id', session('selected_store_id'));
+        }
+        
+        // Filter by type if requested
+        if ($request->has('type')) {
+            if ($request->type === 'recent') {
+                // Last 20 transactions
+                $query->orderBy('created_at', 'desc')->limit(20);
+                $orders = $query->get();
+            } else if ($request->type === 'pending') {
+                // Only pending orders
+                $query->where('payment_status', 'pending')->orderBy('created_at', 'desc');
+                $orders = $query->get();
+            } else if ($request->type === 'all') {
+                // All orders (not paginated for modal display)
+                $query->orderBy('created_at', 'desc')->limit(50);
+                $orders = $query->get();
+            } else {
+                // Default: paginated list
+                $query->orderBy('created_at', 'desc');
+                $orders = $query->paginate(10);
+            }
+        } else {
+            // All orders (paginated for table views)
+            $query->orderBy('created_at', 'desc');
+            $orders = $query->paginate(10);
+        }
 
         return response()->json([
             'success' => true,

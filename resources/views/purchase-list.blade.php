@@ -130,7 +130,7 @@
                     </div>
                     <!-- /Filter -->
                     <div class="table-responsive product-list">
-                        <table class="table  datanew list">
+                        <table class="table datanew" id="orders-table">
                             <thead>
                                 <tr>
                                     <th class="no-sort">
@@ -139,309 +139,18 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Supplier Name</th>
-                                    <th>Reference</th>
-                                    <th>Date</th>
+                                    <th>Order Number</th>
+                                    <th>Customer</th>
+                                    <th>Store</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Payment Method</th>
                                     <th>Status</th>
-                                    <th>Grand Total</th>
-                                    <th>Paid</th>
-                                    <th>Due</th>
-                                    <th>Created by</th>
+                                    <th>Date</th>
                                     <th class="no-sort">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Apex Computers</td>
-                                    <td>PT001 </td>
-                                    <td>19 Jan 2023</td>
-                                    <td><span class="badges status-badge">Received</span></td>
-                                    <td>$550</td>
-                                    <td>$550</td>
-                                    <td>$0.00</td>
-                                    <td><span class="badge-linesuccess">Paid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Beats Headphones</td>
-                                    <td>PT002 </td>
-                                    <td>27 Jan 2023</td>
-                                    <td><span class="badges status-badge">Received</span></td>
-                                    <td>$370</td>
-                                    <td>$370</td>
-                                    <td>$0.00</td>
-                                    <td><span class="badge-linesuccess">Paid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Dazzle Shoes</td>
-                                    <td>PT003 </td>
-                                    <td>08 Feb 2023</td>
-                                    <td><span class="badges status-badge ordered">Ordered</span></td>
-                                    <td>$400</td>
-                                    <td>$400</td>
-                                    <td>$200</td>
-                                    <td><span class="badges-warning">Partial</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Best Accessories</td>
-                                    <td>PT004 </td>
-                                    <td>16 Feb 2023</td>
-                                    <td><span class="badges unstatus-badge">Pending</span></td>
-                                    <td>$560</td>
-                                    <td>$0.00</td>
-                                    <td>$560</td>
-                                    <td><span class="badge badge-linedangered">Unpaid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>A-Z Store</td>
-                                    <td>PT005</td>
-                                    <td>12 Mar 2023</td>
-                                    <td><span class="badges unstatus-badge">Pending</span></td>
-                                    <td>$240</td>
-                                    <td>$0.00</td>
-                                    <td>$240</td>
-                                    <td><span class="badge badge-linedangered">Unpaid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Hatimi Hardwares</td>
-                                    <td>PT006</td>
-                                    <td>24 Mar 2023</td>
-                                    <td><span class="badges status-badge">Received</span></td>
-                                    <td>$170</td>
-                                    <td>$170</td>
-                                    <td>$0.00</td>
-                                    <td><span class="badge-linesuccess">Paid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Aesthetic Bags</td>
-                                    <td>PT007</td>
-                                    <td>06 Apr 2023</td>
-                                    <td><span class="badges unstatus-badge">Pending</span></td>
-                                    <td>$230</td>
-                                    <td>$0.00</td>
-                                    <td>$230</td>
-                                    <td><span class="badge badge-linedangered">Unpaid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Alpha Mobiles</td>
-                                    <td>PT008</td>
-                                    <td>14 Apr 2023</td>
-                                    <td><span class="badges status-badge ordered">Ordered</span></td>
-                                    <td>$300</td>
-                                    <td>$150</td>
-                                    <td>$300</td>
-                                    <td><span class="badges-warning">Partial</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Sigma Chairs</td>
-                                    <td>PT009</td>
-                                    <td>02 May 2023</td>
-                                    <td><span class="badges unstatus-badge">Pending</span></td>
-                                    <td>$620</td>
-                                    <td>$0.00</td>
-                                    <td>$620</td>
-                                    <td><span class="badge badge-linedangered">Unpaid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Zenith Bags</td>
-                                    <td>PT010</td>
-                                    <td>23 May 2023</td>
-                                    <td><span class="badges status-badge">Received</span></td>
-                                    <td>$200</td>
-                                    <td>$200</td>
-                                    <td>$0.00</td>
-                                    <td><span class="badge-linesuccess">Paid</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);">
-                                                <i data-feather="eye" class="action-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-
                             </tbody>
                         </table>
                     </div>
@@ -452,3 +161,141 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize DataTable with AJAX
+    const table = $('#orders-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '{{ route("purchase-list") }}',
+            type: 'GET'
+        },
+        columns: [
+            { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
+            { data: 'order_number', name: 'order_number' },
+            { data: 'customer', name: 'customer_name' },
+            { data: 'store', name: 'store_id' },
+            { data: 'items', name: 'items', orderable: false },
+            { data: 'total', name: 'total' },
+            { data: 'payment_method', name: 'payment_method' },
+            { data: 'status', name: 'payment_status' },
+            { data: 'date', name: 'created_at' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+        ],
+        order: [[8, 'desc']], // Order by date descending
+        pageLength: 10,
+        drawCallback: function() {
+            // Reinitialize feather icons after table draw
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        }
+    });
+});
+
+// View order function
+window.viewOrder = function(orderId) {
+    $.ajax({
+        url: '/pos/order/' + orderId,
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                showOrderModal(response.order);
+            }
+        },
+        error: function() {
+            alert('Error loading order details');
+        }
+    });
+};
+
+// Show order details modal
+function showOrderModal(order) {
+    let itemsHtml = '';
+    order.items.forEach(function(item) {
+        itemsHtml += `
+            <tr>
+                <td>${item.product_name} (${item.product_sku})</td>
+                <td>${item.quantity}</td>
+                <td>MYR ${parseFloat(item.price).toFixed(2)}</td>
+                <td>MYR ${parseFloat(item.subtotal).toFixed(2)}</td>
+            </tr>
+        `;
+    });
+    
+    const modalHtml = `
+        <div class="modal fade" id="viewOrderModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Order Details - ${order.order_number}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p><strong>Customer:</strong> ${order.customer_name || 'Walk-in Customer'}</p>
+                                <p><strong>Store:</strong> ${order.store ? order.store.name : 'N/A'}</p>
+                                <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Payment Method:</strong> ${order.payment_method}</p>
+                                <p><strong>Payment Status:</strong> <span class="badge ${order.payment_status === 'paid' ? 'bg-success' : 'bg-warning'}">${order.payment_status}</span></p>
+                                <p><strong>Order Status:</strong> <span class="badge bg-info">${order.order_status}</span></p>
+                            </div>
+                        </div>
+                        <h6>Order Items:</h6>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHtml}
+                            </tbody>
+                        </table>
+                        <div class="text-end">
+                            <p><strong>Subtotal:</strong> MYR ${parseFloat(order.subtotal).toFixed(2)}</p>
+                            <p><strong>Tax:</strong> MYR ${parseFloat(order.tax).toFixed(2)}</p>
+                            <p><strong>Shipping:</strong> MYR ${parseFloat(order.shipping).toFixed(2)}</p>
+                            <p><strong>Discount:</strong> MYR ${parseFloat(order.discount).toFixed(2)}</p>
+                            <h5><strong>Grand Total:</strong> MYR ${parseFloat(order.total).toFixed(2)}</h5>
+                        </div>
+                        ${order.notes ? `<div class="mt-3"><strong>Notes:</strong><p>${order.notes}</p></div>` : ''}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="printOrder(${order.id})"><i class="fa fa-print"></i> Print</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    $('#viewOrderModal').remove();
+    
+    // Append and show new modal
+    $('body').append(modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
+    modal.show();
+    
+    // Clean up on hide
+    $('#viewOrderModal').on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
+}
+
+// Print order function (placeholder)
+window.printOrder = function(orderId) {
+    alert('Print functionality coming soon for order ID: ' + orderId);
+};
+</script>
+@endpush
