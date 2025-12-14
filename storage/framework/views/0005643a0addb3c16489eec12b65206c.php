@@ -1,6 +1,6 @@
 <?php $page = 'pos'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <div class="page-wrapper pos-pg-wrapper ms-0">
         <div class="content pos-design p-0">
             <div class="btn-row d-sm-flex align-items-center">
@@ -22,20 +22,20 @@
                         <ul class="tabs owl-carousel pos-category">
                             <li id="all" class="category-tab active" data-category-id="">
                                 <a href="javascript:void(0);">
-                                    <img src="{{ URL::asset('/build/img/categories/category-01.png') }}" alt="Categories">
+                                    <img src="<?php echo e(URL::asset('/build/img/categories/category-01.png')); ?>" alt="Categories">
                                 </a>
                                 <h6><a href="javascript:void(0);">All Categories</a></h6>
-                                <span id="all-count">{{ $products->count() }} Items</span>
+                                <span id="all-count"><?php echo e($products->count()); ?> Items</span>
                             </li>
-                            @foreach($categories as $index => $category)
-                            <li id="category-{{ $category->id }}" class="category-tab" data-category-id="{{ $category->id }}">
+                            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li id="category-<?php echo e($category->id); ?>" class="category-tab" data-category-id="<?php echo e($category->id); ?>">
                                 <a href="javascript:void(0);">
-                                    <img src="{{ URL::asset('/build/img/categories/category-' . str_pad((($index % 6) + 1), 2, '0', STR_PAD_LEFT) . '.png') }}" alt="{{ $category->name }}">
+                                    <img src="<?php echo e(URL::asset('/build/img/categories/category-' . str_pad((($index % 6) + 1), 2, '0', STR_PAD_LEFT) . '.png')); ?>" alt="<?php echo e($category->name); ?>">
                                 </a>
-                                <h6><a href="javascript:void(0);">{{ $category->name }}</a></h6>
-                                <span id="category-{{ $category->id }}-count">{{ $category->products_count ?? 0 }} Items</span>
+                                <h6><a href="javascript:void(0);"><?php echo e($category->name); ?></a></h6>
+                                <span id="category-<?php echo e($category->id); ?>-count"><?php echo e($category->products_count ?? 0); ?> Items</span>
                             </li>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                         <div class="pos-products">
                             <div class="d-flex align-items-center justify-content-between mb-3">
@@ -55,28 +55,28 @@
                             <div class="tabs_container">
                                 <div class="tab_content active" data-tab="all">
                                     <div class="row" id="products-container">
-                                        @foreach($products as $product)
-                                        <div class="col-sm-2 col-md-6 col-lg-3 col-xl-3 pe-2 product-item" data-product-id="{{ $product->id }}" data-category-id="{{ $product->category_id }}">
+                                        <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="col-sm-2 col-md-6 col-lg-3 col-xl-3 pe-2 product-item" data-product-id="<?php echo e($product->id); ?>" data-category-id="<?php echo e($product->category_id); ?>">
                                             <div class="product-info default-cover card">
-                                                <a href="javascript:void(0);" class="img-bg add-to-cart" data-product-id="{{ $product->id }}">
-                                                    <img src="{{ $product->image ? URL::asset($product->image) : URL::asset('/build/img/products/pos-product-01.png') }}" alt="{{ $product->name }}">
+                                                <a href="javascript:void(0);" class="img-bg add-to-cart" data-product-id="<?php echo e($product->id); ?>">
+                                                    <img src="<?php echo e($product->image ? URL::asset($product->image) : URL::asset('/build/img/products/pos-product-01.png')); ?>" alt="<?php echo e($product->name); ?>">
                                                     <span><i data-feather="check" class="feather-16"></i></span>
                                                 </a>
-                                                <h6 class="cat-name"><a href="javascript:void(0);">{{ $product->category->name ?? 'N/A' }}</a></h6>
-                                                <h6 class="product-name"><a href="javascript:void(0);">{{ $product->name }}</a></h6>
+                                                <h6 class="cat-name"><a href="javascript:void(0);"><?php echo e($product->category->name ?? 'N/A'); ?></a></h6>
+                                                <h6 class="product-name"><a href="javascript:void(0);"><?php echo e($product->name); ?></a></h6>
                                                 <div class="d-flex align-items-center justify-content-between price">
-                                                    <span>{{ $product->quantity }} {{ $product->unit->name ?? 'Pcs' }}</span>
-                                                    <p>${{ number_format($product->price, 2) }}</p>
+                                                    <span><?php echo e($product->quantity); ?> <?php echo e($product->unit->name ?? 'Pcs'); ?></span>
+                                                    <p>$<?php echo e(number_format($product->price, 2)); ?></p>
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
-                                    @if($products->isEmpty())
+                                    <?php if($products->isEmpty()): ?>
                                     <div class="text-center py-5 col-12">
                                         <p class="text-muted">No products available for this store.</p>
                                     </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                         <div class="head d-flex align-items-center justify-content-between w-100">
                             <div class="">
                                 <h5>Order List</h5>
-                                <span>Transaction ID : <span id="transaction-id">#{{ date('Ymd') }}-{{ str_pad(1, 4, '0', STR_PAD_LEFT) }}</span></span>
+                                <span>Transaction ID : <span id="transaction-id">#<?php echo e(date('Ymd')); ?>-<?php echo e(str_pad(1, 4, '0', STR_PAD_LEFT)); ?></span></span>
                             </div>
                             <div class="">
                                 <a class="confirm-text" href="javascript:void(0);"><i data-feather="trash-2"
@@ -191,7 +191,7 @@
                                 <div class="col-md-6 col-lg-4 item">
                                     <div class="default-cover">
                                         <a href="javascript:void(0);" class="payment-method-btn" data-method="cash">
-                                            <img src="{{ URL::asset('/build/img/icons/cash-pay.svg')}}"
+                                            <img src="<?php echo e(URL::asset('/build/img/icons/cash-pay.svg')); ?>"
                                                 alt="Payment Method">
                                             <span>Cash</span>
                                         </a>
@@ -200,7 +200,7 @@
                                 <div class="col-md-6 col-lg-4 item">
                                     <div class="default-cover">
                                         <a href="javascript:void(0);" class="payment-method-btn" data-method="card">
-                                            <img src="{{ URL::asset('/build/img/icons/credit-card.svg')}}"
+                                            <img src="<?php echo e(URL::asset('/build/img/icons/credit-card.svg')); ?>"
                                                 alt="Payment Method">
                                             <span>Debit Card</span>
                                         </a>
@@ -209,7 +209,7 @@
                                 <div class="col-md-6 col-lg-4 item">
                                     <div class="default-cover">
                                         <a href="javascript:void(0);" class="payment-method-btn" data-method="qr">
-                                            <img src="{{ URL::asset('/build/img/icons/qr-scan.svg')}}" alt="Payment Method">
+                                            <img src="<?php echo e(URL::asset('/build/img/icons/qr-scan.svg')); ?>" alt="Payment Method">
                                             <span>Scan</span>
                                         </a>
                                     </div>
@@ -269,12 +269,12 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const selectedStoreId = {{ session('selected_store_id') ?? 'null' }};
+    const selectedStoreId = <?php echo e(session('selected_store_id') ?? 'null'); ?>;
     
     // Cart storage
     let cart = [];
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load products function
     function loadProducts(categoryId = '', searchTerm = '') {
         $.ajax({
-            url: '{{ route("pos.products") }}',
+            url: '<?php echo e(route("pos.products")); ?>',
             method: 'GET',
             data: {
                 category_id: categoryId || '',
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="col-sm-2 col-md-6 col-lg-3 col-xl-3 pe-2 product-item" data-product-id="${product.id}" data-category-id="${product.category_id}">
                     <div class="product-info default-cover card">
                         <a href="javascript:void(0);" class="img-bg add-to-cart" data-product-id="${product.id}">
-                            <img src="${product.image || '{{ URL::asset('/build/img/products/pos-product-01.png') }}'}" alt="${product.name}">
+                            <img src="${product.image || '<?php echo e(URL::asset('/build/img/products/pos-product-01.png')); ?>'}" alt="${product.name}">
                             <span><i data-feather="check" class="feather-16"></i></span>
                         </a>
                         <h6 class="cat-name"><a href="javascript:void(0);">${product.category ? product.category.name : 'N/A'}</a></h6>
@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get product details
         $.ajax({
-            url: '{{ route("pos.product", ":id") }}'.replace(':id', productId),
+            url: '<?php echo e(route("pos.product", ":id")); ?>'.replace(':id', productId),
             method: 'GET',
             success: function(response) {
                 if (response.success) {
@@ -637,8 +637,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let cartHtml = '';
         cart.forEach(function(item, index) {
             const productImage = item.product_image ? 
-                '{{ URL::asset("") }}' + item.product_image : 
-                '{{ URL::asset("/build/img/products/pos-product-01.png") }}';
+                '<?php echo e(URL::asset("")); ?>' + item.product_image : 
+                '<?php echo e(URL::asset("/build/img/products/pos-product-01.png")); ?>';
             
             cartHtml += `
                 <div class="product-list d-flex align-items-center justify-content-between" data-cart-index="${index}">
@@ -973,10 +973,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const total = subtotal + tax + shipping - discount;
         
         $.ajax({
-            url: '{{ route("pos.checkout") }}',
+            url: '<?php echo e(route("pos.checkout")); ?>',
             method: 'POST',
             data: {
-                _token: '{{ csrf_token() }}',
+                _token: '<?php echo e(csrf_token()); ?>',
                 items: items,
                 customer_name: $('#customer-select').val() || 'Walk-in Customer',
                 payment_method: selectedPaymentMethod,
@@ -1067,4 +1067,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTotals();
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/pos.blade.php ENDPATH**/ ?>

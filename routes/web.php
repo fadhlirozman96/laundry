@@ -178,9 +178,10 @@ Route::get('/purchase-report', function () {
     return view('purchase-report');
 })->name('purchase-report');     
 
-Route::get('/employees-grid', function () {                         
-    return view('employees-grid');
-})->name('employees-grid');     
+Route::get('/employees-grid', [App\Http\Controllers\EmployeeController::class, 'index'])->name('employees-grid')->middleware('auth');
+Route::post('/employees', [App\Http\Controllers\EmployeeController::class, 'store'])->name('employees.store')->middleware('auth');
+Route::put('/employees/{id}', [App\Http\Controllers\EmployeeController::class, 'update'])->name('employees.update')->middleware('auth');
+Route::delete('/employees/{id}', [App\Http\Controllers\EmployeeController::class, 'destroy'])->name('employees.destroy')->middleware('auth');     
 
 Route::get('/edit-employee', function () {                         
     return view('edit-employee');
@@ -247,7 +248,10 @@ Route::get('/quotation-list', function () {
     return view('quotation-list');
 })->name('quotation-list');  
 
-Route::get('/pos', [App\Http\Controllers\POSController::class, 'index'])->name('pos')->middleware('auth');  
+Route::get('/pos', [App\Http\Controllers\POSController::class, 'index'])->name('pos')->middleware('auth');
+Route::get('/pos/products', [App\Http\Controllers\POSController::class, 'getProducts'])->name('pos.products')->middleware('auth');
+Route::get('/pos/product/{id}', [App\Http\Controllers\POSController::class, 'getProduct'])->name('pos.product')->middleware('auth');
+Route::post('/pos/checkout', [App\Http\Controllers\POSController::class, 'checkout'])->name('pos.checkout')->middleware('auth');  
 
 Route::get('/coupons', function () {                         
     return view('coupons');

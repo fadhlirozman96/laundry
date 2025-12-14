@@ -8801,37 +8801,35 @@
                             </button>
                         </div>
                         <div class="modal-body custom-modal-body">
-                            <form action="store-list">
+                            <form action="{{ route('stores.store') }}" method="POST">
+                                @csrf
                                 <div class="mb-3">
-                                    <label class="form-label">Store Name</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">User Name</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="input-blocks mb-3">
-                                    <label>Password</label>
-                                    <div class="pass-group">
-                                        <input type="password" class=" pass-input">
-                                        <span class="fas toggle-password fa-eye-slash"></span>
-                                    </div>
+                                    <label class="form-label">Store Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control" required>
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Phone</label>
-                                    <input type="text" class="form-control">
+                                    <input type="text" name="phone" class="form-control">
+                                    @error('phone')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Email</label>
-                                    <input type="email" class="form-control">
+                                    <input type="email" name="email" class="form-control">
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
-                                <div class="mb-0">
-                                    <div
-                                        class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                        <span class="status-label">Status</span>
-                                        <input type="checkbox" id="user2" class="check" checked="">
-                                        <label for="user2" class="checktoggle"></label>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <textarea name="address" class="form-control" rows="3"></textarea>
+                                    @error('address')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="modal-footer-btn">
                                     <button type="button" class="btn btn-cancel me-2"
@@ -8862,37 +8860,37 @@
                             </button>
                         </div>
                         <div class="modal-body custom-modal-body">
-                            <form action="store-list">
+                            <form id="edit-store-form" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" id="edit-store-id" name="store_id">
                                 <div class="mb-3">
-                                    <label class="form-label">Store Name</label>
-                                    <input type="text" class="form-control" value="Fred john ">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">User Name</label>
-                                    <input type="text" class="form-control" value="FredJ25">
-                                </div>
-                                <div class="input-blocks mb-3">
-                                    <label>Password</label>
-                                    <div class="pass-group">
-                                        <input type="password" class=" pass-input" value="1234">
-                                        <span class="fas toggle-password fa-eye-slash"></span>
-                                    </div>
+                                    <label class="form-label">Store Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" id="edit-store-name" class="form-control" required>
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Phone</label>
-                                    <input type="text" class="form-control" value="+1216358690">
+                                    <input type="text" name="phone" id="edit-store-phone" class="form-control">
+                                    @error('phone')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" value="john@example.com">
+                                    <input type="email" name="email" id="edit-store-email" class="form-control">
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
-                                <div class="mb-0">
-                                    <div
-                                        class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                        <span class="status-label">Status</span>
-                                        <input type="checkbox" id="user3" class="check" checked="">
-                                        <label for="user3" class="checktoggle"></label>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Address</label>
+                                    <textarea name="address" id="edit-store-address" class="form-control" rows="3"></textarea>
+                                    @error('address')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="modal-footer-btn">
                                     <button type="button" class="btn btn-cancel me-2"

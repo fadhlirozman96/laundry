@@ -14,13 +14,51 @@ class POSController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('is_active', true)
-            ->withCount('products')
-            ->get();
+        $user = auth()->user();
         
-        $products = Product::with(['category', 'brand', 'unit'])
+        // Filter categories by user's accessible stores
+        $query = Category::where('is_active', true);
+        
+        // Filter products by user's accessible stores
+        $productQuery = Product::with(['category', 'unit'])
             ->where('is_active', true)
-            ->where('quantity', '>', 0)
+            ->where('quantity', '>', 0);
+        
+        // Apply store filtering
+        if (!$user->isSuperAdmin()) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            $productQuery->whereIn('store_id', $accessibleStoreIds);
+        }
+        
+        // If a specific store is selected in session, filter by that store
+        if (session('selected_store_id')) {
+            $productQuery->where('store_id', session('selected_store_id'));
+        }
+        
+        $products = $productQuery->get();
+        
+        // Get categories that have products in the filtered product list
+        $productCategoryIds = $products->pluck('category_id')->unique()->filter();
+        $categoriesQuery = Category::where('is_active', true);
+        
+        if ($productCategoryIds->isNotEmpty()) {
+            $categoriesQuery->whereIn('id', $productCategoryIds);
+        } else {
+            // If no products, return empty categories
+            $categoriesQuery->whereRaw('1 = 0');
+        }
+        
+        $categories = $categoriesQuery->withCount(['products' => function($q) use ($user) {
+                $q->where('is_active', true)
+                  ->where('quantity', '>', 0);
+                if (!$user->isSuperAdmin()) {
+                    $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+                    $q->whereIn('store_id', $accessibleStoreIds);
+                }
+                if (session('selected_store_id')) {
+                    $q->where('store_id', session('selected_store_id'));
+                }
+            }])
             ->get();
         
         return view('pos', compact('categories', 'products'));
@@ -28,9 +66,22 @@ class POSController extends Controller
 
     public function getProducts(Request $request)
     {
-        $query = Product::with(['category', 'brand', 'unit'])
+        $user = auth()->user();
+        
+        $query = Product::with(['category', 'unit'])
             ->where('is_active', true)
             ->where('quantity', '>', 0);
+
+        // Apply store filtering
+        if (!$user->isSuperAdmin()) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            $query->whereIn('store_id', $accessibleStoreIds);
+        }
+        
+        // If a specific store is selected in session, filter by that store
+        if (session('selected_store_id')) {
+            $query->where('store_id', session('selected_store_id'));
+        }
 
         if ($request->has('category_id') && $request->category_id != '') {
             $query->where('category_id', $request->category_id);
@@ -39,8 +90,7 @@ class POSController extends Controller
         if ($request->has('search') && $request->search != '') {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('sku', 'like', '%' . $request->search . '%')
-                  ->orWhere('barcode', 'like', '%' . $request->search . '%');
+                  ->orWhere('sku', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -54,7 +104,20 @@ class POSController extends Controller
 
     public function getProduct($id)
     {
-        $product = Product::with(['category', 'brand', 'unit'])->findOrFail($id);
+        $user = auth()->user();
+        
+        $product = Product::with(['category', 'unit'])->findOrFail($id);
+        
+        // Check if user has access to this product's store
+        if (!$user->isSuperAdmin()) {
+            $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+            if (!in_array($product->store_id, $accessibleStoreIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You do not have access to this product.'
+                ], 403);
+            }
+        }
         
         return response()->json([
             'success' => true,
@@ -67,7 +130,7 @@ class POSController extends Controller
         $request->validate([
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.price' => 'required|numeric|min:0',
             'customer_name' => 'nullable|string|max:255',
             'customer_email' => 'nullable|email|max:255',
@@ -75,6 +138,7 @@ class POSController extends Controller
             'payment_method' => 'required|string',
             'tax' => 'nullable|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
+            'shipping' => 'nullable|numeric|min:0',
         ]);
 
         try {
@@ -88,7 +152,8 @@ class POSController extends Controller
 
             $tax = $request->tax ?? 0;
             $discount = $request->discount ?? 0;
-            $total = $subtotal + $tax - $discount;
+            $shipping = $request->shipping ?? 0;
+            $total = $subtotal + $tax + $shipping - $discount;
 
             // Generate order number
             $orderNumber = 'ORD-' . date('Ymd') . '-' . str_pad(Order::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
@@ -103,7 +168,7 @@ class POSController extends Controller
                 'subtotal' => $subtotal,
                 'tax' => $tax,
                 'discount' => $discount,
-                'shipping' => 0,
+                'shipping' => $shipping,
                 'total' => $total,
                 'payment_method' => $request->payment_method,
                 'payment_status' => 'paid',
@@ -111,12 +176,29 @@ class POSController extends Controller
                 'notes' => $request->notes,
             ]);
 
+            $user = auth()->user();
+            $selectedStoreId = session('selected_store_id');
+            
             // Create order items and update product quantities
             foreach ($request->items as $item) {
                 $product = Product::findOrFail($item['product_id']);
 
-                // Check if enough quantity
-                if ($product->quantity < $item['quantity']) {
+                // Verify product belongs to selected store
+                if ($selectedStoreId && $product->store_id != $selectedStoreId) {
+                    throw new \Exception("Product '{$product->name}' does not belong to the selected store.");
+                }
+                
+                // Verify user has access to this product's store
+                if (!$user->isSuperAdmin()) {
+                    $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
+                    if (!in_array($product->store_id, $accessibleStoreIds)) {
+                        throw new \Exception("You do not have access to product '{$product->name}'.");
+                    }
+                }
+
+                // Check if enough quantity (convert to integer for comparison if needed)
+                $requiredQty = ceil($item['quantity']); // Round up for kg-based products
+                if ($product->quantity < $requiredQty) {
                     throw new \Exception("Insufficient quantity for product: {$product->name}");
                 }
 
@@ -133,8 +215,9 @@ class POSController extends Controller
                     'subtotal' => $item['price'] * $item['quantity'],
                 ]);
 
-                // Update product quantity
-                $product->decrement('quantity', $item['quantity']);
+                // Update product quantity (round up for kg-based products)
+                $decrementQty = ceil($item['quantity']);
+                $product->decrement('quantity', $decrementQty);
             }
 
             DB::commit();
