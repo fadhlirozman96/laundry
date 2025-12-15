@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -19,10 +20,19 @@ class EmployeeController extends Controller
             abort(403, 'Unauthorized access. Only Business Owners can manage employees.');
         }
         
+        // Get admin and staff roles
+        $adminRole = Role::admin();
+        $staffRole = Role::staff();
+        $roleIds = [];
+        if ($adminRole) $roleIds[] = $adminRole->id;
+        if ($staffRole) $roleIds[] = $staffRole->id;
+        
         // Get all staff users created by this business owner
         $employees = User::where('account_owner_id', $user->id)
-            ->whereIn('role', ['admin', 'staff'])
-            ->with(['stores'])
+            ->whereHas('roles', function($query) use ($roleIds) {
+                $query->whereIn('roles.id', $roleIds);
+            })
+            ->with(['stores', 'roles'])
             ->get();
         
         // Get all stores owned by this business owner
@@ -47,21 +57,29 @@ class EmployeeController extends Controller
             'role' => 'required|in:admin,staff',
             'store_id' => 'required|exists:stores,id',
         ]);
-        
+
         // Verify the store belongs to this business owner
         $store = Store::findOrFail($request->store_id);
         if ($store->created_by !== $user->id) {
             return redirect()->back()->with('error', 'You can only assign employees to your own stores.');
         }
-        
+
+        // Get role by name
+        $role = Role::where('name', $request->role)->first();
+        if (!$role) {
+            return redirect()->back()->with('error', 'Invalid role selected.');
+        }
+
         // Create the employee
         $employee = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
             'account_owner_id' => $user->id,
         ]);
+
+        // Assign role via pivot table
+        $employee->roles()->attach($role->id);
         
         // Assign employee to store
         $store->users()->attach($employee->id);
@@ -92,18 +110,23 @@ class EmployeeController extends Controller
             'role' => 'required|in:admin,staff',
             'store_id' => 'required|exists:stores,id',
         ]);
-        
+
         // Verify the store belongs to this business owner
         $store = Store::findOrFail($request->store_id);
         if ($store->created_by !== $user->id) {
             return redirect()->back()->with('error', 'You can only assign employees to your own stores.');
         }
-        
+
+        // Get role by name
+        $role = Role::where('name', $request->role)->first();
+        if (!$role) {
+            return redirect()->back()->with('error', 'Invalid role selected.');
+        }
+
         // Update employee
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
         ];
         
         if ($request->filled('password')) {
@@ -111,6 +134,9 @@ class EmployeeController extends Controller
         }
         
         $employee->update($updateData);
+        
+        // Update role assignment (sync to ensure only one role)
+        $employee->roles()->sync([$role->id]);
         
         // Update store assignment (sync to ensure only one store)
         $employee->stores()->sync([$request->store_id]);

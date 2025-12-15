@@ -71,6 +71,7 @@ class OrderController extends Controller
             $orders = $query->skip($start)->take($length)->get();
             
             $data = [];
+            $rowNumber = $start + 1; // Start from the current page offset
             foreach ($orders as $order) {
                 $statusBadge = $order->payment_status === 'paid' ? 'bg-success' : 'bg-warning';
                 
@@ -78,7 +79,7 @@ class OrderController extends Controller
                 $itemCount = $order->items->sum('quantity');
                 
                 $data[] = [
-                    'checkbox' => '<label class="checkboxs"><input type="checkbox"><span class="checkmarks"></span></label>',
+                    'checkbox' => $rowNumber++,
                     'order_number' => '<strong>' . $order->order_number . '</strong>',
                     'customer' => $order->customer_name ?: 'Walk-in Customer',
                     'store' => '<span class="badge bg-outline-primary">' . ($order->store->name ?? 'No Store') . '</span>',
@@ -88,10 +89,10 @@ class OrderController extends Controller
                     'status' => '<span class="badge ' . $statusBadge . '">' . $order->payment_status . '</span>',
                     'date' => $order->created_at->format('Y-m-d H:i'),
                     'action' => '<div class="edit-delete-action">
-                                    <a class="me-2 p-2" href="javascript:void(0);" onclick="viewOrder(' . $order->id . ')">
+                                    <a class="action-view" href="javascript:void(0);" onclick="viewOrder(' . $order->id . ')" title="View Order">
                                         <i data-feather="eye" class="feather-eye"></i>
                                     </a>
-                                    <a class="me-2 p-2" href="javascript:void(0);">
+                                    <a class="action-print" href="javascript:void(0);" onclick="printOrder(' . $order->id . ')" title="Print Order">
                                         <i data-feather="printer" class="feather-printer"></i>
                                     </a>
                                  </div>'

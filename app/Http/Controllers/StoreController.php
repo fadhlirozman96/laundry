@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Store;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class StoreController extends Controller
 {
@@ -37,19 +39,61 @@ class StoreController extends Controller
             'email' => 'nullable|email',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
+            'person_name' => 'required|string|max:255',
+            'person_email' => 'required|email|unique:users,email',
+            'person_phone' => 'nullable|string',
         ]);
 
-        $store = Store::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'created_by' => auth()->id(),
-            'is_active' => true,
-        ]);
+        DB::beginTransaction();
+        try {
+            // Create the store
+            $store = Store::create([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'created_by' => auth()->id(),
+                'is_active' => true,
+            ]);
 
-        return redirect()->back()->with('success', 'Store created successfully!');
+            // Auto-generate password (12 characters: mix of letters and numbers)
+            $autoPassword = Str::random(8) . rand(1000, 9999);
+            
+            // Get admin role
+            $adminRole = Role::admin();
+            if (!$adminRole) {
+                throw new \Exception('Admin role not found. Please run migrations and seeders.');
+            }
+            
+            // Create user account for person in charge
+            $personInCharge = User::create([
+                'name' => $request->person_name,
+                'email' => $request->person_email,
+                'password' => Hash::make($autoPassword),
+                'account_owner_id' => auth()->id(), // Link to business owner
+            ]);
+
+            // Assign admin role via pivot table
+            $personInCharge->roles()->attach($adminRole->id);
+
+            // Assign user to the store
+            $store->users()->attach($personInCharge->id);
+
+            DB::commit();
+
+            // Return success message with generated password
+            return redirect()->back()->with([
+                'success' => 'Store created successfully! Person in charge account has been created.',
+                'person_in_charge_name' => $personInCharge->name,
+                'person_in_charge_email' => $personInCharge->email,
+                'auto_generated_password' => $autoPassword,
+                'show_password_modal' => true
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error creating store: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function update(Request $request, $id)
@@ -144,13 +188,21 @@ class StoreController extends Controller
             'role' => 'required|in:admin,staff',
         ]);
 
+        // Get role by name
+        $role = Role::where('name', $request->role)->first();
+        if (!$role) {
+            return redirect()->back()->with('error', 'Invalid role selected.');
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
             'account_owner_id' => auth()->id(),
         ]);
+
+        // Assign role via pivot table
+        $user->roles()->attach($role->id);
 
         // Assign user to store
         $store->users()->attach($user->id);
@@ -164,6 +216,11 @@ class StoreController extends Controller
         $store = Store::findOrFail($id);
         $user = auth()->user();
 
+        // Check if store is active (Super Admin can access inactive stores)
+        if (!$store->is_active && !$user->isSuperAdmin() && !$user->isBusinessOwner()) {
+            return redirect()->back()->with('error', 'This store is currently inactive. Please contact the administrator.');
+        }
+
         // Check if user has access to this store
         $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
         
@@ -176,6 +233,30 @@ class StoreController extends Controller
         session(['selected_store_name' => $store->name]);
 
         return redirect()->back()->with('success', 'Store switched to: ' . $store->name);
+    }
+
+    // Toggle store active status
+    public function toggleStatus($id)
+    {
+        $store = Store::findOrFail($id);
+        $user = auth()->user();
+        
+        // Check if user has permission (Super Admin or Business Owner who owns this store)
+        if (!$user->isSuperAdmin() && $store->created_by !== $user->id) {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
+
+        // Toggle the status
+        $store->is_active = !$store->is_active;
+        $store->save();
+
+        // If store is deactivated and it's currently selected, clear the session
+        if (!$store->is_active && session('selected_store_id') == $store->id) {
+            session()->forget(['selected_store_id', 'selected_store_name']);
+        }
+
+        $status = $store->is_active ? 'activated' : 'deactivated';
+        return redirect()->back()->with('success', "Store {$status} successfully!");
     }
 }
 

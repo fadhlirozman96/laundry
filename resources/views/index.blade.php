@@ -230,7 +230,7 @@
                                                 @if($order->items->count() > 2)
                                                     +{{ $order->items->count() - 2 }} more
                                                 @endif
-                                            </div>
+                                        </div>
                                         @endif
                                     </td>
                                     <td>

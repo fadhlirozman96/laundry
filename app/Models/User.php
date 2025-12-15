@@ -21,7 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
         'account_owner_id',
     ];
 
@@ -46,6 +45,27 @@ class User extends Authenticatable
     ];
 
     // Relationships
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')->withTimestamps();
+    }
+
+    // Get the primary role (assuming one role per user)
+    // Accessor to get first role (for backward compatibility)
+    public function getRoleAttribute()
+    {
+        if (!$this->relationLoaded('roles')) {
+            $this->load('roles');
+        }
+        return $this->roles->first();
+    }
+    
+    // Helper method (same as attribute accessor)
+    public function role()
+    {
+        return $this->getRoleAttribute();
+    }
+
     public function accountOwner()
     {
         return $this->belongsTo(User::class, 'account_owner_id');
@@ -69,22 +89,26 @@ class User extends Authenticatable
     // Helper methods
     public function isSuperAdmin()
     {
-        return $this->role === 'super_admin';
+        $role = $this->role();
+        return $role && $role->name === 'super_admin';
     }
 
     public function isBusinessOwner()
     {
-        return $this->role === 'business_owner';
+        $role = $this->role();
+        return $role && $role->name === 'business_owner';
     }
 
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        $role = $this->role();
+        return $role && $role->name === 'admin';
     }
 
     public function isStaff()
     {
-        return $this->role === 'staff';
+        $role = $this->role();
+        return $role && $role->name === 'staff';
     }
 
     public function getAccessibleStoresQuery()
@@ -101,9 +125,17 @@ class User extends Authenticatable
         }
     }
 
-    public function getAccessibleStores()
+    public function getAccessibleStores($includeInactive = false)
     {
-        return $this->getAccessibleStoresQuery()->where('is_active', true)->get();
+        $query = $this->getAccessibleStoresQuery();
+        
+        // Super Admin and Business Owner can see inactive stores
+        // Staff/Admin can only see active stores
+        if (!$includeInactive && !$this->isSuperAdmin() && !$this->isBusinessOwner()) {
+            $query = $query->where('is_active', true);
+        }
+        
+        return $query->get();
     }
 
     public function getBusinessOwner()
@@ -117,9 +149,11 @@ class User extends Authenticatable
     // Permission methods
     public function permissions()
     {
-        return Permission::whereHas('roles', function ($query) {
-            $query->where('role', $this->role);
-        })->get();
+        $role = $this->role();
+        if (!$role) {
+            return collect([]);
+        }
+        return $role->permissions;
     }
 
     public function hasPermission($permissionName)

@@ -38,7 +38,7 @@
                         color: $white;
                     }
                     svg {
-                        color: #001d35
+                        color: #0067e2
                     }
                 }
                 svg {
@@ -66,21 +66,21 @@
                     }
                     &:hover{
                         background: rgba(0, 103, 226, 0.08);
-                        color: #001d35;
+                        color: #0067e2;
                         border-radius: 5px;
                         img {
                             filter: invert(72%) sepia(76%) saturate(1430%) hue-rotate(327deg) brightness(103%) contrast(101%);
                         }
                         span{
-                            color: #001d35;
+                            color: #0067e2;
                         }
                         svg{
-                            color: #001d35;
+                            color: #0067e2;
                         }
                     }
                     &.active{
                         background: rgba(0, 103, 226, 0.08);
-                        color: #001d35;
+                        color: #0067e2;
                         border-radius: 5px;
                         svg{
                             color: $white;
@@ -89,12 +89,12 @@
                             filter: invert(72%) sepia(76%) saturate(1430%) hue-rotate(327deg) brightness(103%) contrast(101%);
                         }
                         span{
-                            color: #001d35;
+                            color: #0067e2;
                         }
                         .menu-arrow{
                             background: rgba(0, 103, 226, 0.1);
                             &::before{
-                                border-color: #001d35;
+                                border-color: #0067e2;
                             }
                         }
                     }
@@ -112,7 +112,7 @@
                             filter: invert(72%) sepia(76%) saturate(1430%) hue-rotate(327deg) brightness(103%) contrast(101%);
                         }
                         span{
-                            color: #001d35;
+                            color: #0067e2;
                         }
                     }
                 }
@@ -132,7 +132,7 @@
                                &.active{
                                    color: $secondary;
                                    &:after{
-                                    background: #001d35;
+                                    background: #0067e2;
                                     border: 2px solid #9fd6fc;
                                    }
                                }
@@ -148,7 +148,7 @@
                                &:hover{
                                    color:$primary;
                                    &:after{
-                                    background: #001d35;
+                                    background: #0067e2;
                                     border: 2px solid #9fd6fc;
                                    }
                                }
@@ -188,14 +188,14 @@
                                        }
                                    }
                                    &:after{
-                                    background: #001d35;
+                                    background: #0067e2;
                                     border: 2px solid #9fd6fc;
                                    }
                                }
                                &:hover{
                                    color:$primary;
                                    &:after{
-                                    background: #001d35;
+                                    background: #0067e2;
                                     border: 2px solid #9fd6fc;
                                    }
                                    span {
@@ -209,7 +209,7 @@
                         &.active a{
                             background: rgba(0, 103, 226, 0.08);
                             border-radius: 5px;
-                            color: #001d35;
+                            color: #0067e2;
                             span {
                                 color: $primary;
                             }
@@ -240,25 +240,25 @@
             li {
                 &.active{
                     a{
-                        color: #001d35;
+                        color: #0067e2;
                     }
                     svg {
-                        color: #001d35
+                        color: #0067e2
                     }
                 }
                 .submenu > {
                     a {
                         &.active{
                             background: rgba(0, 103, 226, 0.08);
-                            color: #001d35;
+                            color: #0067e2;
                             border-radius: 5px;
                             span{
-                                color: #001d35;
+                                color: #0067e2;
                             }
                             .menu-arrow{
                                 background: rgba(0, 103, 226, 0.1);
                                 &::before{
-                                    border-color: #001d35;
+                                    border-color: #0067e2;
                                 }
                             }
                         }
@@ -321,7 +321,7 @@
                             &:hover{
                                 color:$primary;
                                 &:after{
-                                background: #001d35;
+                                background: #0067e2;
                                 border: 2px solid #9fd6fc;
                                 }
                             }

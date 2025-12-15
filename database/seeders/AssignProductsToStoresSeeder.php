@@ -55,7 +55,10 @@ class AssignProductsToStoresSeeder extends Seeder
             }
 
             // If no creator or no store found, assign to the first business owner's first store
-            $firstBusinessOwner = User::where('role', 'business_owner')->first();
+            $businessOwnerRole = \App\Models\Role::businessOwner();
+            $firstBusinessOwner = $businessOwnerRole ? User::whereHas('roles', function($query) use ($businessOwnerRole) {
+                $query->where('roles.id', $businessOwnerRole->id);
+            })->first() : null;
             if ($firstBusinessOwner) {
                 $store = Store::where('created_by', $firstBusinessOwner->id)->first();
                 if ($store) {

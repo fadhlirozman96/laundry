@@ -128,7 +128,7 @@
                     @endphp
                     <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 employee-card" 
                          data-store-id="{{ $assignedStore ? $assignedStore->id : '' }}"
-                         data-role="{{ $employee->role }}"
+                         data-role="{{ $employee->role ? $employee->role->name : '' }}"
                          data-name="{{ strtolower($employee->name) }}"
                          data-email="{{ strtolower($employee->email) }}">
                         <div class="employee-grid-profile">
@@ -147,7 +147,7 @@
                                             <li>
                                                 <a href="javascript:void(0);" class="dropdown-item" 
                                                    data-bs-toggle="modal" data-bs-target="#edit-employee"
-                                                   onclick="editEmployee({{ $employee->id }}, {{ json_encode($employee->name) }}, {{ json_encode($employee->email) }}, '{{ $employee->role }}', {{ $assignedStore ? $assignedStore->id : 'null' }})">
+                                                   onclick="editEmployee({{ $employee->id }}, {{ json_encode($employee->name) }}, {{ json_encode($employee->email) }}, '{{ $employee->role ? $employee->role->name : '' }}', {{ $assignedStore ? $assignedStore->id : 'null' }})">
                                                     <i data-feather="edit" class="info-img"></i>Edit
                                                 </a>
                                             </li>
@@ -167,7 +167,7 @@
                                 </div>
                                 <h5>EMP ID : {{ $empId }}</h5>
                                 <h4>{{ $employee->name }}</h4>
-                                <span>{{ ucfirst($employee->role) }}</span>
+                                <span>{{ $employee->role ? $employee->role->display_name : 'N/A' }}</span>
                             </div>
                             <ul class="department">
                                 <li>

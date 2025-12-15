@@ -316,10 +316,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12">
-                    <div class="btn-addproduct mb-4" style="display: flex !important; justify-content: flex-end !important; align-items: center !important; gap: 10px !important; width: 100% !important; float: none !important; clear: both !important;">
-                        <button type="button" class="btn btn-cancel me-2" style="height: 40px !important; min-height: 40px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; vertical-align: middle !important; margin: 0 !important; padding: 10px 20px !important; box-sizing: border-box !important;">Cancel</button>
-                        <button type="submit" class="btn btn-submit" style="height: 40px !important; min-height: 40px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; vertical-align: middle !important; margin: 0 !important; padding: 10px 20px !important; box-sizing: border-box !important;">Save Product</button>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="btn-addproduct mb-4 d-flex justify-content-end align-items-center gap-2" style="padding-right: 15px;">
+                            <button type="button" class="btn btn-cancel" style="height: 40px; padding: 10px 20px;" onclick="window.location.href='{{ route('product-list') }}'">Cancel</button>
+                            <button type="submit" class="btn btn-submit" style="height: 40px; padding: 10px 20px;">Save Product</button>
+                        </div>
                     </div>
                 </div>
             </form>

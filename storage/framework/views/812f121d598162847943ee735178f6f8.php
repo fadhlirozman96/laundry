@@ -88,7 +88,7 @@
                     </span>
                     <span class="user-detail">
                         <span class="user-name"><?php echo e(auth()->check() ? auth()->user()->name : 'Guest'); ?></span>
-                        <span class="user-role"><?php echo e(auth()->check() ? ucwords(str_replace('_', ' ', auth()->user()->role)) : ''); ?></span>
+                        <span class="user-role"><?php echo e(auth()->check() && auth()->user()->role ? auth()->user()->role->display_name : ''); ?></span>
                     </span>
                 </span>
             </a>
@@ -100,7 +100,7 @@
                             <span class="status online"></span></span>
                         <div class="profilesets">
                             <h6><?php echo e(auth()->check() ? auth()->user()->name : 'Guest'); ?></h6>
-                            <h5><?php echo e(auth()->check() ? ucwords(str_replace('_', ' ', auth()->user()->role)) : ''); ?></h5>
+                            <h5><?php echo e(auth()->check() && auth()->user()->role ? auth()->user()->role->display_name : ''); ?></h5>
                         </div>
                     </div>
                     <hr class="m-0">

@@ -87,7 +87,7 @@
                     </span>
                     <span class="user-detail">
                         <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Guest' }}</span>
-                        <span class="user-role">{{ auth()->check() ? ucwords(str_replace('_', ' ', auth()->user()->role)) : '' }}</span>
+                        <span class="user-role">{{ auth()->check() && auth()->user()->role ? auth()->user()->role->display_name : '' }}</span>
                     </span>
                 </span>
             </a>
@@ -99,7 +99,7 @@
                             <span class="status online"></span></span>
                         <div class="profilesets">
                             <h6>{{ auth()->check() ? auth()->user()->name : 'Guest' }}</h6>
-                            <h5>{{ auth()->check() ? ucwords(str_replace('_', ' ', auth()->user()->role)) : '' }}</h5>
+                            <h5>{{ auth()->check() && auth()->user()->role ? auth()->user()->role->display_name : '' }}</h5>
                         </div>
                     </div>
                     <hr class="m-0">

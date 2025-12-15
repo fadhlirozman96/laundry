@@ -7,7 +7,7 @@
                     <h6 class="submenu-hdr">Main</h6>
                     <ul>
                         <li class="submenu">
-                            <a href="javascript:void(0);"
+                            <!-- <a href="javascript:void(0);"
                                 class="<?php echo e(Request::is('index', '/', 'sales-dashboard') ? 'active subdrop' : ''); ?>"><i
                                     data-feather="grid"></i><span>Dashboard</span><span class="menu-arrow"></span></a>
                             <ul>
@@ -16,7 +16,11 @@
                                 <li><a href="<?php echo e(url('sales-dashboard')); ?>"
                                         class="<?php echo e(Request::is('sales-dashboard') ? 'active' : ''); ?>">Sales Dashboard</a>
                                 </li>
-                            </ul>
+                            </ul> -->
+
+                            <li class="<?php echo e(Request::is('index', '/', 'sales-dashboard') ? 'active' : ''); ?>"><a
+                                href="<?php echo e(url('index')); ?>"><i data-feather="grid"></i><span>Dashboard</span></a>
+                        </li>
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"
@@ -53,14 +57,14 @@
                     </ul>
                 </li>
                 <li class="submenu-open">
-                    <h6 class="submenu-hdr">Inventory</h6>
+                    <h6 class="submenu-hdr">Services</h6>
                     <ul>
                         <li class="<?php echo e(Request::is('product-list','product-details') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('product-list')); ?>"><i data-feather="box"></i><span>Products</span></a>
+                                href="<?php echo e(url('product-list')); ?>"><i data-feather="box"></i><span>Service</span></a>
                         </li>
                         <li class="<?php echo e(Request::is('add-product','edit-product') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('add-product')); ?>"><i data-feather="plus-square"></i><span>Create
-                                    Product</span></a></li>
+                                    Service</span></a></li>
                         <li class="<?php echo e(Request::is('category-list') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('category-list')); ?>"><i
                                     data-feather="codepen"></i><span>Category</span></a></li>
@@ -78,7 +82,7 @@
                     </ul>
                 </li>
                 <?php endif; ?>
-                <li class="submenu-open">
+                <!-- <li class="submenu-open">
                     <h6 class="submenu-hdr">Stock</h6>
                     <ul>
                         <li class="<?php echo e(Request::is('manage-stocks') ? 'active' : ''); ?>"><a
@@ -91,7 +95,7 @@
                                 href="<?php echo e(url('stock-transfer')); ?>"><i data-feather="truck"></i><span>Stock
                                     Transfer</span></a></li>
                     </ul>
-                </li>
+                </li> -->
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Sales</h6>
                     <ul>

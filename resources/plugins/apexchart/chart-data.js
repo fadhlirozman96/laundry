@@ -578,64 +578,64 @@ if($('#sales_charts').length > 0) {
 	
 	var options = {
 		series: [{
-			name: 'Sales',
+		name: 'Sales',
 			data: salesData
-		}],
+	  }],
 		colors: ['#28C76F'],
 		chart: {
-			type: 'bar',
-			height: 320,
+		type: 'bar',
+		height: 320,
 			id: 'sales_charts',
-			zoom: {
+		zoom: {
 				enabled: false
 			},
 			toolbar: {
 				show: false
-			}
-		},
-		responsive: [{
-			breakpoint: 280,
-			options: {
-				legend: {
-					position: 'bottom',
-					offsetY: 0
-				}
-			}
-		}],
-		plotOptions: {
-			bar: {
-				horizontal: false,
-				borderRadius: 4,
+		}
+	  },
+	  responsive: [{
+		breakpoint: 280,
+		options: {
+		  legend: {
+			position: 'bottom',
+			offsetY: 0
+		  }
+		}
+	  }],
+	  plotOptions: {
+		bar: {
+		  horizontal: false,
+          borderRadius: 4,
 				borderRadiusApplication: "end",
 				columnWidth: '60%',
 				distributed: false
-			},
 		},
-		dataLabels: {
-			enabled: false
-		},
-		yaxis: {
+	  },
+      dataLabels: {
+      enabled: false
+    },
+      yaxis: {
 			min: 0,
 			max: yAxisMax,
-			tickAmount: 5,
+          tickAmount: 5,
 			labels: {
 				formatter: function(val) {
 					return "MYR " + val.toFixed(0);
 				}
 			}
-		},
-		xaxis: {
+        },
+	  xaxis: {
 			categories: months,
 			labels: {
 				rotate: 0
 			}
-		},
+	  },
 		legend: {
 			show: true,
 			position: 'top',
 			horizontalAlign: 'right'
 		},
-		fill: {
+	  fill: {
 			opacity: 1,
 			type: 'solid'
 		},
@@ -645,12 +645,12 @@ if($('#sales_charts').length > 0) {
 					return "MYR " + val.toFixed(2);
 				}
 			}
-		}
-	};
+	  }
+	  };
 
-	var chart = new ApexCharts(document.querySelector("#sales_charts"), options);
-	chart.render();
-}
+	  var chart = new ApexCharts(document.querySelector("#sales_charts"), options);
+	  chart.render();
+	}
 */
 
     if($('#sales-analysis').length > 0 ){

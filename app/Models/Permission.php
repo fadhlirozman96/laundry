@@ -19,19 +19,29 @@ class Permission extends Model
     public function roles()
     {
         return $this->belongsToMany(
-            config: null,
-            table: 'role_permissions',
-            foreignPivotKey: 'permission_id',
-            relatedPivotKey: 'role',
-            parentKey: 'id',
-            relatedKey: 'role'
-        );
+            Role::class,
+            'role_permissions',
+            'permission_id',
+            'role_id'
+        )->withTimestamps();
     }
 
     public static function getByRole($role)
     {
-        return self::whereHas('roles', function ($query) use ($role) {
-            $query->where('role', $role);
+        if ($role instanceof Role) {
+            $roleId = $role->id;
+        } elseif (is_numeric($role)) {
+            $roleId = $role;
+        } else {
+            $roleModel = Role::where('name', $role)->first();
+            if (!$roleModel) {
+                return collect([]);
+            }
+            $roleId = $roleModel->id;
+        }
+        
+        return self::whereHas('roles', function ($query) use ($roleId) {
+            $query->where('roles.id', $roleId);
         })->get();
     }
 }

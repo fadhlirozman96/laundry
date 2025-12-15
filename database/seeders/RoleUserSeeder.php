@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
 class RoleUserSeeder extends Seeder
@@ -16,14 +17,25 @@ class RoleUserSeeder extends Seeder
     {
         $this->command->info('🚀 Creating sample users for all roles...');
 
+        // Get roles
+        $superAdminRole = Role::superAdmin();
+        $businessOwnerRole = Role::businessOwner();
+        $adminRole = Role::admin();
+        $staffRole = Role::staff();
+
+        if (!$superAdminRole || !$businessOwnerRole || !$adminRole || !$staffRole) {
+            $this->command->error('❌ Roles not found. Please run RoleSeeder first.');
+            return;
+        }
+
         // 1. Create Super Admin
         $superAdmin = User::create([
             'name' => 'System Administrator',
             'email' => 'superadmin@dreampos.com',
             'password' => Hash::make('superadmin123'),
-            'role' => 'super_admin',
             'account_owner_id' => null,
         ]);
+        $superAdmin->roles()->attach($superAdminRole->id);
         $this->command->info("✅ Super Admin created: {$superAdmin->email} / superadmin123");
 
         // 2. Create Business Owner A
@@ -31,9 +43,9 @@ class RoleUserSeeder extends Seeder
             'name' => 'John Business Owner',
             'email' => 'owner.john@business.com',
             'password' => Hash::make('owner123'),
-            'role' => 'business_owner',
             'account_owner_id' => null,
         ]);
+        $businessOwnerA->roles()->attach($businessOwnerRole->id);
         $this->command->info("✅ Business Owner A created: {$businessOwnerA->email} / owner123");
 
         // Create stores for Business Owner A
@@ -63,9 +75,9 @@ class RoleUserSeeder extends Seeder
             'name' => 'Mike Manager',
             'email' => 'mike.manager@johns.com',
             'password' => Hash::make('admin123'),
-            'role' => 'admin',
             'account_owner_id' => $businessOwnerA->id,
         ]);
+        $adminA1->roles()->attach($adminRole->id);
         $storeA1->users()->attach($adminA1->id);
         $this->command->info("✅ Store Admin created for Downtown: {$adminA1->email} / admin123");
 
@@ -74,9 +86,9 @@ class RoleUserSeeder extends Seeder
             'name' => 'Sarah Cashier',
             'email' => 'sarah.cashier@johns.com',
             'password' => Hash::make('staff123'),
-            'role' => 'staff',
             'account_owner_id' => $businessOwnerA->id,
         ]);
+        $staffA1->roles()->attach($staffRole->id);
         $storeA1->users()->attach($staffA1->id);
         $this->command->info("✅ Store Staff created for Downtown: {$staffA1->email} / staff123");
 
@@ -85,9 +97,9 @@ class RoleUserSeeder extends Seeder
             'name' => 'Tom Sales',
             'email' => 'tom.sales@johns.com',
             'password' => Hash::make('staff123'),
-            'role' => 'staff',
             'account_owner_id' => $businessOwnerA->id,
         ]);
+        $staffA2->roles()->attach($staffRole->id);
         $storeA2->users()->attach($staffA2->id);
         $this->command->info("✅ Store Staff created for Mall: {$staffA2->email} / staff123");
 
@@ -96,9 +108,9 @@ class RoleUserSeeder extends Seeder
             'name' => 'Emma Retail Owner',
             'email' => 'owner.emma@retail.com',
             'password' => Hash::make('owner123'),
-            'role' => 'business_owner',
             'account_owner_id' => null,
         ]);
+        $businessOwnerB->roles()->attach($businessOwnerRole->id);
         $this->command->info("✅ Business Owner B created: {$businessOwnerB->email} / owner123");
 
         // Create stores for Business Owner B
@@ -118,9 +130,9 @@ class RoleUserSeeder extends Seeder
             'name' => 'Lisa Manager',
             'email' => 'lisa.manager@emmas.com',
             'password' => Hash::make('admin123'),
-            'role' => 'admin',
             'account_owner_id' => $businessOwnerB->id,
         ]);
+        $adminB1->roles()->attach($adminRole->id);
         $storeB1->users()->attach($adminB1->id);
         $this->command->info("✅ Store Admin created for Central: {$adminB1->email} / admin123");
 
@@ -129,9 +141,9 @@ class RoleUserSeeder extends Seeder
             'name' => 'Bob Cashier',
             'email' => 'bob.cashier@emmas.com',
             'password' => Hash::make('staff123'),
-            'role' => 'staff',
             'account_owner_id' => $businessOwnerB->id,
         ]);
+        $staffB1->roles()->attach($staffRole->id);
         $storeB1->users()->attach($staffB1->id);
         $this->command->info("✅ Store Staff created for Central: {$staffB1->email} / staff123");
 

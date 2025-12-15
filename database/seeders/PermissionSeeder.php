@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 
 class PermissionSeeder extends Seeder
@@ -149,12 +150,18 @@ class PermissionSeeder extends Seeder
         ];
 
         // Assign permissions to roles (use insertOrIgnore to avoid duplicates)
-        foreach ($rolePermissions as $role => $permissionNames) {
+        foreach ($rolePermissions as $roleName => $permissionNames) {
+            $role = Role::where('name', $roleName)->first();
+            if (!$role) {
+                $this->command->warn("Role '{$roleName}' not found. Skipping permissions assignment.");
+                continue;
+            }
+            
             foreach ($permissionNames as $permissionName) {
                 $permission = Permission::where('name', $permissionName)->first();
                 if ($permission) {
                     DB::table('role_permissions')->insertOrIgnore([
-                        'role' => $role,
+                        'role_id' => $role->id,
                         'permission_id' => $permission->id,
                         'created_at' => now(),
                         'updated_at' => now(),

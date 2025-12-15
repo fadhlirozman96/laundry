@@ -275,6 +275,7 @@ Route::delete('/stores/{id}', [App\Http\Controllers\StoreController::class, 'des
 Route::post('/stores/{id}/assign-user', [App\Http\Controllers\StoreController::class, 'assignUser'])->name('stores.assign-user')->middleware('auth');
 Route::delete('/stores/{storeId}/remove-user/{userId}', [App\Http\Controllers\StoreController::class, 'removeUser'])->name('stores.remove-user')->middleware('auth');
 Route::post('/stores/{id}/create-user', [App\Http\Controllers\StoreController::class, 'createStoreUser'])->name('stores.create-user')->middleware('auth');
+Route::post('/stores/{id}/toggle-status', [App\Http\Controllers\StoreController::class, 'toggleStatus'])->name('stores.toggle-status')->middleware('auth');
 Route::get('/select-store/{id}', [App\Http\Controllers\StoreController::class, 'selectStore'])->name('select-store')->middleware('auth');
 
 // Storefront CMS Routes (must be before storefront routes)

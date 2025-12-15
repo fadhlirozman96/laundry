@@ -1,28 +1,29 @@
 <?php $page = 'store-list'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <div class="page-wrapper">
         <div class="content">
-            @component('components.breadcrumb')
-                @slot('title')
+            <?php $__env->startComponent('components.breadcrumb'); ?>
+                <?php $__env->slot('title'); ?>
                     Store List
-                @endslot
-                @slot('li_1')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_1'); ?>
                     Manage your Store
-                @endslot
-                @slot('li_2')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_2'); ?>
                     Add Store
-                @endslot
-            @endcomponent
+                <?php $__env->endSlot(); ?>
+            <?php echo $__env->renderComponent(); ?>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
+                    <?php echo e(session('success')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            @if(session('show_password_modal'))
+            <?php if(session('show_password_modal')): ?>
                 <!-- Password Display Modal -->
                 <div class="modal fade" id="passwordModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
                     <div class="modal-dialog modal-dialog-centered">
@@ -38,16 +39,16 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label"><strong>Name:</strong></label>
-                                    <p class="mb-0">{{ session('person_in_charge_name') }}</p>
+                                    <p class="mb-0"><?php echo e(session('person_in_charge_name')); ?></p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label"><strong>Email:</strong></label>
-                                    <p class="mb-0">{{ session('person_in_charge_email') }}</p>
+                                    <p class="mb-0"><?php echo e(session('person_in_charge_email')); ?></p>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label"><strong>Auto-Generated Password:</strong></label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control font-monospace" id="generatedPassword" value="{{ session('auto_generated_password') }}" readonly style="font-weight: 600; font-size: 16px;">
+                                        <input type="text" class="form-control font-monospace" id="generatedPassword" value="<?php echo e(session('auto_generated_password')); ?>" readonly style="font-weight: 600; font-size: 16px;">
                                         <button class="btn btn-outline-secondary" type="button" onclick="copyPassword()">
                                             <i data-feather="copy"></i> Copy
                                         </button>
@@ -64,14 +65,15 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            @if(session('error'))
+            <?php if(session('error')): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
+                    <?php echo e(session('error')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <!-- /product list -->
             <div class="card table-list-card">
@@ -87,7 +89,7 @@
                             <div class="d-flex align-items-center">
                                 <a class="btn btn-filter" id="filter_search">
                                     <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
+                                    <span><img src="<?php echo e(URL::asset('/build/img/icons/closes.svg')); ?>" alt="img"></span>
                                 </a>
                             </div>
                         </div>
@@ -109,9 +111,9 @@
                                         <i data-feather="zap" class="info-img"></i>
                                         <select class="select" id="filter-store">
                                             <option value="">All Stores</option>
-                                            @foreach($stores as $store)
-                                                <option value="{{ $store->id }}">{{ $store->name }}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $stores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($store->id); ?>"><?php echo e($store->name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
@@ -158,50 +160,50 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($stores as $index => $store)
+                                <?php $__currentLoopData = $stores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    @php
+                                    <?php
                                         $personInCharge = $store->users->first();
-                                    @endphp
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $store->name }}</td>
-                                    <td>{{ $store->owner ? $store->owner->name : 'N/A' }}</td>
-                                    <td>{{ $personInCharge ? $personInCharge->name : 'N/A' }}</td>
-                                    <td>{{ $personInCharge ? $personInCharge->email : 'N/A' }}</td>
-                                    <td>{{ $store->phone ?? 'N/A' }}</td>
+                                    ?>
+                                    <td><?php echo e($index + 1); ?></td>
+                                    <td><?php echo e($store->name); ?></td>
+                                    <td><?php echo e($store->owner ? $store->owner->name : 'N/A'); ?></td>
+                                    <td><?php echo e($personInCharge ? $personInCharge->name : 'N/A'); ?></td>
+                                    <td><?php echo e($personInCharge ? $personInCharge->email : 'N/A'); ?></td>
+                                    <td><?php echo e($store->phone ?? 'N/A'); ?></td>
                                     <td>
-                                        @if($store->is_active)
+                                        <?php if($store->is_active): ?>
                                             <span class="badge badge-linesuccess">Active</span>
-                                        @else
+                                        <?php else: ?>
                                             <span class="badge badge-linedanger">Inactive</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
                                     <td class="action-table-data">
                                         <div class="edit-delete-action">
                                             <a class="me-2 p-2" href="javascript:void(0);" 
                                                 data-bs-toggle="modal" data-bs-target="#edit-stores"
-                                                onclick="editStore({{ $store->id }}, {{ json_encode($store->name) }}, {{ json_encode($store->phone) }}, {{ json_encode($store->email) }}, {{ json_encode($store->address) }})"
+                                                onclick="editStore(<?php echo e($store->id); ?>, <?php echo e(json_encode($store->name)); ?>, <?php echo e(json_encode($store->phone)); ?>, <?php echo e(json_encode($store->email)); ?>, <?php echo e(json_encode($store->address)); ?>)"
                                                 title="Edit Store">
                                                 <i data-feather="edit" class="feather-edit"></i>
                                             </a>
                                             <a class="me-2 p-2" href="javascript:void(0);" 
-                                                onclick="toggleStoreStatus({{ $store->id }}, {{ $store->is_active ? 'true' : 'false' }})"
-                                                title="{{ $store->is_active ? 'Deactivate Store' : 'Activate Store' }}">
-                                                @if($store->is_active)
+                                                onclick="toggleStoreStatus(<?php echo e($store->id); ?>, <?php echo e($store->is_active ? 'true' : 'false'); ?>)"
+                                                title="<?php echo e($store->is_active ? 'Deactivate Store' : 'Activate Store'); ?>">
+                                                <?php if($store->is_active): ?>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
-                                                @else
+                                                <?php else: ?>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
-                                                @endif
+                                                <?php endif; ?>
                                             </a>
                                             <a class="confirm-text p-2" href="javascript:void(0);" 
-                                                onclick="deleteStore({{ $store->id }})"
+                                                onclick="deleteStore(<?php echo e($store->id); ?>)"
                                                 title="Delete Store">
                                                 <i data-feather="trash-2" class="feather-trash-2"></i>
                                             </a>
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -210,9 +212,9 @@
             <!-- /product list -->
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 function editStore(id, name, phone, email, address) {
     document.getElementById('edit-store-id').value = id;
@@ -241,7 +243,7 @@ function deleteStore(id) {
             var csrf = document.createElement('input');
             csrf.type = 'hidden';
             csrf.name = '_token';
-            csrf.value = '{{ csrf_token() }}';
+            csrf.value = '<?php echo e(csrf_token()); ?>';
             form.appendChild(csrf);
             
             var method = document.createElement('input');
@@ -282,7 +284,7 @@ function toggleStoreStatus(id, isActive) {
             var csrf = document.createElement('input');
             csrf.type = 'hidden';
             csrf.name = '_token';
-            csrf.value = '{{ csrf_token() }}';
+            csrf.value = '<?php echo e(csrf_token()); ?>';
             form.appendChild(csrf);
             
             document.body.appendChild(form);
@@ -318,7 +320,7 @@ $(document).ready(function() {
 });
 
 // Show password modal if needed
-@if(session('show_password_modal'))
+<?php if(session('show_password_modal')): ?>
 $(document).ready(function() {
     var passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
     passwordModal.show();
@@ -328,7 +330,7 @@ $(document).ready(function() {
         feather.replace();
     }
 });
-@endif
+<?php endif; ?>
 
 // Copy password function
 function copyPassword() {
@@ -354,4 +356,6 @@ function copyPassword() {
     }, 2000);
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/store-list.blade.php ENDPATH**/ ?>

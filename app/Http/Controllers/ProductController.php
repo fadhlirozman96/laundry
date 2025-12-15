@@ -71,13 +71,14 @@ class ProductController extends Controller
             $products = $query->skip($start)->take($length)->get();
 
             $data = [];
+            $rowNumber = $start + 1; // Start from the current page offset
             foreach ($products as $product) {
                 $imageUrl = $product->image 
                     ? asset($product->image) 
                     : asset('/build/img/products/stock-img-01.png');
 
                 $data[] = [
-                    'checkbox' => '<label class="checkboxs"><input type="checkbox"><span class="checkmarks"></span></label>',
+                    'checkbox' => $rowNumber++,
                     'product' => '<div class="productimgname">
                                     <a href="' . route('product-details', $product->id) . '" class="product-img stock-img">
                                         <img src="' . $imageUrl . '" alt="' . $product->name . '">
@@ -97,13 +98,13 @@ class ProductController extends Controller
                                         <a href="javascript:void(0);">' . ($product->creator->name ?? 'Admin') . '</a>
                                      </div>',
                     'action' => '<div class="edit-delete-action">
-                                    <a class="me-2 p-2" href="' . route('product-details', $product->id) . '">
+                                    <a class="action-view" href="' . route('product-details', $product->id) . '" title="View Product">
                                         <i data-feather="eye" class="feather-eye"></i>
                                     </a>
-                                    <a class="me-2 p-2" href="' . route('edit-product', $product->id) . '">
+                                    <a class="action-edit" href="' . route('edit-product', $product->id) . '" title="Edit Product">
                                         <i data-feather="edit" class="feather-edit"></i>
                                     </a>
-                                    <a class="confirm-text p-2" href="javascript:void(0);" onclick="deleteProduct(' . $product->id . ')">
+                                    <a class="action-delete" href="javascript:void(0);" onclick="deleteProduct(' . $product->id . ')" title="Delete Product">
                                         <i data-feather="trash-2" class="feather-trash-2"></i>
                                     </a>
                                  </div>'

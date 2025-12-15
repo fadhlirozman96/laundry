@@ -121,12 +121,7 @@
                         <table class="table datanew" id="product-table">
                             <thead>
                                 <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
+                                    <th class="no-sort">#</th>
                                     <th>Product</th>
                                     <th>SKU</th>
                                     <th>Category</th>
@@ -142,12 +137,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div id="product-table_info" class="dataTables_info"></div>
-                            <div id="product-table_paginate" class="dataTables_paginate"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <!-- /product list -->
@@ -157,85 +146,62 @@
 
 <?php $__env->startPush('scripts'); ?>
 <style>
-    /* Action icons styling */
+    /* Hide DataTables default elements - let DataTables handle pagination */
+    #product-table_wrapper .dataTables_length,
+    #product-table_wrapper .dataTables_filter {
+        display: none !important;
+    }
+    
+    /* Action icons styling - matching store-list */
+    .edit-delete-action {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
     .edit-delete-action a {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
         transition: all 0.3s ease;
     }
     
-    /* View icon - blue/cyan background */
-    .edit-delete-action a:first-child {
+    /* View icon - cyan background */
+    .edit-delete-action a.action-view {
         background-color: rgba(13, 202, 240, 0.1);
     }
-    .edit-delete-action a:first-child:hover {
+    .edit-delete-action a.action-view:hover {
         background-color: rgba(13, 202, 240, 0.2);
     }
-    .edit-delete-action a:first-child svg {
+    .edit-delete-action a.action-view svg {
         color: #0dcaf0;
         stroke: #0dcaf0;
     }
     
-    /* Edit icon - orange/warning background */
-    .edit-delete-action a:nth-child(2) {
-        background-color: rgba(255, 159, 67, 0.1);
+    /* Edit icon - blue background */
+    .edit-delete-action a.action-edit {
+        background-color: rgba(0, 103, 226, 0.1);
     }
-    .edit-delete-action a:nth-child(2):hover {
-        background-color: rgba(255, 159, 67, 0.2);
+    .edit-delete-action a.action-edit:hover {
+        background-color: rgba(0, 103, 226, 0.2);
     }
-    .edit-delete-action a:nth-child(2) svg {
+    .edit-delete-action a.action-edit svg {
         color: #0067e2;
         stroke: #0067e2;
     }
     
-    /* Delete icon - red/danger background */
-    .edit-delete-action a:nth-child(3) {
+    /* Delete icon - red background */
+    .edit-delete-action a.action-delete {
         background-color: rgba(234, 84, 85, 0.1);
     }
-    .edit-delete-action a:nth-child(3):hover {
+    .edit-delete-action a.action-delete:hover {
         background-color: rgba(234, 84, 85, 0.2);
     }
-    .edit-delete-action a:nth-child(3) svg {
+    .edit-delete-action a.action-delete svg {
         color: #ea5455;
         stroke: #ea5455;
-    }
-
-    /* Pagination styling */
-    .pagination-wrapper {
-        display: inline-flex;
-        gap: 10px;
-    }
-    .pagination-btn {
-        padding: 8px 20px;
-        border-radius: 5px;
-        font-weight: 500;
-        border: none;
-    }
-    .pagination-btn.btn-primary {
-        background: #0067e2;
-        color: #fff;
-    }
-    .pagination-btn.btn-primary:hover {
-        background: #043572;
-    }
-    .pagination-btn.btn-secondary {
-        background: #e9ecef;
-        color: #6c757d;
-        cursor: not-allowed;
-    }
-    #product-table_info {
-        color: #5e6278;
-        font-size: 14px;
-    }
-    /* Hide DataTables default elements */
-    #product-table_wrapper .dataTables_length,
-    #product-table_wrapper .dataTables_filter,
-    #product-table_wrapper > .row {
-        display: none !important;
     }
 </style>
 <script>
@@ -263,9 +229,10 @@ $(document).ready(function() {
         columns: [
             { 
                 data: 'checkbox', 
-                name: 'checkbox', 
+                name: 'row_number', 
                 orderable: false, 
-                searchable: false 
+                searchable: false,
+                className: 'text-center'
             },
             { data: 'product', name: 'name' },
             { data: 'sku', name: 'sku' },
@@ -285,16 +252,16 @@ $(document).ready(function() {
         pageLength: 10,
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
         lengthChange: false,
-        pagingType: "simple",
+        pagingType: "simple_numbers",
         searching: true,
         language: {
             paginate: {
-                previous: "← Previous",
-                next: "Next →"
+                previous: '<i class="fa fa-angle-left"></i>',
+                next: '<i class="fa fa-angle-right"></i>'
             },
-            info: "Showing _START_ to _END_ of _TOTAL_ entries"
+            info: "Showing _START_ of _TOTAL_ Results"
         },
-        dom: 'rt',
+        dom: 'rtip',
         drawCallback: function(settings) {
             // Reinitialize feather icons after table redraw
             setTimeout(function() {
@@ -302,30 +269,10 @@ $(document).ready(function() {
                     feather.replace();
                 }
             }, 100);
-            
-            // Manually place pagination and info in footer
-            var api = this.api();
-            var pageInfo = api.page.info();
-            
-            // Update info
-            $('#product-table_info').html('Showing ' + (pageInfo.start + 1) + ' to ' + pageInfo.end + ' of ' + pageInfo.recordsTotal + ' entries');
-            
-            // Create pagination buttons
-            var pagination = '<div class="pagination-wrapper">';
-            if (pageInfo.page > 0) {
-                pagination += '<a href="javascript:void(0)" class="btn btn-primary pagination-btn" onclick="table.page(\'previous\').draw(\'page\')">← Previous</a>';
-            } else {
-                pagination += '<button class="btn btn-secondary pagination-btn" disabled>← Previous</button>';
-            }
-            
-            if (pageInfo.page < pageInfo.pages - 1) {
-                pagination += '<a href="javascript:void(0)" class="btn btn-primary pagination-btn ms-2" onclick="table.page(\'next\').draw(\'page\')">Next →</a>';
-            } else {
-                pagination += '<button class="btn btn-secondary pagination-btn ms-2" disabled>Next →</button>';
-            }
-            pagination += '</div>';
-            
-            $('#product-table_paginate').html(pagination);
+        },
+        initComplete: function(settings, json) {
+            // Move filter to search input area
+            $('.dataTables_filter').appendTo('.search-input');
         }
     });
     

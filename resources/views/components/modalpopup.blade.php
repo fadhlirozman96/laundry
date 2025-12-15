@@ -8788,7 +8788,7 @@
 @if (Route::is(['store-list']))
     <!-- Add Store -->
     <div class="modal fade" id="add-stores">
-        <div class="modal-dialog modal-dialog-centered custom-modal-two">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="page-wrapper-new p-0">
                     <div class="content">
@@ -8803,6 +8803,10 @@
                         <div class="modal-body custom-modal-body">
                             <form action="{{ route('stores.store') }}" method="POST">
                                 @csrf
+                                <div class="row">
+                                    <!-- Left Column: Store Information -->
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3" style="color: #333; font-weight: 600;">Store Information</h6>
                                 <div class="mb-3">
                                     <label class="form-label">Store Name <span class="text-danger">*</span></label>
                                     <input type="text" name="name" class="form-control" required>
@@ -8831,7 +8835,41 @@
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                <div class="modal-footer-btn">
+                                    </div>
+                                    
+                                    <!-- Right Column: Person In Charge -->
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3" style="color: #333; font-weight: 600;">Person In Charge</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="person_name" class="form-control" required>
+                                            @error('person_name')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                                            <input type="email" name="person_email" class="form-control" required>
+                                            <small class="text-muted">This will be used as the login email for the person in charge</small>
+                                            @error('person_email')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Phone</label>
+                                            <input type="text" name="person_phone" class="form-control">
+                                            @error('person_phone')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="alert alert-info mb-3">
+                                            <i data-feather="info" class="me-2"></i>
+                                            <small>A password will be auto-generated and the account will be automatically assigned as Store Admin with appropriate permissions.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-footer-btn mt-4">
                                     <button type="button" class="btn btn-cancel me-2"
                                         data-bs-dismiss="modal">Cancel</button>
                                     <button type="submit" class="btn btn-submit">Create</button>

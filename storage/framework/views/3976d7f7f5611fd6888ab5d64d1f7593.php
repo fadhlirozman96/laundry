@@ -133,12 +133,7 @@
                         <table class="table datanew" id="orders-table">
                             <thead>
                                 <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
+                                    <th class="no-sort">#</th>
                                     <th>Order Number</th>
                                     <th>Customer</th>
                                     <th>Store</th>
@@ -163,8 +158,61 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
+<style>
+    /* Hide duplicate DataTables elements */
+    #orders-table_wrapper .dataTables_length,
+    #orders-table_wrapper .dataTables_filter {
+        display: none !important;
+    }
+    
+    /* Action icons styling - matching store-list */
+    .edit-delete-action {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .edit-delete-action a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    /* View icon - cyan background */
+    .edit-delete-action a.action-view {
+        background-color: rgba(13, 202, 240, 0.1);
+    }
+    .edit-delete-action a.action-view:hover {
+        background-color: rgba(13, 202, 240, 0.2);
+    }
+    .edit-delete-action a.action-view svg {
+        color: #0dcaf0;
+        stroke: #0dcaf0;
+    }
+    
+    /* Print icon - blue background */
+    .edit-delete-action a.action-print {
+        background-color: rgba(0, 103, 226, 0.1);
+    }
+    .edit-delete-action a.action-print:hover {
+        background-color: rgba(0, 103, 226, 0.2);
+    }
+    .edit-delete-action a.action-print svg {
+        color: #0067e2;
+        stroke: #0067e2;
+    }
+</style>
 <script>
 $(document).ready(function() {
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#orders-table')) {
+        // Destroy existing instance
+        $('#orders-table').DataTable().destroy();
+    }
+    
     // Initialize DataTable with AJAX
     const table = $('#orders-table').DataTable({
         processing: true,
@@ -174,7 +222,7 @@ $(document).ready(function() {
             type: 'GET'
         },
         columns: [
-            { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
+            { data: 'checkbox', name: 'row_number', orderable: false, searchable: false, className: 'text-center' },
             { data: 'order_number', name: 'order_number' },
             { data: 'customer', name: 'customer_name' },
             { data: 'store', name: 'store_id' },
@@ -187,11 +235,24 @@ $(document).ready(function() {
         ],
         order: [[8, 'desc']], // Order by date descending
         pageLength: 10,
+        pagingType: "simple_numbers",
+        language: {
+            paginate: {
+                previous: '<i class="fa fa-angle-left"></i>',
+                next: '<i class="fa fa-angle-right"></i>'
+            },
+            info: "Showing _START_ of _TOTAL_ Results"
+        },
+        dom: 'rtip',
         drawCallback: function() {
             // Reinitialize feather icons after table draw
             if (typeof feather !== 'undefined') {
                 feather.replace();
             }
+        },
+        initComplete: function() {
+            // Move filter to search input area
+            $('.dataTables_filter').appendTo('.search-input');
         }
     });
 });
