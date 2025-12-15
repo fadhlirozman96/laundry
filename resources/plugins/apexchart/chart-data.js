@@ -489,69 +489,169 @@ var chart = new ApexCharts(
 chart.render();
 }	
 	
+// Skip rendering for sales_charts - handled by custom script in index.blade.php
+// This prevents duplicate chart rendering
+// DISABLED: Chart is now handled by custom JavaScript in index.blade.php
+/*
 if($('#sales_charts').length > 0) {
+	// Get chart data from data attributes
+	var chartElement = document.querySelector("#sales_charts");
+	if (!chartElement) {
+		return;
+	}
+	
+	// Mark as initialized to prevent duplicate rendering
+	$('#sales_charts').addClass('chart-custom-initialized');
+	
+	// Destroy existing chart if it exists
+	try {
+		var existingChart = ApexCharts.getChartByID('sales_charts');
+		if (existingChart) {
+			existingChart.destroy();
+		}
+	} catch(e) {
+		// Ignore if chart doesn't exist
+	}
+	
+	var chartMonths = chartElement.getAttribute('data-chart-months');
+	var chartData = chartElement.getAttribute('data-chart-data');
+	
+	// Default values
+	var defaultMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	var defaultData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	
+	// Parse JSON data with error handling
+	var months = defaultMonths;
+	var salesData = defaultData;
+	
+	try {
+		if (chartMonths && chartMonths.trim() !== '') {
+			var parsedMonths = JSON.parse(chartMonths);
+			if (Array.isArray(parsedMonths) && parsedMonths.length > 0) {
+				months = parsedMonths;
+			}
+		}
+	} catch(e) {
+		console.warn('Error parsing chart months:', e);
+		months = defaultMonths;
+	}
+	
+	try {
+		if (chartData && chartData.trim() !== '') {
+			var parsedData = JSON.parse(chartData);
+			if (Array.isArray(parsedData) && parsedData.length > 0) {
+				salesData = parsedData;
+			}
+		}
+	} catch(e) {
+		console.warn('Error parsing chart data:', e);
+		salesData = defaultData;
+	}
+	
+	// Ensure all values are positive (no negative values) and are numbers
+	if (Array.isArray(salesData)) {
+		salesData = salesData.map(function(value) {
+			var numValue = parseFloat(value) || 0;
+			return Math.max(0, numValue);
+		});
+	} else {
+		salesData = defaultData;
+	}
+	
+	// Ensure we have exactly 12 months of data
+	if (!Array.isArray(months) || months.length !== 12) {
+		months = defaultMonths;
+	}
+	if (!Array.isArray(salesData) || salesData.length !== 12) {
+		var newData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+		if (Array.isArray(salesData)) {
+			for (var i = 0; i < Math.min(salesData.length, 12); i++) {
+				newData[i] = parseFloat(salesData[i]) || 0;
+			}
+		}
+		salesData = newData;
+	}
+	
+	// Calculate max value for y-axis (add 20% padding)
+	var maxValue = Math.max(...salesData);
+	var yAxisMax = maxValue > 0 ? Math.ceil(maxValue * 1.2) : 100;
+	
 	var options = {
 		series: [{
-		name: 'Sales',
-		data: [130, 210, 300, 290, 150, 50, 210, 280, 105],
-	  }, {
-		name: 'Purchase',
-		data: [-150, -90, -50, -180, -50, -70, -100, -90, -105]
-	  }],
-	  colors: ['#28C76F', '#EA5455'],
+			name: 'Sales',
+			data: salesData
+		}],
+		colors: ['#28C76F'],
 		chart: {
-		type: 'bar',
-		height: 320,
-		stacked: true,
-		
-		zoom: {
-		  enabled: true
-		}
-	  },
-	  responsive: [{
-		breakpoint: 280,
-		options: {
-		  legend: {
-			position: 'bottom',
-			offsetY: 0
-		  }
-		}
-	  }],
-	  plotOptions: {
-		bar: {
-		  horizontal: false,
-          borderRadius: 4,
-        borderRadiusApplication: "end", // "around" / "end" 
-        borderRadiusWhenStacked: "all", // "all"/"last"
-		  columnWidth: '20%',
+			type: 'bar',
+			height: 320,
+			id: 'sales_charts',
+			zoom: {
+				enabled: false
+			},
+			toolbar: {
+				show: false
+			}
 		},
-	  },
-      dataLabels: {
-      enabled: false
-    },
-      // stroke: {
-      //     width: 5,
-      //     colors: ['#fff']
-      //   },
-      yaxis: {
-          min: -200,
-          max: 300,
-          tickAmount: 5,
-        },
-	  xaxis: {
-		categories: [' Jan ', 'Feb', 'Mar', 'Apr',
-		  'May', 'Jun' , 'Jul' , 'Aug', 'Sep'
-		],
-	  },
-	  legend: {show: false},
-	  fill: {
-		opacity: 1
-	  }
-	  };
+		responsive: [{
+			breakpoint: 280,
+			options: {
+				legend: {
+					position: 'bottom',
+					offsetY: 0
+				}
+			}
+		}],
+		plotOptions: {
+			bar: {
+				horizontal: false,
+				borderRadius: 4,
+				borderRadiusApplication: "end",
+				columnWidth: '60%',
+				distributed: false
+			},
+		},
+		dataLabels: {
+			enabled: false
+		},
+		yaxis: {
+			min: 0,
+			max: yAxisMax,
+			tickAmount: 5,
+			labels: {
+				formatter: function(val) {
+					return "MYR " + val.toFixed(0);
+				}
+			}
+		},
+		xaxis: {
+			categories: months,
+			labels: {
+				rotate: 0
+			}
+		},
+		legend: {
+			show: true,
+			position: 'top',
+			horizontalAlign: 'right'
+		},
+		fill: {
+			opacity: 1,
+			type: 'solid'
+		},
+		tooltip: {
+			y: {
+				formatter: function(val) {
+					return "MYR " + val.toFixed(2);
+				}
+			}
+		}
+	};
 
-	  var chart = new ApexCharts(document.querySelector("#sales_charts"), options);
-	  chart.render();
-	}
+	var chart = new ApexCharts(document.querySelector("#sales_charts"), options);
+	chart.render();
+}
+*/
 
     if($('#sales-analysis').length > 0 ){
     var options = {
@@ -566,7 +666,7 @@ if($('#sales_charts').length > 0) {
         enabled: false
       }
     },
-    colors: ['#FF9F43'],
+    colors: ['#0067e2'],
     dataLabels: {
       enabled: false
     },

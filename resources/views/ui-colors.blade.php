@@ -21,7 +21,7 @@
                                 <div>
                                     <div class="color-box bg-primary p-4"></div>
                                     <p class="flex-1 text-sm my-1 pt-1">Primary</p>
-                                    <p class="flex-0 text-sm">#FF9F43</p>
+                                    <p class="flex-0 text-sm">#0067e2</p>
                                 </div>
                                 <div>
                                     <div class="color-box bg-secondary p-4"></div>

@@ -254,14 +254,14 @@ unset($__errorArgs, $__bag); ?>
                                             </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
-                                                    <label style="color: #000000 !important;">Track Quantity</label>
-                                                    <div class="form-check form-switch" style="padding-top: 10px;">
-                                                        <input class="form-check-input" type="checkbox" name="track_quantity" id="track_quantity" value="1">
-                                                        <label class="form-check-label" for="track_quantity" style="color: #000000 !important; margin-left: 10px;">
+                                                    <label style="color: #000000 !important; margin-bottom: 10px; display: block;">Track Quantity</label>
+                                                    <div class="form-check form-switch d-flex align-items-center" style="margin-bottom: 8px;">
+                                                        <input class="form-check-input" type="checkbox" name="track_quantity" id="track_quantity" value="1" style="margin-right: 8px;">
+                                                        <label class="form-check-label mb-0" for="track_quantity" style="color: #000000 !important;">
                                                             Enable quantity tracking
                                                         </label>
                                                     </div>
-                                                    <small class="text-muted" style="color: #6c757d !important;">Enable this for products that need stock management</small>
+                                                    <small class="text-muted" style="color: #6c757d !important; display: block;">Enable this for products that need stock management</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -297,7 +297,6 @@ unset($__errorArgs, $__bag); ?>
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
                                             <div class="col-lg-3 col-sm-6 col-12">
                                                 <div class="input-blocks add-product">
                                                     <label style="color: #000000 !important;">Quantity Alert</label>
@@ -319,8 +318,6 @@ unset($__errorArgs, $__bag); ?>
                                                 <div class="input-blocks add-product">
                                                     <label style="color: #000000 !important;">Discount Value</label>
                                                     <input type="number" step="0.01" name="discount_value" class="form-control" value="0" style="color: #000000 !important;">
-                                                </div>
-                                            </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -605,9 +602,9 @@ unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
                 <div class="col-lg-12">
-                    <div class="btn-addproduct mb-4">
-                        <button type="button" class="btn btn-cancel me-2">Cancel</button>
-                        <button type="submit" class="btn btn-submit">Save Product</button>
+                    <div class="btn-addproduct mb-4" style="display: flex !important; justify-content: flex-end !important; align-items: center !important; gap: 10px !important; width: 100% !important; float: none !important; clear: both !important;">
+                        <button type="button" class="btn btn-cancel me-2" style="height: 40px !important; min-height: 40px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; vertical-align: middle !important; margin: 0 !important; padding: 10px 20px !important; box-sizing: border-box !important;">Cancel</button>
+                        <button type="submit" class="btn btn-submit" style="height: 40px !important; min-height: 40px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; vertical-align: middle !important; margin: 0 !important; padding: 10px 20px !important; box-sizing: border-box !important;">Save Product</button>
                     </div>
                 </div>
             </form>

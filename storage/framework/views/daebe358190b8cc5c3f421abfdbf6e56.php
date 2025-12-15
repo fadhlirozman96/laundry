@@ -188,8 +188,8 @@
         background-color: rgba(255, 159, 67, 0.2);
     }
     .edit-delete-action a:nth-child(2) svg {
-        color: #FF9F43;
-        stroke: #FF9F43;
+        color: #0067e2;
+        stroke: #0067e2;
     }
     
     /* Delete icon - red/danger background */
@@ -216,11 +216,11 @@
         border: none;
     }
     .pagination-btn.btn-primary {
-        background: #FF9F43;
+        background: #0067e2;
         color: #fff;
     }
     .pagination-btn.btn-primary:hover {
-        background: #ff8510;
+        background: #043572;
     }
     .pagination-btn.btn-secondary {
         background: #e9ecef;

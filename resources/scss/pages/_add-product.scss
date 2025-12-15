@@ -155,7 +155,35 @@
     top: 48%;
 }
 .btn-addproduct{
-    float: right;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    float: none !important;
+    clear: both !important;
+    
+    .btn {
+        min-height: 40px !important;
+        height: 40px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap;
+        vertical-align: middle !important;
+        margin: 0 !important;
+        padding: 10px 20px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .btn-cancel,
+    .btn-submit {
+        flex-shrink: 0;
+    }
+    
+    .btn-cancel.me-2 {
+        margin-right: 0.5rem !important;
+    }
 }
 .addproduct-icon a {
     color: $secondary;

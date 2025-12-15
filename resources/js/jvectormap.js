@@ -39,8 +39,8 @@
 		},
 		hover: {
 			"fill-opacity": 1,
-            "fill": '#FF9F43',
-            "stroke": '#FF9F43'
+            "fill": '#0067e2',
+            "stroke": '#0067e2'
         },
 		selected: {
 	        fill: '#F4A582'

@@ -24,9 +24,7 @@ Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout')
 // Route::get('register', [CustomAuthController::class, 'registration'])->name('register');
 // Route::post('custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
 
-Route::get('/index', function () {
-    return view('index');
-})->name('index');
+Route::get('/index', [App\Http\Controllers\DashboardController::class, 'index'])->name('index')->middleware('auth');
 
 Route::get('/product-list', [App\Http\Controllers\ProductController::class, 'index'])->name('product-list')->middleware('auth');
 Route::get('/product-details/{id}', [App\Http\Controllers\ProductController::class, 'show'])->name('product-details')->middleware('auth');
