@@ -228,21 +228,37 @@ Route::get('/payslip', function () {
 })->name('payslip'); 
 
 
-Route::get('/sales-list', function () {                         
-    return view('sales-list');
-})->name('sales-list'); 
+// Sales Module Routes
+Route::get('/sales-list', [App\Http\Controllers\SalesController::class, 'index'])->name('sales-list')->middleware('auth');
+Route::get('/sales/{id}', [App\Http\Controllers\SalesController::class, 'show'])->name('sales.show')->middleware('auth');
+Route::delete('/sales/{id}', [App\Http\Controllers\SalesController::class, 'destroy'])->name('sales.destroy')->middleware('auth');
+Route::post('/sales/{id}/payment', [App\Http\Controllers\SalesController::class, 'updatePayment'])->name('sales.payment')->middleware('auth');
 
-Route::get('/invoice-report', function () {                         
-    return view('invoice-report');
-})->name('invoice-report'); 
+// Invoice Routes
+Route::get('/invoice-report', [App\Http\Controllers\InvoiceController::class, 'index'])->name('invoice-report')->middleware('auth');
+Route::post('/invoices', [App\Http\Controllers\InvoiceController::class, 'store'])->name('invoices.store')->middleware('auth');
+Route::get('/invoices/{id}', [App\Http\Controllers\InvoiceController::class, 'show'])->name('invoices.show')->middleware('auth');
+Route::post('/invoices/{id}/payment', [App\Http\Controllers\InvoiceController::class, 'updatePayment'])->name('invoices.payment')->middleware('auth');
+Route::delete('/invoices/{id}', [App\Http\Controllers\InvoiceController::class, 'destroy'])->name('invoices.destroy')->middleware('auth');
 
-Route::get('/sales-returns', function () {                         
-    return view('sales-returns');
-})->name('sales-returns'); 
+// Sales Returns Routes
+Route::get('/sales-returns', [App\Http\Controllers\SalesReturnController::class, 'index'])->name('sales-returns')->middleware('auth');
+Route::post('/sales-returns', [App\Http\Controllers\SalesReturnController::class, 'store'])->name('sales-returns.store')->middleware('auth');
+Route::get('/sales-returns/{id}', [App\Http\Controllers\SalesReturnController::class, 'show'])->name('sales-returns.show')->middleware('auth');
+Route::post('/sales-returns/{id}/status', [App\Http\Controllers\SalesReturnController::class, 'updateStatus'])->name('sales-returns.status')->middleware('auth');
+Route::post('/sales-returns/{id}/refund', [App\Http\Controllers\SalesReturnController::class, 'processRefund'])->name('sales-returns.refund')->middleware('auth');
+Route::delete('/sales-returns/{id}', [App\Http\Controllers\SalesReturnController::class, 'destroy'])->name('sales-returns.destroy')->middleware('auth');
 
-Route::get('/quotation-list', function () {                         
-    return view('quotation-list');
-})->name('quotation-list');  
+// Quotation Routes
+Route::get('/quotation-list', [App\Http\Controllers\QuotationController::class, 'index'])->name('quotation-list')->middleware('auth');
+Route::get('/quotations/products', [App\Http\Controllers\QuotationController::class, 'getProducts'])->name('quotations.products')->middleware('auth');
+Route::post('/quotations', [App\Http\Controllers\QuotationController::class, 'store'])->name('quotations.store')->middleware('auth');
+Route::get('/quotations/{id}', [App\Http\Controllers\QuotationController::class, 'show'])->name('quotations.show')->middleware('auth');
+Route::post('/quotations/{id}/status', [App\Http\Controllers\QuotationController::class, 'updateStatus'])->name('quotations.status')->middleware('auth');
+Route::post('/quotations/{id}/accept', [App\Http\Controllers\QuotationController::class, 'accept'])->name('quotations.accept')->middleware('auth');
+Route::get('/quotations/{id}/invoice', [App\Http\Controllers\QuotationController::class, 'getInvoice'])->name('quotations.invoice')->middleware('auth');
+Route::get('/quotations/{id}/pdf', [App\Http\Controllers\QuotationController::class, 'downloadPdf'])->name('quotations.pdf')->middleware('auth');
+Route::delete('/quotations/{id}', [App\Http\Controllers\QuotationController::class, 'destroy'])->name('quotations.destroy')->middleware('auth');  
 
 Route::get('/pos', [App\Http\Controllers\POSController::class, 'index'])->name('pos')->middleware('auth');
 Route::get('/pos/products', [App\Http\Controllers\POSController::class, 'getProducts'])->name('pos.products')->middleware('auth');
@@ -603,9 +619,7 @@ Route::get('/inventory-report', function () {
     return view('inventory-report');
 })->name('inventory-report');
 
-Route::get('/invoice-report', function () {
-    return view('invoice-report');
-})->name('invoice-report');
+// invoice-report route is now handled by InvoiceController (defined earlier in this file)
 
 Route::get('/supplier-report', function () {
     return view('supplier-report');

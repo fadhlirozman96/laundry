@@ -1,6 +1,6 @@
 <?php $page = 'quotation-list'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -12,10 +12,10 @@
                 </div>
                 <ul class="table-top-head">
                     <li>
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img src="{{ URL::asset('/build/img/icons/pdf.svg') }}" alt="img"></a>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img src="<?php echo e(URL::asset('/build/img/icons/pdf.svg')); ?>" alt="img"></a>
                     </li>
                     <li>
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Excel"><img src="{{ URL::asset('/build/img/icons/excel.svg') }}" alt="img"></a>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Excel"><img src="<?php echo e(URL::asset('/build/img/icons/excel.svg')); ?>" alt="img"></a>
                     </li>
                     <li>
                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Print"><i data-feather="printer" class="feather-rotate-ccw"></i></a>
@@ -47,7 +47,7 @@
                             <div class="d-flex align-items-center">
                                 <a class="btn btn-filter" id="filter_search">
                                     <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
+                                    <span><img src="<?php echo e(URL::asset('/build/img/icons/closes.svg')); ?>" alt="img"></span>
                                 </a>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="quotation-form">
-                        @csrf
+                        <?php echo csrf_field(); ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -247,9 +247,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <style>
     #quotation-table_wrapper .dataTables_length, #quotation-table_wrapper .dataTables_filter { display: none !important; }
     .edit-delete-action { display: flex; align-items: center; gap: 5px; }
@@ -301,7 +301,7 @@ $(document).ready(function() {
     quotationTable = $('#quotation-table').DataTable({
         processing: true, serverSide: true,
         ajax: {
-            url: '{{ route("quotation-list") }}', type: 'GET',
+            url: '<?php echo e(route("quotation-list")); ?>', type: 'GET',
             data: function(d) {
                 d.customer = $('#filter-customer').val();
                 d.status = $('#filter-status').val();
@@ -443,7 +443,7 @@ $(document).ready(function() {
 
 function loadProducts() {
     $.ajax({
-        url: '{{ route("quotations.products") }}',
+        url: '<?php echo e(route("quotations.products")); ?>',
         type: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -516,9 +516,9 @@ function saveQuotation() {
     });
     if (!items.length) { Swal.fire('Error', 'Add at least one item', 'error'); return; }
     $.ajax({
-        url: '{{ route("quotations.store") }}', type: 'POST',
+        url: '<?php echo e(route("quotations.store")); ?>', type: 'POST',
         data: { 
-            _token: '{{ csrf_token() }}', 
+            _token: '<?php echo e(csrf_token()); ?>', 
             customer_name: $('input[name="customer_name"]').val(), 
             customer_email: $('input[name="customer_email"]').val(),
             customer_phone: $('input[name="customer_phone"]').val(), 
@@ -546,7 +546,7 @@ function saveQuotation() {
 
 function viewQuotation(id) {
     currentQuotationId = id;
-    $.get('{{ url("quotations") }}/' + id, function(r) {
+    $.get('<?php echo e(url("quotations")); ?>/' + id, function(r) {
         if (r.success) {
             var q = r.quotation;
             var store = q.store || {};
@@ -623,7 +623,7 @@ function viewQuotation(id) {
             
             // Action buttons
             html += `<div class="text-center mt-3">
-                <a href="{{ url('quotations') }}/${q.id}/pdf" target="_blank" class="btn btn-outline-primary me-2">
+                <a href="<?php echo e(url('quotations')); ?>/${q.id}/pdf" target="_blank" class="btn btn-outline-primary me-2">
                     <i data-feather="download" class="me-1"></i> Download PDF
                 </a>`;
             
@@ -655,7 +655,7 @@ function acceptQuotation(id) {
         confirmButtonText: 'Yes, Accept!' 
     }).then(r => {
         if (r.isConfirmed) {
-            $.post('{{ url("quotations") }}/' + id + '/accept', { _token: '{{ csrf_token() }}' }, function(r) {
+            $.post('<?php echo e(url("quotations")); ?>/' + id + '/accept', { _token: '<?php echo e(csrf_token()); ?>' }, function(r) {
                 if (r.success) { 
                     Swal.fire({
                         title: 'Accepted!', 
@@ -674,7 +674,7 @@ function acceptQuotation(id) {
 }
 
 function viewQuotationInvoice(id) {
-    $.get('{{ url("quotations") }}/' + id + '/invoice', function(r) {
+    $.get('<?php echo e(url("quotations")); ?>/' + id + '/invoice', function(r) {
         if (r.success) {
             var inv = r.invoice;
             var statusBadge = inv.status === 'paid' ? 'badge-linesuccess' : (inv.status === 'partial' ? 'badges-warning' : 'badge-linedanger');
@@ -703,7 +703,7 @@ function viewQuotationInvoice(id) {
                 </tfoot>
             </table>
             <div class="text-center mt-3">
-                <a href="{{ url("invoice-report") }}" class="btn btn-primary">Go to Invoice Module</a>
+                <a href="<?php echo e(url("invoice-report")); ?>" class="btn btn-primary">Go to Invoice Module</a>
             </div>`;
             $('#quotation-details-content').html(html);
             $('#quotation-details-modal .modal-title').text('Invoice Details');
@@ -721,11 +721,13 @@ function deleteQuotation(id) {
     Swal.fire({ title: 'Are you sure?', text: "You won't be able to revert this!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete!' })
     .then(r => {
         if (r.isConfirmed) {
-            $.ajax({ url: '{{ url("quotations") }}/' + id, type: 'DELETE', headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}, success: function(r) {
+            $.ajax({ url: '<?php echo e(url("quotations")); ?>/' + id, type: 'DELETE', headers: {'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'}, success: function(r) {
                 if (r.success) { Swal.fire('Deleted!', r.message, 'success'); quotationTable.ajax.reload(); } else Swal.fire('Error', r.message, 'error');
             }});
         }
     });
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/quotation-list.blade.php ENDPATH**/ ?>
