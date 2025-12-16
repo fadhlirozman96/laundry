@@ -102,9 +102,9 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Product Name</th>
                                     <th>Reference</th>
                                     <th>Customer Name</th>
+                                    <th>Phone</th>
                                     <th>Status</th>
                                     <th>Grand Total</th>
                                     <th class="no-sort">Action</th>
@@ -205,11 +205,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Terms & Conditions</label>
-                                    <textarea name="terms" id="quotation-terms" class="form-control" rows="4">1. This quotation is valid for the period stated above.
-2. Prices are subject to change without prior notice.
-3. Payment terms: 50% deposit upon confirmation, balance upon completion.
-4. All items must be collected within 7 days after completion.
-5. We are not responsible for items left uncollected after 30 days.</textarea>
+                                    <textarea name="terms" id="quotation-terms" class="form-control"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -251,7 +247,10 @@
 
 @push('scripts')
 <style>
-    #quotation-table_wrapper .dataTables_length, #quotation-table_wrapper .dataTables_filter { display: none !important; }
+    #quotation-table_wrapper .dataTables_length, 
+    #quotation-table_wrapper .dataTables_filter { display: none !important; }
+    .search-set .search-input label,
+    .table-top .search-set label { display: none !important; }
     .edit-delete-action { display: flex; align-items: center; gap: 5px; }
     .edit-delete-action a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; transition: all 0.3s ease; }
     .edit-delete-action a.action-view { background-color: rgba(13, 202, 240, 0.1); }
@@ -273,9 +272,12 @@
     .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 38px; padding-left: 12px; padding-right: 30px; }
     .select2-container--default .select2-selection--single .select2-selection__arrow { height: 38px; }
     .select2-container--default .select2-selection--single .select2-selection__clear { display: none !important; }
-    .select2-dropdown { border: 1px solid #e9ecef; border-radius: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .select2-dropdown { border: 1px solid #e9ecef; border-radius: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; }
     .select2-search--dropdown .select2-search__field { border: 1px solid #e9ecef; border-radius: 5px; padding: 8px 12px; }
     .select2-results__option--highlighted { background-color: #0067e2 !important; }
+    
+    /* Fix Select2 dropdown position - must be above modal (z-index 1050) */
+    .select2-container--open .select2-dropdown { z-index: 99999 !important; }
     
     /* Unit display style */
     .item-unit { background-color: #f8f9fa; font-weight: 600; color: #495057; min-width: 45px; text-align: center; }
@@ -289,10 +291,28 @@
     .note-editor.note-frame { border: 1px solid #e9ecef; border-radius: 5px; }
     .note-editor .note-toolbar { background-color: #f8f9fa; border-bottom: 1px solid #e9ecef; border-radius: 5px 5px 0 0; padding: 5px 10px; }
     .note-editor .note-editing-area { background: #fff; }
-    .note-editor .note-editable { padding: 10px 15px; min-height: 80px; }
+    .note-editor .note-editable { padding: 10px 15px; min-height: 80px; line-height: 1.4; }
+    .note-editor .note-editable ul { list-style: disc !important; padding-left: 20px !important; margin: 5px 0 !important; }
+    .note-editor .note-editable ol { list-style: decimal !important; padding-left: 20px !important; margin: 5px 0 !important; }
+    .note-editor .note-editable li { display: list-item !important; margin-bottom: 2px; }
+    .note-editor .note-editable p { margin-bottom: 3px; }
+    
+    /* Quotation details modal styling */
+    .quotation-notes-display { font-size: 13px; line-height: 1.6; }
+    .quotation-notes-display ul { list-style: disc !important; padding-left: 20px !important; margin: 10px 0 !important; }
+    .quotation-notes-display ol { list-style: decimal !important; padding-left: 20px !important; margin: 10px 0 !important; }
+    .quotation-notes-display li { margin-bottom: 5px; }
+    .quotation-notes-display p { margin-bottom: 8px; }
+    
+    /* Table styling in modal */
+    #quotation-details-modal .table th { font-weight: 600; background-color: #f8f9fa; }
+    #quotation-details-modal .table td { font-weight: normal; }
+    #quotation-details-modal .table tfoot td { border-top: none; padding: 5px 8px; }
+    
 </style>
 <script>
 var quotationTable, products = [], itemIndex = 0, currentQuotationId = null;
+var defaultTerms = '<p>1. Please check all pockets before washing. We are not responsible for items left inside.</p><p>2. Colour fading, shrinkage, wear &amp; tear, and stain removal results are <b>not guaranteed</b>.</p><p>3. We are not liable for damage due to fabric quality or manufacturer defects.</p><p>4. All items must be collected within 7 days after completion.</p><p>5. Items uncollected after 30 days may be disposed of without notice.</p>';
 
 $(document).ready(function() {
     // Load products for quotation dropdown
@@ -309,14 +329,14 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'row_number', orderable: false, searchable: false },
-            { data: 'product' },
             { data: 'reference' },
             { data: 'customer' },
+            { data: 'phone' },
             { data: 'status' },
             { data: 'grand_total' },
             { data: 'action', orderable: false, searchable: false }
         ],
-        order: [[2, 'desc']],
+        order: [[1, 'desc']],
         language: { info: "Showing _START_ - _END_ of _TOTAL_ Results", paginate: { previous: '<i class="fa fa-angle-left"></i>', next: '<i class="fa fa-angle-right"></i>' } },
         drawCallback: function() { if (typeof feather !== 'undefined') feather.replace(); }
     });
@@ -349,7 +369,7 @@ $(document).ready(function() {
             placeholder: 'Search product/service...',
             allowClear: false,
             width: '100%',
-            dropdownParent: $('#add-quotation-modal')
+            dropdownParent: $('body')
         });
     });
     
@@ -422,23 +442,55 @@ $(document).ready(function() {
         });
     });
     
+    // Close Select2 dropdown when scrolling modal
+    $('#add-quotation-modal .modal-body').on('scroll', function() {
+        $('.product-select').each(function() {
+            if ($(this).data('select2')) {
+                $(this).select2('close');
+            }
+        });
+    });
+    
+    // Close Select2 when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.select2-container').length && 
+            !$(e.target).closest('.select2-dropdown').length) {
+            $('.product-select').each(function() {
+                if ($(this).data('select2')) {
+                    $(this).select2('close');
+                }
+            });
+        }
+    });
+    
     // Initialize Summernote for Notes field
     $('#quotation-notes').summernote({
-        placeholder: 'Add notes, special instructions, terms & conditions...',
-        height: 120,
+        placeholder: 'Add notes, special instructions...',
+        height: 100,
         toolbar: [
             ['style', ['bold', 'italic', 'underline']],
             ['para', ['ul', 'ol']],
             ['insert', ['link']],
             ['view', ['codeview']]
-        ],
-        callbacks: {
-            onInit: function() {
-                // Style the editor
-                $(this).parent().find('.note-editor').css('border-radius', '5px');
-            }
-        }
+        ]
     });
+    
+    // Initialize Summernote for Terms & Conditions with default content
+    $('#quotation-terms').summernote({
+        placeholder: 'Add terms & conditions...',
+        height: 150,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline']],
+            ['para', ['ul', 'ol']],
+            ['insert', ['link']],
+            ['view', ['codeview']]
+        ]
+    });
+    
+    // Set default terms content
+    setTimeout(function() {
+        $('#quotation-terms').summernote('code', defaultTerms);
+    }, 100);
 });
 
 function loadProducts() {
@@ -485,7 +537,7 @@ function populateProductSelects() {
             placeholder: 'Search product/service...',
             allowClear: false,
             width: '100%',
-            dropdownParent: $('#add-quotation-modal')
+            dropdownParent: $('body')
         });
     });
 }
@@ -527,7 +579,7 @@ function saveQuotation() {
             tax: $('input[name="tax"]').val(), 
             discount: $('input[name="discount"]').val(), 
             notes: $('#quotation-notes').summernote('code'), 
-            terms: $('textarea[name="terms"]').val(),
+            terms: $('#quotation-terms').summernote('code'),
             items: items 
         },
         success: function(r) {
@@ -535,7 +587,8 @@ function saveQuotation() {
                 Swal.fire('Success', r.message, 'success'); 
                 $('#add-quotation-modal').modal('hide'); 
                 $('#quotation-form')[0].reset(); 
-                $('#quotation-notes').summernote('reset'); // Clear Summernote
+                $('#quotation-notes').summernote('reset');
+                $('#quotation-terms').summernote('code', defaultTerms); // Reset to default terms
                 quotationTable.ajax.reload(); 
             }
             else Swal.fire('Error', r.message, 'error');
@@ -603,22 +656,22 @@ function viewQuotation(id) {
             });
             
             html += `</tbody>
-                <tfoot class="table-light">
-                    <tr><td colspan="4" class="text-end"><strong>Subtotal:</strong></td><td class="text-end">MYR ${parseFloat(q.subtotal).toFixed(2)}</td></tr>
+                <tfoot>
+                    <tr><td colspan="4" class="text-end">Subtotal:</td><td class="text-end">MYR ${parseFloat(q.subtotal).toFixed(2)}</td></tr>
                     <tr><td colspan="4" class="text-end">Tax:</td><td class="text-end">MYR ${parseFloat(q.tax || 0).toFixed(2)}</td></tr>
                     <tr><td colspan="4" class="text-end">Discount:</td><td class="text-end">- MYR ${parseFloat(q.discount || 0).toFixed(2)}</td></tr>
-                    <tr><td colspan="4" class="text-end"><strong>Total:</strong></td><td class="text-end"><strong>MYR ${parseFloat(q.total).toFixed(2)}</strong></td></tr>
+                    <tr class="table-primary"><td colspan="4" class="text-end"><strong>Total:</strong></td><td class="text-end"><strong>MYR ${parseFloat(q.total).toFixed(2)}</strong></td></tr>
                 </tfoot>
             </table>`;
             
             // Show notes if available
             if (q.notes && q.notes.trim() !== '' && q.notes !== '<p><br></p>') {
-                html += `<div class="mb-3"><h6 class="text-primary">Notes</h6><div class="p-2 bg-light rounded">${q.notes}</div></div>`;
+                html += `<div class="mt-4 mb-3"><h6 class="text-primary">Notes</h6><div class="p-2 bg-light rounded quotation-notes-display">${q.notes}</div></div>`;
             }
             
             // Show terms if available
-            if (q.terms) {
-                html += `<div class="mb-3"><h6 class="text-primary">Terms & Conditions</h6><pre class="p-2 bg-light rounded" style="white-space: pre-wrap; font-family: inherit;">${q.terms}</pre></div>`;
+            if (q.terms && q.terms.trim() !== '' && q.terms !== '<p><br></p>') {
+                html += `<div class="mb-3"><h6 class="text-primary">Terms & Conditions</h6><div class="p-2 bg-light rounded quotation-notes-display">${q.terms}</div></div>`;
             }
             
             // Action buttons

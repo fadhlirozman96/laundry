@@ -156,9 +156,9 @@ class QuotationController extends Controller
 
             $data[] = [
                 'row_number' => $rowNum++,
-                'product' => $productName,
                 'reference' => $quotation->quotation_number,
                 'customer' => $quotation->customer_name ?: 'Walk in Customer',
+                'phone' => $quotation->customer_phone ?: '-',
                 'status' => '<span class="badges ' . $statusBadge . '">' . ucfirst($quotation->status) . '</span>',
                 'grand_total' => 'MYR ' . number_format($quotation->total, 2),
                 'action' => $this->getActionButtons($quotation)

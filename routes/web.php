@@ -18,6 +18,7 @@ use App\Http\Controllers\StoreFrontController;
 // Auth Routes
 // Route::get('index', [CustomAuthController::class, 'dashboard']); 
 Route::get('/', [CustomAuthController::class, 'index'])->name('signin')->middleware('guest');
+Route::get('/login', [CustomAuthController::class, 'index'])->name('login'); // Redirect for auth middleware
 Route::post('custom-login', [CustomAuthController::class, 'customSignin'])->name('signin.custom'); 
 Route::get('logout', [CustomAuthController::class, 'signOut'])->name('logout');
 Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
@@ -162,13 +163,20 @@ Route::get('/purchase-returns', function () {
     return view('purchase-returns');
 })->name('purchase-returns'); 
 
-Route::get('/expense-list', function () {                         
-    return view('expense-list');
-})->name('expense-list'); 
+// Expenses
+Route::get('/expense-list', [App\Http\Controllers\ExpenseController::class, 'index'])->name('expense-list')->middleware('auth');
+Route::post('/expenses', [App\Http\Controllers\ExpenseController::class, 'store'])->name('expenses.store')->middleware('auth');
+Route::get('/expenses/{id}', [App\Http\Controllers\ExpenseController::class, 'show'])->name('expenses.show')->middleware('auth');
+Route::put('/expenses/{id}', [App\Http\Controllers\ExpenseController::class, 'update'])->name('expenses.update')->middleware('auth');
+Route::delete('/expenses/{id}', [App\Http\Controllers\ExpenseController::class, 'destroy'])->name('expenses.destroy')->middleware('auth');
 
-Route::get('/expense-category', function () {                         
-    return view('expense-category');
-})->name('expense-category');     
+// Expense Categories
+Route::get('/expense-category', [App\Http\Controllers\ExpenseCategoryController::class, 'index'])->name('expense-category')->middleware('auth');
+Route::post('/expense-categories', [App\Http\Controllers\ExpenseCategoryController::class, 'store'])->name('expense-categories.store')->middleware('auth');
+Route::get('/expense-categories/{id}', [App\Http\Controllers\ExpenseCategoryController::class, 'show'])->name('expense-categories.show')->middleware('auth');
+Route::put('/expense-categories/{id}', [App\Http\Controllers\ExpenseCategoryController::class, 'update'])->name('expense-categories.update')->middleware('auth');
+Route::delete('/expense-categories/{id}', [App\Http\Controllers\ExpenseCategoryController::class, 'destroy'])->name('expense-categories.destroy')->middleware('auth');
+Route::get('/expense-categories-list', [App\Http\Controllers\ExpenseCategoryController::class, 'getCategories'])->name('expense-categories.list')->middleware('auth');     
 
 Route::get('/purchase-report', function () {                         
     return view('purchase-report');
@@ -271,9 +279,15 @@ Route::get('/pos/order/{id}', [App\Http\Controllers\POSController::class, 'getOr
 Route::get('/pos/customers', [App\Http\Controllers\CustomerController::class, 'getCustomers'])->name('customers.list')->middleware('auth');
 Route::post('/pos/customers', [App\Http\Controllers\CustomerController::class, 'store'])->name('customers.store')->middleware('auth');  
 
-Route::get('/coupons', function () {                         
-    return view('coupons');
-})->name('coupons');  
+// Coupons
+Route::get('/coupons', [App\Http\Controllers\CouponController::class, 'index'])->name('coupons')->middleware('auth');
+Route::post('/coupons', [App\Http\Controllers\CouponController::class, 'store'])->name('coupons.store')->middleware('auth');
+Route::get('/coupons/{id}', [App\Http\Controllers\CouponController::class, 'show'])->name('coupons.show')->middleware('auth');
+Route::put('/coupons/{id}', [App\Http\Controllers\CouponController::class, 'update'])->name('coupons.update')->middleware('auth');
+Route::delete('/coupons/{id}', [App\Http\Controllers\CouponController::class, 'destroy'])->name('coupons.destroy')->middleware('auth');
+Route::post('/coupons/{id}/toggle-status', [App\Http\Controllers\CouponController::class, 'toggleStatus'])->name('coupons.toggle-status')->middleware('auth');
+Route::get('/coupons-generate-code', [App\Http\Controllers\CouponController::class, 'generateCode'])->name('coupons.generate-code')->middleware('auth');
+Route::post('/coupons/apply', [App\Http\Controllers\CouponController::class, 'applyCoupon'])->name('coupons.apply')->middleware('auth');  
 
 Route::get('/customers', function () {                         
     return view('customers');
@@ -629,9 +643,7 @@ Route::get('/customer-report', function () {
     return view('customer-report');
 })->name('customer-report');
 
-Route::get('/expense-report', function () {
-    return view('expense-report');
-})->name('expense-report');
+Route::get('/expense-report', [App\Http\Controllers\ExpenseController::class, 'report'])->name('expense-report')->middleware('auth');
 
 Route::get('/income-report', function () {
     return view('income-report');

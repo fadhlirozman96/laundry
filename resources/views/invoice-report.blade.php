@@ -257,8 +257,20 @@
                             <input type="text" class="form-control" id="payment-amount-due" readonly>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Apply Coupon (Optional)</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="payment-coupon-code" placeholder="Enter coupon code" style="text-transform: uppercase;">
+                                <button type="button" class="btn btn-outline-primary" onclick="applyPaymentCoupon()">Apply</button>
+                            </div>
+                            <small class="text-success d-none" id="payment-coupon-success"></small>
+                            <small class="text-danger d-none" id="payment-coupon-error"></small>
+                            <input type="hidden" id="payment-coupon-id">
+                            <input type="hidden" id="payment-coupon-discount" value="0">
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Payment Amount <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="payment-amount" step="0.01" min="0" required>
+                            <small class="text-muted" id="payment-amount-after-discount"></small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment Method</label>
@@ -288,6 +300,26 @@
 <style>
     #invoice-table_wrapper .dataTables_length,
     #invoice-table_wrapper .dataTables_filter { display: none !important; }
+    
+    /* Custom badge styles */
+    .badge-lineinfo {
+        background-color: transparent;
+        border: 1px solid #0dcaf0;
+        color: #0dcaf0;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .badge-linewarning {
+        background-color: transparent;
+        border: 1px solid #ffc107;
+        color: #ffc107;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
     
     .edit-delete-action { display: flex; align-items: center; gap: 5px; }
     .edit-delete-action a {
@@ -567,26 +599,78 @@ function showPaymentForm() {
     $('#payment-amount').val(currentInvoice.amount_due).attr('max', currentInvoice.amount_due);
     $('#payment-method').val('cash');
     $('#payment-notes').val('');
+    // Reset coupon fields
+    $('#payment-coupon-code').val('');
+    $('#payment-coupon-id').val('');
+    $('#payment-coupon-discount').val('0');
+    $('#payment-coupon-success, #payment-coupon-error, #payment-amount-after-discount').addClass('d-none');
     $('#payment-modal').modal('show');
+}
+
+function applyPaymentCoupon() {
+    var code = $('#payment-coupon-code').val().trim().toUpperCase();
+    var amountDue = parseFloat($('#payment-amount-due').val().replace('MYR ', '').replace(',', '')) || 0;
+    
+    if (!code) {
+        $('#payment-coupon-error').text('Please enter a coupon code').removeClass('d-none');
+        $('#payment-coupon-success').addClass('d-none');
+        return;
+    }
+    
+    $.ajax({
+        url: '{{ route("coupons.apply") }}',
+        type: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            code: code,
+            amount: amountDue
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#payment-coupon-id').val(response.coupon.id);
+                $('#payment-coupon-discount').val(response.coupon.discount_amount);
+                $('#payment-coupon-success').text('Coupon applied: -MYR ' + response.coupon.discount_amount.toFixed(2)).removeClass('d-none');
+                $('#payment-coupon-error').addClass('d-none');
+                
+                var newAmount = amountDue - response.coupon.discount_amount;
+                $('#payment-amount').val(newAmount.toFixed(2));
+                $('#payment-amount-after-discount').text('After discount: MYR ' + newAmount.toFixed(2)).removeClass('d-none');
+            } else {
+                $('#payment-coupon-error').text(response.message).removeClass('d-none');
+                $('#payment-coupon-success').addClass('d-none');
+            }
+        },
+        error: function(xhr) {
+            $('#payment-coupon-error').text(xhr.responseJSON?.message || 'Failed to apply coupon').removeClass('d-none');
+            $('#payment-coupon-success').addClass('d-none');
+        }
+    });
 }
 
 function recordPayment() {
     var invoiceId = $('#payment-invoice-id').val();
     var amount = parseFloat($('#payment-amount').val());
+    var couponId = $('#payment-coupon-id').val();
+    var couponDiscount = parseFloat($('#payment-coupon-discount').val()) || 0;
     
     if (!amount || amount <= 0) {
         Swal.fire('Error', 'Please enter a valid payment amount', 'error');
         return;
     }
     
+    // If coupon is applied, include the discount amount
+    var totalPayment = amount + couponDiscount;
+    
     $.ajax({
         url: '{{ url("invoices") }}/' + invoiceId + '/payment',
         type: 'POST',
         data: {
             _token: '{{ csrf_token() }}',
-            amount: amount,
+            amount: totalPayment,
             payment_method: $('#payment-method').val(),
-            notes: $('#payment-notes').val()
+            notes: $('#payment-notes').val(),
+            coupon_id: couponId,
+            coupon_discount: couponDiscount
         },
         success: function(response) {
             if (response.success) {

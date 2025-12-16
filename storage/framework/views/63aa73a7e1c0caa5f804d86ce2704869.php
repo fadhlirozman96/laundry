@@ -1,21 +1,21 @@
 <?php $page = 'expense-list'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="page-wrapper">
     <div class="content">
-        @component('components.breadcrumb')
-            @slot('title')
+        <?php $__env->startComponent('components.breadcrumb'); ?>
+            <?php $__env->slot('title'); ?>
                 Expense List
-            @endslot
-            @slot('li_1')
+            <?php $__env->endSlot(); ?>
+            <?php $__env->slot('li_1'); ?>
                 Manage Your Expenses
-            @endslot
-            @slot('li_2')
+            <?php $__env->endSlot(); ?>
+            <?php $__env->slot('li_2'); ?>
                 <a href="javascript:void(0);" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-expense">
                     <i data-feather="plus-circle" class="me-1"></i> Add Expense
                 </a>
-            @endslot
-        @endcomponent
+            <?php $__env->endSlot(); ?>
+        <?php echo $__env->renderComponent(); ?>
 
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <i class="fa fa-info-circle me-1"></i>
@@ -36,7 +36,7 @@
                         <div class="d-flex align-items-center">
                             <a class="btn btn-filter" id="filter_search">
                                 <i data-feather="filter" class="filter-icon"></i>
-                                <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
+                                <span><img src="<?php echo e(URL::asset('/build/img/icons/closes.svg')); ?>" alt="img"></span>
                             </a>
                         </div>
                     </div>
@@ -44,9 +44,9 @@
                         <i data-feather="sliders" class="info-img"></i>
                         <select class="select" id="filter-category">
                             <option value="">All Categories</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
                 </div>
@@ -124,9 +124,9 @@
                                 <label class="form-label">Expense Category <span class="text-danger">*</span></label>
                                 <select name="category_id" id="add-category" class="form-select" required>
                                     <option value="">Select Category</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -188,9 +188,9 @@
                                 <label class="form-label">Expense Category <span class="text-danger">*</span></label>
                                 <select name="category_id" id="edit-category" class="form-select" required>
                                     <option value="">Select Category</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -295,9 +295,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <style>
     #expense-table_wrapper .dataTables_length, #expense-table_wrapper .dataTables_filter { display: none !important; }
     .edit-delete-action { display: flex; align-items: center; gap: 5px; }
@@ -336,7 +336,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('expense-list') }}",
+                url: "<?php echo e(route('expense-list')); ?>",
                 data: function (d) {
                     d.search = $('#expense-search').val();
                     d.category = $('#filter-category').val();
@@ -394,7 +394,7 @@
 
     function saveExpense() {
         var data = {
-            _token: '{{ csrf_token() }}',
+            _token: '<?php echo e(csrf_token()); ?>',
             category_id: $('#add-category').val(),
             expense_date: $('#add-date').val(),
             amount: $('#add-amount').val(),
@@ -408,7 +408,7 @@
         }
 
         $.ajax({
-            url: "{{ route('expenses.store') }}",
+            url: "<?php echo e(route('expenses.store')); ?>",
             type: "POST",
             data: data,
             success: function(response) {
@@ -433,7 +433,7 @@
 
     function viewExpense(id) {
         $.ajax({
-            url: "{{ url('expenses') }}/" + id,
+            url: "<?php echo e(url('expenses')); ?>/" + id,
             type: "GET",
             success: function(response) {
                 if (response.success) {
@@ -460,7 +460,7 @@
 
     function editExpense(id) {
         $.ajax({
-            url: "{{ url('expenses') }}/" + id,
+            url: "<?php echo e(url('expenses')); ?>/" + id,
             type: "GET",
             success: function(response) {
                 if (response.success) {
@@ -486,7 +486,7 @@
     function updateExpense() {
         var id = $('#edit-id').val();
         var data = {
-            _token: '{{ csrf_token() }}',
+            _token: '<?php echo e(csrf_token()); ?>',
             _method: 'PUT',
             category_id: $('#edit-category').val(),
             expense_date: $('#edit-date').val(),
@@ -497,7 +497,7 @@
         };
 
         $.ajax({
-            url: "{{ url('expenses') }}/" + id,
+            url: "<?php echo e(url('expenses')); ?>/" + id,
             type: "POST",
             data: data,
             success: function(response) {
@@ -531,10 +531,10 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ url('expenses') }}/" + id,
+                    url: "<?php echo e(url('expenses')); ?>/" + id,
                     type: "DELETE",
                     data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: '<?php echo e(csrf_token()); ?>'
                     },
                     success: function(response) {
                         if (response.success) {
@@ -552,4 +552,6 @@
         });
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/expense-list.blade.php ENDPATH**/ ?>

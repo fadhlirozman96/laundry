@@ -1,5 +1,5 @@
 <!-- Header -->
-<div class="header">
+<div class="header" style="display: flex; align-items: center;">
 
     <!-- Logo -->
     <div class="header-left active">
@@ -27,19 +27,20 @@
     </a>
 
     <!-- Header Menu -->
-    <ul class="nav user-menu">
+    <ul class="nav user-menu" style="margin-left: auto !important; display: flex !important; align-items: center; justify-content: flex-end; flex: 1;">
 
         <!-- POS Button -->
-        <li class="nav-item" style="flex: 1; max-width: 400px;">
-            
-            <a href="{{ url('pos') }}" >
-                <button type="button" class="btn btn-primary"><i data-feather="shopping-cart" class="feather-18 me-2"></i>
-                POS SYSTEM</button>
-                
+        <li class="nav-item pos-btn-nav me-3">
+            <a href="{{ url('pos') }}" class="btn btn-primary d-flex align-items-center" style="padding: 8px 20px; white-space: nowrap;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span style="color: white; font-weight: 600;">POS SYSTEM</span>
             </a>
         </li>
         <!-- /POS Button -->
-
 
         <!-- Select Store -->
         @auth
@@ -47,12 +48,11 @@
             $userStores = auth()->user()->getAccessibleStores();
             $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : ($userStores->first() ?? null);
         @endphp
-        <li class="nav-item dropdown has-arrow main-drop select-store-dropdown">
+        <li class="nav-item dropdown has-arrow main-drop select-store-dropdown me-2">
             <a href="javascript:void(0);" class="dropdown-toggle nav-link select-store" data-bs-toggle="dropdown">
                 <span class="user-info">
                     <span class="user-letter">
-                        <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo"
-                            class="img-fluid">
+                        <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" class="img-fluid">
                     </span>
                     <span class="user-detail">
                         <span class="user-name">{{ $selectedStore ? $selectedStore->name : 'Select Store' }}</span>
@@ -73,17 +73,15 @@
         @endauth
         <!-- /Select Store -->
 
-       
-
-        <li class="nav-item nav-item-box">
+        <li class="nav-item nav-item-box me-2">
             <a href="{{ url('general-settings') }}"><i data-feather="settings"></i></a>
         </li>
+        
         <li class="nav-item dropdown has-arrow main-drop">
             <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
                 <span class="user-info">
                     <span class="user-letter">
-                        <img src="{{ URL::asset('/build/img/profiles/avator1.jpg') }}" alt=""
-                            class="img-fluid">
+                        <img src="{{ URL::asset('/build/img/profiles/avator1.jpg') }}" alt="" class="img-fluid">
                     </span>
                     <span class="user-detail">
                         <span class="user-name">{{ auth()->check() ? auth()->user()->name : 'Guest' }}</span>
@@ -94,8 +92,7 @@
             <div class="dropdown-menu menu-drop-user">
                 <div class="profilename">
                     <div class="profileset">
-                        <span class="user-img"><img src="{{ URL::asset('/build/img/profiles/avator1.jpg') }}"
-                                alt="">
+                        <span class="user-img"><img src="{{ URL::asset('/build/img/profiles/avator1.jpg') }}" alt="">
                             <span class="status online"></span></span>
                         <div class="profilesets">
                             <h6>{{ auth()->check() ? auth()->user()->name : 'Guest' }}</h6>
@@ -103,16 +100,12 @@
                         </div>
                     </div>
                     <hr class="m-0">
-                    <a class="dropdown-item" href="{{ url('profile') }}"> <i class="me-2"
-                            data-feather="user"></i> My Profile</a>
+                    <a class="dropdown-item" href="{{ url('profile') }}"> <i class="me-2" data-feather="user"></i> My Profile</a>
                     @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner()))
-                    <a class="dropdown-item" href="{{ url('general-settings') }}"><i class="me-2"
-                            data-feather="settings"></i>Settings</a>
+                    <a class="dropdown-item" href="{{ url('general-settings') }}"><i class="me-2" data-feather="settings"></i>Settings</a>
                     @endif
                     <hr class="m-0">
-                    <a class="dropdown-item logout pb-0" href="{{ route('logout') }}"><img
-                            src="{{ URL::asset('/build/img/icons/log-out.svg') }}" class="me-2"
-                            alt="img">Logout</a>
+                    <a class="dropdown-item logout pb-0" href="{{ route('logout') }}"><img src="{{ URL::asset('/build/img/icons/log-out.svg') }}" class="me-2" alt="img">Logout</a>
                 </div>
             </div>
         </li>

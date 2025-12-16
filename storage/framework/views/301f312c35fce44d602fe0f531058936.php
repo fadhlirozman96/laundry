@@ -1,21 +1,21 @@
 <?php $page = 'expense-category'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <div class="page-wrapper">
         <div class="content">
-            @component('components.breadcrumb')
-                @slot('title')
+            <?php $__env->startComponent('components.breadcrumb'); ?>
+                <?php $__env->slot('title'); ?>
                     Expense Category
-                @endslot
-                @slot('li_1')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_1'); ?>
                     Manage Your Expense Categories
-                @endslot
-                @slot('li_2')
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_2'); ?>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add-category">
                         <i data-feather="plus-circle" class="me-1"></i> Add Category
                     </a>
-                @endslot
-            @endcomponent
+                <?php $__env->endSlot(); ?>
+            <?php echo $__env->renderComponent(); ?>
 
             <div class="alert alert-info alert-dismissible fade show" role="alert">
                 <i class="fa fa-info-circle me-1"></i>
@@ -36,7 +36,7 @@
                             <div class="d-flex align-items-center">
                                 <a class="btn btn-filter" id="filter_search">
                                     <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
+                                    <span><img src="<?php echo e(URL::asset('/build/img/icons/closes.svg')); ?>" alt="img"></span>
                                 </a>
                             </div>
                         </div>
@@ -125,9 +125,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <style>
     #category-table_wrapper .dataTables_length, #category-table_wrapper .dataTables_filter { display: none !important; }
     .edit-delete-action { display: flex; align-items: center; gap: 5px; }
@@ -164,7 +164,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('expense-category') }}",
+                url: "<?php echo e(route('expense-category')); ?>",
                 data: function (d) {
                     d.search = $('#category-search').val();
                 }
@@ -200,14 +200,14 @@
 
     function saveCategory() {
         var data = {
-            _token: '{{ csrf_token() }}',
+            _token: '<?php echo e(csrf_token()); ?>',
             name: $('#add-name').val(),
             description: $('#add-description').val(),
             is_active: $('#add-is-active').is(':checked') ? 1 : 0
         };
 
         $.ajax({
-            url: "{{ route('expense-categories.store') }}",
+            url: "<?php echo e(route('expense-categories.store')); ?>",
             type: "POST",
             data: data,
             success: function(response) {
@@ -232,7 +232,7 @@
 
     function editCategory(id) {
         $.ajax({
-            url: "{{ url('expense-categories') }}/" + id,
+            url: "<?php echo e(url('expense-categories')); ?>/" + id,
             type: "GET",
             success: function(response) {
                 if (response.success) {
@@ -254,7 +254,7 @@
     function updateCategory() {
         var id = $('#edit-id').val();
         var data = {
-            _token: '{{ csrf_token() }}',
+            _token: '<?php echo e(csrf_token()); ?>',
             _method: 'PUT',
             name: $('#edit-name').val(),
             description: $('#edit-description').val(),
@@ -262,7 +262,7 @@
         };
 
         $.ajax({
-            url: "{{ url('expense-categories') }}/" + id,
+            url: "<?php echo e(url('expense-categories')); ?>/" + id,
             type: "POST",
             data: data,
             success: function(response) {
@@ -296,10 +296,10 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ url('expense-categories') }}/" + id,
+                    url: "<?php echo e(url('expense-categories')); ?>/" + id,
                     type: "DELETE",
                     data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: '<?php echo e(csrf_token()); ?>'
                     },
                     success: function(response) {
                         if (response.success) {
@@ -317,4 +317,6 @@
         });
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/expense-category.blade.php ENDPATH**/ ?>

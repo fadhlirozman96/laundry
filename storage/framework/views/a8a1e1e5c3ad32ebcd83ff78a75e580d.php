@@ -102,18 +102,19 @@
                         <li class="<?php echo e(Request::is('sales-list') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('sales-list')); ?>"><i
                                     data-feather="shopping-cart"></i><span>Sales</span></a></li>
-                        <li class="<?php echo e(Request::is('invoice-report') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('invoice-report')); ?>"><i
-                                    data-feather="file-text"></i><span>Invoices</span></a></li>
-                        <li class="<?php echo e(Request::is('sales-returns') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('sales-returns')); ?>"><i data-feather="copy"></i><span>Sales
-                                    Return</span></a></li>
                         <li class="<?php echo e(Request::is('quotation-list') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('quotation-list')); ?>"><i
                                     data-feather="save"></i><span>Quotation</span></a>
                         </li>
-                        <li class="<?php echo e(Request::is('pos') ? 'active' : ''); ?>"><a href="<?php echo e(url('pos')); ?>"><i
-                                    data-feather="hard-drive"></i><span>POS</span></a></li>
+                        <!-- <li class="<?php echo e(Request::is('sales-returns') ? 'active' : ''); ?>"><a
+                                href="<?php echo e(url('sales-returns')); ?>"><i data-feather="copy"></i><span>Sales
+                                    Return</span></a></li> -->
+                        <li class="<?php echo e(Request::is('invoice-report') ? 'active' : ''); ?>"><a
+                                href="<?php echo e(url('invoice-report')); ?>"><i
+                                    data-feather="file-text"></i><span>Invoices</span></a></li>
+                        
+                        <!-- <li class="<?php echo e(Request::is('pos') ? 'active' : ''); ?>"><a href="<?php echo e(url('pos')); ?>"><i
+                                    data-feather="hard-drive"></i><span>POS</span></a></li> -->
                     </ul>
                 </li>
                 <li class="submenu-open">

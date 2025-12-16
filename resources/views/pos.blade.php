@@ -143,6 +143,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Coupon Code -->
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="coupon-code" placeholder="Enter coupon code" style="text-transform: uppercase;">
+                                            <button type="button" class="btn btn-primary" id="apply-coupon-btn">Apply</button>
+                                            <button type="button" class="btn btn-outline-danger d-none" id="remove-coupon-btn">
+                                                <i data-feather="x"></i>
+                                            </button>
+                                        </div>
+                                        <small class="text-success d-none" id="coupon-success-msg"></small>
+                                        <small class="text-danger d-none" id="coupon-error-msg"></small>
+                                    </div>
+                                </div>
                             </div>
                             <div class="order-total">
                                 <table class="table table-responsive table-borderless">
@@ -1182,6 +1196,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Coupon tracking
+    var appliedCoupon = null;
+    
     // Update totals
     function updateTotals() {
         let subtotal = 0;
@@ -1191,10 +1208,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const taxPercent = parseFloat($('#order-tax').val()) || 0;
         const shipping = parseFloat($('#order-shipping').val()) || 0;
-        const discount = parseFloat($('#order-discount').val()) || 0;
+        let discount = parseFloat($('#order-discount').val()) || 0;
+        
+        // Apply coupon discount if exists
+        if (appliedCoupon && appliedCoupon.discount_amount) {
+            discount = parseFloat(appliedCoupon.discount_amount);
+            $('#order-discount').val(discount.toFixed(2));
+        }
         
         const tax = (subtotal * taxPercent) / 100;
-        const grandTotal = subtotal + tax + shipping - discount;
+        let grandTotal = subtotal + tax + shipping - discount;
+        
+        // Ensure grand total is not negative
+        if (grandTotal < 0) grandTotal = 0;
         
         $('#subtotal-amount').text('MYR ' + subtotal.toFixed(2));
         $('#tax-amount').text('MYR ' + tax.toFixed(2));
@@ -1202,6 +1228,117 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#discount-amount').text('MYR ' + discount.toFixed(2));
         $('#grand-total').text('MYR ' + grandTotal.toFixed(2));
         $('#grand-total-display').text('MYR ' + grandTotal.toFixed(2));
+        
+        // Debug log
+        console.log('Totals updated - Subtotal:', subtotal, 'Discount:', discount, 'Grand Total:', grandTotal);
+    }
+    
+    // Apply Coupon
+    $('#apply-coupon-btn').on('click', function() {
+        var code = $('#coupon-code').val().trim().toUpperCase();
+        if (!code) {
+            Swal.fire('Error', 'Please enter a coupon code', 'error');
+            return;
+        }
+        
+        let subtotal = 0;
+        cart.forEach(function(item) {
+            subtotal += item.subtotal;
+        });
+        
+        if (subtotal <= 0) {
+            Swal.fire('Error', 'Please add items to cart first', 'error');
+            return;
+        }
+        
+        // Show loading
+        $('#apply-coupon-btn').prop('disabled', true).text('Applying...');
+        
+        $.ajax({
+            url: '{{ route("coupons.apply") }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                code: code,
+                amount: subtotal
+            },
+            success: function(response) {
+                $('#apply-coupon-btn').prop('disabled', false).text('Apply');
+                
+                if (response.success) {
+                    appliedCoupon = response.coupon;
+                    $('#coupon-code').prop('readonly', true);
+                    $('#apply-coupon-btn').addClass('d-none');
+                    $('#remove-coupon-btn').removeClass('d-none');
+                    $('#coupon-success-msg').text('Coupon applied: -MYR ' + response.coupon.discount_amount.toFixed(2)).removeClass('d-none');
+                    $('#coupon-error-msg').addClass('d-none');
+                    
+                    // Update discount field and totals
+                    $('#order-discount').val(response.coupon.discount_amount.toFixed(2));
+                    updateTotals();
+                    
+                    if (typeof feather !== 'undefined') feather.replace();
+                    
+                    Swal.fire('Success', 'Coupon applied! Discount: MYR ' + response.coupon.discount_amount.toFixed(2), 'success');
+                } else {
+                    Swal.fire('Error', response.message || 'Coupon not valid', 'error');
+                    $('#coupon-error-msg').text(response.message).removeClass('d-none');
+                    $('#coupon-success-msg').addClass('d-none');
+                }
+            },
+            error: function(xhr) {
+                $('#apply-coupon-btn').prop('disabled', false).text('Apply');
+                var errorMsg = 'Failed to apply coupon';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                } else if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    errorMsg = Object.values(xhr.responseJSON.errors).flat().join(', ');
+                }
+                Swal.fire('Error', errorMsg, 'error');
+                $('#coupon-error-msg').text(errorMsg).removeClass('d-none');
+                $('#coupon-success-msg').addClass('d-none');
+            }
+        });
+    });
+    
+    // Remove Coupon
+    $('#remove-coupon-btn').on('click', function() {
+        appliedCoupon = null;
+        $('#coupon-code').val('').prop('readonly', false);
+        $('#apply-coupon-btn').removeClass('d-none');
+        $('#remove-coupon-btn').addClass('d-none');
+        $('#coupon-success-msg').addClass('d-none');
+        $('#coupon-error-msg').addClass('d-none');
+        $('#order-discount').val(0);
+        updateTotals();
+    });
+    
+    // Recalculate coupon when cart changes
+    function recalculateCoupon() {
+        if (appliedCoupon) {
+            let subtotal = 0;
+            cart.forEach(function(item) {
+                subtotal += item.subtotal;
+            });
+            
+            // Recalculate discount based on new subtotal
+            $.ajax({
+                url: '{{ route("coupons.apply") }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    code: appliedCoupon.code,
+                    amount: subtotal
+                },
+                success: function(response) {
+                    if (response.success) {
+                        appliedCoupon = response.coupon;
+                        $('#coupon-success-msg').text('Coupon applied: -MYR ' + response.coupon.discount_amount.toFixed(2));
+                        updateTotals();
+                    }
+                }
+            });
+        }
     }
     
     // Tax, shipping, discount change handlers
@@ -1305,7 +1442,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 tax: tax,
                 discount: discount,
                 shipping: shipping,
-                subtotal: subtotal
+                subtotal: subtotal,
+                coupon_id: appliedCoupon ? appliedCoupon.id : null
             },
             success: function(response) {
                 if (response.success) {
@@ -1320,9 +1458,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Clear everything
                         cart = [];
                         selectedPaymentMethod = null;
+                        appliedCoupon = null;
                         
                         // Reset form fields
                         $('#order-tax, #order-shipping, #order-discount').val(0);
+                        $('#coupon-code').val('').prop('readonly', false);
+                        $('#apply-coupon-btn').removeClass('d-none');
+                        $('#remove-coupon-btn').addClass('d-none');
+                        $('#coupon-success-msg, #coupon-error-msg').addClass('d-none');
                         
                         // Remove active state and styles from payment methods
                         $('.payment-method-btn').each(function() {

@@ -150,11 +150,27 @@
             text-transform: uppercase;
             margin-bottom: 10px;
         }
-        .terms-section pre {
-            white-space: pre-wrap;
-            font-family: inherit;
+        .notes-section ul, .terms-section ul {
+            list-style: disc;
+            margin-left: 20px;
+            padding-left: 0;
             font-size: 11px;
             color: #666;
+        }
+        .notes-section ol, .terms-section ol {
+            list-style: decimal;
+            margin-left: 20px;
+            padding-left: 0;
+            font-size: 11px;
+            color: #666;
+        }
+        .notes-section li, .terms-section li {
+            margin-bottom: 5px;
+        }
+        .notes-section p, .terms-section p {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
         }
         .footer {
             margin-top: 40px;
@@ -163,6 +179,17 @@
             text-align: center;
             color: #999;
             font-size: 10px;
+        }
+        .copyright {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 10px;
+        }
+        .copyright p {
+            margin: 2px 0;
         }
         .status-badge {
             display: inline-block;
@@ -305,10 +332,10 @@
         </div>
     @endif
 
-    @if($quotation->terms)
+    @if($quotation->terms && $quotation->terms != '<p><br></p>')
         <div class="terms-section">
             <h3>Terms & Conditions</h3>
-            <pre>{{ $quotation->terms }}</pre>
+            <div>{!! $quotation->terms !!}</div>
         </div>
     @endif
 
@@ -316,6 +343,11 @@
         <p>Thank you for your business!</p>
         <p>This is a computer-generated document. No signature is required.</p>
         <p>Generated on {{ now()->format('d M Y, h:i A') }}</p>
+    </div>
+    
+    <div class="copyright">
+        <p>Copyright © 2025 Rapy</p>
+        <p>All Rights Reserved</p>
     </div>
 </body>
 </html>

@@ -5,8 +5,8 @@
         <div class="content">
             <div class="page-header justify-content-between">
                 <div class="page-title">
-                    <h4>Expenses</h4>
-                    <h6>Manage your Expenses</h6>
+                    <h4>Expense Report</h4>
+                    <h6>View expense summary and reports</h6>
                 </div>
                 <ul class="table-top-head">
                     <li>
@@ -22,195 +22,193 @@
                                 class="feather-rotate-ccw"></i></a>
                     </li>
                     <li>
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh"><i data-feather="rotate-ccw"
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh" href="{{ route('expense-report') }}"><i data-feather="rotate-ccw"
                                 class="feather-rotate-ccw"></i></a>
-                    </li>
-                    <li>
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Collapse" id="collapse-header"><i
-                                data-feather="chevron-up" class="feather-chevron-up"></i></a>
                     </li>
                 </ul>
             </div>
 
-
-            <!-- /product list -->
-            <div class="card table-list-card">
-                <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="search-path">
-                            <div class="d-flex align-items-center">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                            </div>
-
-                        </div>
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>Newest</option>
-                                <option>Oldest</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="zap" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Category</option>
-                                            <option>Computers</option>
-                                        </select>
-                                    </div>
+            <!-- Summary Cards -->
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Expenses</h6>
+                                    <h4 class="mb-0">MYR {{ number_format($totalExpenses, 2) }}</h4>
                                 </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="user" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Created by</option>
-                                            <option>Complete</option>
-                                            <option>Inprogress</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <div class="position-relative daterange-wraper">
-                                            <input type="text" class="form-control" name="datetimes"
-                                                placeholder="From Date - To Date">
-                                            <i data-feather="calendar" class="feather-14 info-img"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
+                                <div class="bg-primary rounded-circle p-3">
+                                    <i data-feather="dollar-sign" class="text-white"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- /Filter -->
-                    <div class="table-responsive">
-                        <table class="table datanew">
-                            <thead>
-                                <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
-                                    <th>Date</th>
-                                    <th>Expense Category</th>
-                                    <th>User</th>
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody class="Expense-list">
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>01 Jan 2024</td>
-                                    <td>Printing</td>
-                                    <td class="userimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ URL::asset('/build/img/users/user-01.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Mitchum Daniel</a>
-                                    </td>
-                                    <td>$14,174</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>14 Jan 2024</td>
-                                    <td>Utilities</td>
-                                    <td class="userimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ URL::asset('/build/img/users/user-02.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Susan Lopez</a>
-                                    </td>
-                                    <td>$19,474</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>25 Jan 2024</td>
-                                    <td>Travel</td>
-                                    <td class="userimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ URL::asset('/build/img/users/user-03.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Robert Grossman</a>
-                                    </td>
-                                    <td>$20,744</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>01 May 2024</td>
-                                    <td>Purchase</td>
-                                    <td class="userimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ URL::asset('/build/img/users/user-04.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Russell Belle</a>
-                                    </td>
-                                    <td>$25,474</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>14 Oct 2024</td>
-                                    <td>Printing</td>
-                                    <td class="userimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ URL::asset('/build/img/users/user-05.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Edward K. Muniz</a>
-                                    </td>
-                                    <td>$12,436</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">This Month</h6>
+                                    <h4 class="mb-0">MYR {{ number_format($thisMonthExpenses, 2) }}</h4>
+                                </div>
+                                <div class="bg-warning rounded-circle p-3">
+                                    <i data-feather="calendar" class="text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">This Year</h6>
+                                    <h4 class="mb-0">MYR {{ number_format($thisYearExpenses, 2) }}</h4>
+                                </div>
+                                <div class="bg-success rounded-circle p-3">
+                                    <i data-feather="trending-up" class="text-white"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- /product list -->
+
+            <!-- Expenses by Category -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Expenses by Category</h5>
+                        </div>
+                        <div class="card-body">
+                            @if($byCategory->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Category</th>
+                                                <th class="text-end">Total Amount</th>
+                                                <th class="text-end">%</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($byCategory as $category)
+                                                <tr>
+                                                    <td>{{ $category->category ? $category->category->name : 'Unknown' }}</td>
+                                                    <td class="text-end">MYR {{ number_format($category->total, 2) }}</td>
+                                                    <td class="text-end">
+                                                        {{ $totalExpenses > 0 ? number_format(($category->total / $totalExpenses) * 100, 1) : 0 }}%
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="table-primary">
+                                                <th>Total</th>
+                                                <th class="text-end">MYR {{ number_format($totalExpenses, 2) }}</th>
+                                                <th class="text-end">100%</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center text-muted py-4">
+                                    <i data-feather="inbox" style="width: 48px; height: 48px;"></i>
+                                    <p class="mt-2">No expense data available</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Category Distribution</h5>
+                        </div>
+                        <div class="card-body">
+                            @if($byCategory->count() > 0)
+                                <div id="expense-chart"></div>
+                            @else
+                                <div class="text-center text-muted py-4">
+                                    <i data-feather="pie-chart" style="width: 48px; height: 48px;"></i>
+                                    <p class="mt-2">No data to display chart</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex gap-3">
+                                <a href="{{ route('expense-list') }}" class="btn btn-primary">
+                                    <i data-feather="list" class="me-2"></i> View All Expenses
+                                </a>
+                                <a href="{{ route('expense-category') }}" class="btn btn-secondary">
+                                    <i data-feather="tag" class="me-2"></i> Manage Categories
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    $(document).ready(function() {
+        @if($byCategory->count() > 0)
+        var options = {
+            series: [
+                @foreach($byCategory as $category)
+                    {{ $category->total }},
+                @endforeach
+            ],
+            chart: {
+                type: 'donut',
+                height: 300
+            },
+            labels: [
+                @foreach($byCategory as $category)
+                    "{{ $category->category ? $category->category->name : 'Unknown' }}",
+                @endforeach
+            ],
+            legend: {
+                position: 'bottom'
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function(val) {
+                    return val.toFixed(1) + '%';
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return 'MYR ' + val.toFixed(2);
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#expense-chart"), options);
+        chart.render();
+        @endif
+
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    });
+</script>
+@endpush

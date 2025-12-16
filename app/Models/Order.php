@@ -11,6 +11,8 @@ class Order extends Model
 
     protected $fillable = [
         'order_number',
+        'invoice_id',
+        'coupon_id',
         'user_id',
         'store_id',
         'customer_name',
@@ -43,6 +45,11 @@ class Order extends Model
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 
     public function items()

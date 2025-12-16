@@ -186,6 +186,15 @@ class POSController extends Controller
                 throw new \Exception('Invalid store selected.');
             }
 
+            // Handle coupon if provided
+            $couponId = $request->coupon_id;
+            if ($couponId) {
+                $coupon = \App\Models\Coupon::find($couponId);
+                if ($coupon) {
+                    $coupon->incrementUsage();
+                }
+            }
+            
             // Create order
             $order = Order::create([
                 'order_number' => $orderNumber,
@@ -203,6 +212,7 @@ class POSController extends Controller
                 'payment_status' => 'paid',
                 'order_status' => 'completed',
                 'notes' => $request->notes,
+                'coupon_id' => $couponId,
             ]);
 
             $user = auth()->user();

@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -79,9 +82,9 @@ class InvoiceController extends Controller
             foreach ($invoices as $invoice) {
                 $statusBadge = match($invoice->status) {
                     'paid' => 'badge-linesuccess',
-                    'partial' => 'badges-warning',
+                    'partial' => 'badge-linewarning',
                     'overdue' => 'badge-linedanger',
-                    'sent' => 'badge-light-info',
+                    'sent' => 'badge-lineinfo',
                     default => 'badge-linedanger'
                 };
 
@@ -228,18 +231,36 @@ class InvoiceController extends Controller
 
     public function updatePayment(Request $request, $id)
     {
-        $invoice = Invoice::findOrFail($id);
+        $invoice = Invoice::with('items')->findOrFail($id);
         
         $request->validate([
             'amount' => 'required|numeric|min:0.01'
         ]);
 
+        $previousStatus = $invoice->status;
+        
+        // Handle coupon if applied
+        if ($request->coupon_id) {
+            $coupon = Coupon::find($request->coupon_id);
+            if ($coupon) {
+                $coupon->incrementUsage();
+                $invoice->coupon_id = $coupon->id;
+                // Apply coupon discount to invoice
+                $invoice->discount = ($invoice->discount ?? 0) + ($request->coupon_discount ?? 0);
+            }
+        }
+        
         $invoice->amount_paid += $request->amount;
-        $invoice->amount_due = $invoice->total - $invoice->amount_paid;
+        $invoice->amount_due = $invoice->total - $invoice->amount_paid - ($invoice->discount ?? 0);
         
         if ($invoice->amount_due <= 0) {
             $invoice->status = 'paid';
             $invoice->amount_due = 0;
+            
+            // Create a sale (order) when invoice is fully paid
+            if ($previousStatus != 'paid') {
+                $this->createSaleFromInvoice($invoice);
+            }
         } else {
             $invoice->status = 'partial';
         }
@@ -247,6 +268,60 @@ class InvoiceController extends Controller
         $invoice->save();
 
         return response()->json(['success' => true, 'message' => 'Payment recorded successfully']);
+    }
+    
+    /**
+     * Create a sale (order) from a paid invoice
+     */
+    protected function createSaleFromInvoice(Invoice $invoice)
+    {
+        // Check if order already exists for this invoice
+        $existingOrder = Order::where('invoice_id', $invoice->id)->first();
+        if ($existingOrder) {
+            // Update existing order payment status
+            $existingOrder->payment_status = 'paid';
+            $existingOrder->save();
+            return $existingOrder;
+        }
+        
+        // Generate order number
+        $orderNumber = 'ORD-' . date('Ymd') . '-' . str_pad(Order::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
+        
+        // Create new order
+        $order = Order::create([
+            'order_number' => $orderNumber,
+            'invoice_id' => $invoice->id,
+            'store_id' => $invoice->store_id,
+            'user_id' => $invoice->user_id,
+            'customer_name' => $invoice->customer_name,
+            'customer_email' => $invoice->customer_email,
+            'customer_phone' => $invoice->customer_phone,
+            'subtotal' => $invoice->subtotal,
+            'tax' => $invoice->tax,
+            'discount' => $invoice->discount,
+            'total' => $invoice->total,
+            'payment_method' => 'invoice',
+            'payment_status' => 'paid',
+            'order_status' => 'completed',
+            'notes' => 'Generated from Invoice: ' . $invoice->invoice_number,
+        ]);
+        
+        // Create order items from invoice items
+        foreach ($invoice->items as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'product_name' => $item->product_name,
+                'product_sku' => $item->product_sku ?? '',
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'discount' => $item->discount ?? 0,
+                'tax' => $item->tax ?? 0,
+                'subtotal' => $item->subtotal,
+            ]);
+        }
+        
+        return $order;
     }
 
     public function destroy($id)
