@@ -150,6 +150,9 @@ class POSController extends Controller
             'tax' => 'nullable|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'shipping' => 'nullable|numeric|min:0',
+            'expected_completion' => 'nullable|date',
+            'special_instructions' => 'nullable|string|max:2000',
+            'notes' => 'nullable|string|max:2000',
         ]);
 
         try {
@@ -213,6 +216,8 @@ class POSController extends Controller
                 'order_status' => 'completed',
                 'notes' => $request->notes,
                 'coupon_id' => $couponId,
+                'expected_completion' => $request->expected_completion,
+                'special_instructions' => $request->special_instructions,
             ]);
 
             $user = auth()->user();

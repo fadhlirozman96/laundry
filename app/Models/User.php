@@ -22,6 +22,14 @@ class User extends Authenticatable
         'email',
         'password',
         'account_owner_id',
+        'department_id',
+        'designation_id',
+        'shift_id',
+        'employee_id',
+        'joining_date',
+        'salary',
+        'phone',
+        'address',
     ];
 
     /**
@@ -84,6 +92,37 @@ class User extends Authenticatable
     public function ownedStores()
     {
         return $this->hasMany(Store::class, 'created_by');
+    }
+
+    // HRM Relationships
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function designation()
+    {
+        return $this->belongsTo(Designation::class);
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
+
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class);
     }
 
     // Helper methods

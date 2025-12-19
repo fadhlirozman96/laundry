@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    // Activity Log methods
+    public function getActivityLogName() { return 'Order'; }
+    public function getActivityIdentifier() { return $this->order_number; }
+    public function getActivityModule() { return 'pos'; }
 
     protected $fillable = [
         'order_number',
@@ -27,6 +33,8 @@ class Order extends Model
         'payment_status',
         'order_status',
         'notes',
+        'expected_completion',
+        'special_instructions',
     ];
 
     protected $casts = [
@@ -35,6 +43,7 @@ class Order extends Model
         'discount' => 'decimal:2',
         'shipping' => 'decimal:2',
         'total' => 'decimal:2',
+        'expected_completion' => 'datetime',
     ];
 
     public function user()

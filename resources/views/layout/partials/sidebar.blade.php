@@ -163,16 +163,16 @@
                         <li class="{{ Request::is('customers') ? 'active' : '' }}"><a
                                 href="{{ url('customers') }}"><i data-feather="user"></i><span>Customers</span></a>
                         </li>
-                        <li class="{{ Request::is('suppliers') ? 'active' : '' }}"><a
+                        <!-- <li class="{{ Request::is('suppliers') ? 'active' : '' }}"><a
                                 href="{{ url('suppliers') }}"><i data-feather="users"></i><span>Suppliers</span></a>
-                        </li>
+                        </li> -->
                         <li class="{{ Request::is('store-list') ? 'active' : '' }}"><a
                                 href="{{ url('store-list') }}"><i data-feather="home"></i><span>Stores</span></a>
                         </li>
-                        <li class="{{ Request::is('warehouse') ? 'active' : '' }}"><a
+                        <!-- <li class="{{ Request::is('warehouse') ? 'active' : '' }}"><a
                                 href="{{ url('warehouse') }}"><i
                                     data-feather="archive"></i><span>Warehouses</span></a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
                 <li class="submenu-open">
@@ -184,7 +184,12 @@
                                     data-feather="globe"></i><span>Storefront</span><span class="menu-arrow"></span></a>
                             <ul>
                                 @php
-                                    $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : (auth()->user()->getAccessibleStores()->first() ?? null);
+                                    $selectedStore = null;
+                                    if (session('selected_store_id')) {
+                                        $selectedStore = \App\Models\Store::find(session('selected_store_id'));
+                                    } elseif (auth()->check() && auth()->user()) {
+                                        $selectedStore = auth()->user()->getAccessibleStores()->first() ?? null;
+                                    }
                                 @endphp
                                 @if($selectedStore)
                                 <li><a href="{{ route('storefront.index', $selectedStore->slug) }}" target="_blank"
@@ -266,6 +271,26 @@
                     </ul>
                 </li>
                 <li class="submenu-open">
+                    <h6 class="submenu-hdr">Laundry Operations</h6>
+                    <ul>
+                        <li class="{{ Request::is('laundry') || Request::is('laundry/') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
+                        </li>
+                        <li class="{{ Request::is('laundry/orders*') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.orders') }}"><i data-feather="package"></i><span>Orders</span></a>
+                        </li>
+                        <li class="{{ Request::is('laundry/qc*') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.qc.index') }}"><i data-feather="check-square"></i><span>Quality Control</span></a>
+                        </li>
+                        <li class="{{ Request::is('laundry/machines*') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.machines') }}"><i data-feather="settings"></i><span>Machines</span></a>
+                        </li>
+                        <li class="{{ Request::is('laundry/garment-types*') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.garment-types') }}"><i data-feather="tag"></i><span>Garment Types</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
                     <h6 class="submenu-hdr">Reports</h6>
                     <ul>
                         <li class="{{ Request::is('sales-report') ? 'active' : '' }}"><a
@@ -295,25 +320,40 @@
                         <li class="{{ Request::is('tax-reports') ? 'active' : '' }}"><a
                                 href="{{ url('tax-reports') }}"><i data-feather="database"></i><span>Tax
                                     Report</span></a></li>
-                        <li class="{{ Request::is('profit-and-loss') ? 'active' : '' }}"><a
-                                href="{{ url('profit-and-loss') }}"><i data-feather="pie-chart"></i><span>Profit &
+                        <li class="{{ Request::is('profit-loss') ? 'active' : '' }}"><a
+                                href="{{ route('profit-loss') }}"><i data-feather="pie-chart"></i><span>Profit &
                                     Loss</span></a></li>
                     </ul>
                 </li>
+                @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner()))
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">User Management</h6>
                     <ul>
-                        <li class="{{ Request::is('users') ? 'active' : '' }}"><a href="{{ url('users') }}"><i
+                        <li class="{{ Request::is('users') ? 'active' : '' }}"><a href="{{ route('users.index') }}"><i
                                     data-feather="user-check"></i><span>Users</span></a>
                         </li>
+                        @if(auth()->user()->isSuperAdmin())
                         <li class="{{ Request::is('roles-permissions','permissions') ? 'active' : '' }}"><a
-                                href="{{ url('roles-permissions') }}"><i data-feather="shield"></i><span>Roles &
+                                href="{{ route('roles-permissions') }}"><i data-feather="shield"></i><span>Roles &
                                     Permissions</span></a></li>
                         <li class="{{ Request::is('delete-account') ? 'active' : '' }}"><a
-                                href="{{ url('delete-account') }}"><i data-feather="lock"></i><span>Delete Account
+                                href="{{ route('delete-account') }}"><i data-feather="lock"></i><span>Delete Account
                                     Request</span></a></li>
+                        @endif
                     </ul>
                 </li>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Security & Audit</h6>
+                    <ul>
+                        <li class="{{ Request::is('audit-trail*') ? 'active' : '' }}"><a href="{{ route('audit-trail.index') }}"><i
+                                    data-feather="activity"></i><span>Audit Trail</span></a>
+                        </li>
+                        <li class="{{ Request::is('audit-trail/user*') ? 'active' : '' }}"><a href="{{ route('audit-trail.user') }}"><i
+                                    data-feather="user"></i><span>My Activity</span></a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Pages</h6>
                     <ul>

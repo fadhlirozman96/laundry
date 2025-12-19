@@ -14,335 +14,264 @@
                     Add New Shift
                 @endslot
             @endcomponent
-            
 
-            <!-- /product list -->
             <div class="card table-list-card">
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="search-path">
-                            <div class="d-flex align-items-center">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                                <div class="layout-hide-box">
-                                    <a href="javascript:void(0);" class="me-3 layout-box"><i data-feather="layout"
-                                            class="feather-search"></i></a>
-                                    <div class="layout-drop-item card">
-                                        <div class="drop-item-head">
-                                            <h5>Want to manage datatable?</h5>
-                                            <p>Please drag and drop your column to reorder your table and enable see option
-                                                as you want.</p>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Shop</span>
-                                                    <input type="checkbox" id="option1" class="check" checked>
-                                                    <label for="option1" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Product</span>
-                                                    <input type="checkbox" id="option2" class="check" checked>
-                                                    <label for="option2" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Reference No</span>
-                                                    <input type="checkbox" id="option3" class="check" checked>
-                                                    <label for="option3" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Date</span>
-                                                    <input type="checkbox" id="option4" class="check" checked>
-                                                    <label for="option4" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Responsible Person</span>
-                                                    <input type="checkbox" id="option5" class="check" checked>
-                                                    <label for="option5" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Notes</span>
-                                                    <input type="checkbox" id="option6" class="check" checked>
-                                                    <label for="option6" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Quantity</span>
-                                                    <input type="checkbox" id="option7" class="check" checked>
-                                                    <label for="option7" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Actions</span>
-                                                    <input type="checkbox" id="option8" class="check" checked>
-                                                    <label for="option8" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>Newest</option>
-                                <option>Oldest</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="zap" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Shift</option>
-                                            <option>Fixed</option>
-                                            <option>Rotating</option>
-                                            <option>Split</option>
-                                            <option>On-Call</option>
-                                            <option>Weekend</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="calendar" class="info-img"></i>
-                                        <div class="input-groupicon">
-                                            <input type="text" class="datetimepicker" placeholder="Created Date">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="stop-circle" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Status</option>
-                                            <option>Active</option>
-                                            <option>Inactive</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table" id="shift-table">
                             <thead>
                                 <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
                                     <th>Shift Name</th>
                                     <th>Time</th>
+                                    <th>Break (min)</th>
                                     <th>Week off</th>
                                     <th>Created On</th>
                                     <th>Status</th>
-                                    <th class="no-sort">Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($shifts as $shift)
                                 <tr>
+                                    <td>{{ $shift->name }}</td>
+                                    <td>{{ $shift->time_range }}</td>
+                                    <td>{{ $shift->break_duration }}</td>
+                                    <td>{{ $shift->week_off_display }}</td>
+                                    <td>{{ $shift->created_at->format('d M Y') }}</td>
                                     <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
+                                        @if($shift->is_active)
+                                            <span class="badge badge-linesuccess">Active</span>
+                                        @else
+                                            <span class="badge badge-linedanger">Inactive</span>
+                                        @endif
                                     </td>
-                                    <td>
-                                        Fixed
-                                    </td>
-                                    <td>09:00 AM - 6:00 PM</td>
-                                    <td>
-                                        Sunday, Monday
-                                    </td>
-                                    <td>04 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
                                     <td class="action-table-data">
                                         <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
+                                            <a class="me-2 p-2 edit-shift" href="javascript:void(0);" data-id="{{ $shift->id }}">
                                                 <i data-feather="edit" class="feather-edit"></i>
                                             </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
+                                            <a class="confirm-text p-2 delete-shift" href="javascript:void(0);" data-id="{{ $shift->id }}">
                                                 <i data-feather="trash-2" class="feather-trash-2"></i>
                                             </a>
                                         </div>
-
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Rotating
-                                    </td>
-                                    <td>06:00 AM - 3:00 PM</td>
-                                    <td>
-                                        Saturday, Sunday
-                                    </td>
-                                    <td>21 July 2023</td>
-                                    <td><span class="badges-inactive">Inactive</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Split
-                                    </td>
-                                    <td>03:00 AM - 9:00 PM</td>
-                                    <td>
-                                        Tuesday, Saturday
-                                    </td>
-                                    <td>31 Jan 2022</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        On-Call
-                                    </td>
-                                    <td>09:00 AM - 6:00 PM</td>
-                                    <td>
-                                        Monday
-                                    </td>
-                                    <td>15 May 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Weekend
-                                    </td>
-                                    <td>06:00 AM - 3:00 PM</td>
-                                    <td>
-                                        Friday
-                                    </td>
-                                    <td>04 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <!-- /product list -->
         </div>
     </div>
+
+    <!-- Add Shift Modal -->
+    <div class="modal fade" id="add-shift" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Shift</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="add-shift-form">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Shift Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Start Time <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" name="start_time" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">End Time <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" name="end_time" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Break Duration (minutes)</label>
+                            <input type="number" class="form-control" name="break_duration" value="60">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Week Off</label>
+                            <div class="row">
+                                @foreach(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $day)
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="week_off[]" value="{{ $day }}" id="add-{{ $day }}">
+                                        <label class="form-check-label" for="add-{{ $day }}">{{ $day }}</label>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Shift Modal -->
+    <div class="modal fade" id="edit-shift-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Shift</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="edit-shift-form">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="shift_id" id="edit-shift-id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Shift Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" id="edit-shift-name" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Start Time <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" name="start_time" id="edit-shift-start" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">End Time <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" name="end_time" id="edit-shift-end" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Break Duration (minutes)</label>
+                            <input type="number" class="form-control" name="break_duration" id="edit-shift-break">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Week Off</label>
+                            <div class="row" id="edit-week-off-container">
+                                @foreach(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $day)
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="week_off[]" value="{{ $day }}" id="edit-{{ $day }}">
+                                        <label class="form-check-label" for="edit-{{ $day }}">{{ $day }}</label>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" name="is_active" id="edit-shift-status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() {
+    $('#shift-table').DataTable({ "bFilter": true, "sDom": 'fBtlpi' });
+
+    $('#add-shift-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '{{ route("shifts.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => location.reload());
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.edit-shift', function() {
+        var id = $(this).data('id');
+        $.get('/shifts/' + id, function(response) {
+            if (response.success) {
+                var s = response.shift;
+                $('#edit-shift-id').val(s.id);
+                $('#edit-shift-name').val(s.name);
+                $('#edit-shift-start').val(s.start_time ? s.start_time.substring(0,5) : '');
+                $('#edit-shift-end').val(s.end_time ? s.end_time.substring(0,5) : '');
+                $('#edit-shift-break').val(s.break_duration);
+                $('#edit-shift-status').val(s.is_active ? '1' : '0');
+                
+                // Reset and set week off checkboxes
+                $('#edit-week-off-container input[type="checkbox"]').prop('checked', false);
+                if (s.week_off) {
+                    s.week_off.forEach(function(day) {
+                        $('#edit-' + day).prop('checked', true);
+                    });
+                }
+                $('#edit-shift-modal').modal('show');
+            }
+        });
+    });
+
+    $('#edit-shift-form').on('submit', function(e) {
+        e.preventDefault();
+        var id = $('#edit-shift-id').val();
+        $.ajax({
+            url: '/shifts/' + id,
+            method: 'PUT',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => location.reload());
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-shift', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/shifts/' + id,
+                    method: 'DELETE',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success').then(() => location.reload());
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 @endsection

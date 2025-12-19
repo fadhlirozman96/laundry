@@ -5,391 +5,175 @@
         <div class="content">
             @component('components.breadcrumb')
                 @slot('title')
-                    Leaves
+                    My Leaves
                 @endslot
                 @slot('li_1')
-                    Manage your Leaves
+                    Manage your leave requests
                 @endslot
                 @slot('li_2')
                     Apply Leave
                 @endslot
             @endcomponent
 
-            <!-- /product list -->
-            <div class="card table-list-card">
-                <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="search-path">
-                            <div class="d-flex align-items-center">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                                <div class="layout-hide-box">
-                                    <a href="javascript:void(0);" class="me-3 layout-box"><i data-feather="layout"
-                                            class="feather-search"></i></a>
-                                    <div class="layout-drop-item card">
-                                        <div class="drop-item-head">
-                                            <h5>Want to manage datatable?</h5>
-                                            <p>Please drag and drop your column to reorder your table and enable see option
-                                                as you want.</p>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Shop</span>
-                                                    <input type="checkbox" id="option1" class="check" checked>
-                                                    <label for="option1" class="checktoggle"></label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Product</span>
-                                                    <input type="checkbox" id="option2" class="check" checked>
-                                                    <label for="option2" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Reference No</span>
-                                                    <input type="checkbox" id="option3" class="check" checked>
-                                                    <label for="option3" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Date</span>
-                                                    <input type="checkbox" id="option4" class="check" checked>
-                                                    <label for="option4" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Responsible Person</span>
-                                                    <input type="checkbox" id="option5" class="check" checked>
-                                                    <label for="option5" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Notes</span>
-                                                    <input type="checkbox" id="option6" class="check" checked>
-                                                    <label for="option6" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Quantity</span>
-                                                    <input type="checkbox" id="option7" class="check" checked>
-                                                    <label for="option7" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Actions</span>
-                                                    <input type="checkbox" id="option8" class="check" checked>
-                                                    <label for="option8" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>Newest</option>
-                                <option>Oldest</option>
-                            </select>
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ $leaves->where('status', 'approved')->sum('days') }}</h3>
+                            <p class="mb-0">Approved Days</p>
                         </div>
                     </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="box" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Type</option>
-                                            <option>Sick Leave</option>
-                                            <option>Paternity</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="user" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Employee</option>
-                                            <option>Mitchum Daniel</option>
-                                            <option>Susan Lopez</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="stop-circle" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Status</option>
-                                            <option>Approved</option>
-                                            <option>Rejected</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
-                                </div>
-                            </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ $leaves->where('status', 'pending')->sum('days') }}</h3>
+                            <p class="mb-0">Pending Days</p>
                         </div>
                     </div>
-                    <!-- /Filter -->
-                    <div class="table-responsive">
-                        <table class="table  datanew">
-                            <thead>
-                                <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
-                                    <th>Emp Id</th>
-                                    <th>Type</th>
-                                    <th>Date</th>
-                                    <th>Duration</th>
-                                    <th>Applied On</th>
-                                    <th>Reason</th>
-                                    <th>Approval</th>
-                                    <th class="no-sort">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>POS001 </td>
-                                    <td>Sick Leave</td>
-                                    <td>
-                                        02 Aug 2023
-                                    </td>
-                                    <td>01 Day</td>
-                                    <td>
-                                        04 Aug 2023
-                                    </td>
-                                    <td></td>
-                                    <td><span class="badge-applied">Applied</span></td>
-                                    <td class="action-table-data justify-content-end">
-                                        <div class="edit-delete-action">
-                                            <a href="" class="me-2 cancel-circle"><i data-feather="x-circle"
-                                                    class="feather-x-circle"></i></a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>POS002 </td>
-                                    <td>Paternity</td>
-                                    <td>
-                                        07 Aug 2023
-                                    </td>
-                                    <td>2 hrs</td>
-                                    <td>
-                                        07 Aug 2023
-                                    </td>
-                                    <td></td>
-                                    <td><span class="badge-approved">Approved</span></td>
-                                    <td class="action-table-data justify-content-end">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>POS003 </td>
-                                    <td>Sick Leave</td>
-                                    <td>
-                                        03 Aug 2023
-                                    </td>
-                                    <td>01 Day</td>
-                                    <td>
-                                        03 Aug 2023
-                                    </td>
-                                    <td><a href="" class="reason-for-reject" data-bs-toggle="modal"
-                                            data-bs-target="#rejected-reason">Reason</a></td>
-                                    <td><span class="badge-reject">Rejected</span></td>
-                                    <td class="action-table-data justify-content-end">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>POS004 </td>
-                                    <td>Sick Leave</td>
-                                    <td>
-                                        05 Aug 2023
-                                    </td>
-                                    <td>01 Day</td>
-                                    <td>
-                                        05 Aug 2023
-                                    </td>
-                                    <td><a href="" class="reason-for-reject" data-bs-toggle="modal"
-                                            data-bs-target="#rejected-reason">Reason</a></td>
-                                    <td><span class="badge-reject">Rejected</span></td>
-                                    <td class="action-table-data justify-content-end">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>POS005 </td>
-                                    <td>Sick Leave</td>
-                                    <td>
-                                        08 Aug 2023
-                                    </td>
-                                    <td>02 Days</td>
-                                    <td>
-                                        08 Aug 2023
-                                    </td>
-                                    <td></td>
-                                    <td><span class="badge-applied">Applied</span></td>
-                                    <td class="action-table-data justify-content-end">
-                                        <div class="edit-delete-action">
-                                            <a href="" class="me-2 cancel-circle"><i data-feather="x-circle"
-                                                    class="feather-x-circle"></i></a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>POS006</td>
-                                    <td>Sick Leave</td>
-                                    <td>
-                                        03 Aug 2023
-                                    </td>
-                                    <td>2 hrs</td>
-                                    <td>
-                                        03 Aug 2023
-                                    </td>
-                                    <td></td>
-                                    <td><span class="badge-approved">Approved</span></td>
-                                    <td class="action-table-data justify-content-end">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ $leaves->where('status', 'rejected')->sum('days') }}</h3>
+                            <p class="mb-0">Rejected Days</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ $leaves->count() }}</h3>
+                            <p class="mb-0">Total Requests</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- /product list -->
+
+            <div class="card table-list-card">
+                <div class="card-body">
+                    <h5 class="mb-3">Leave History</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Leave Type</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Days</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Applied On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($leaves as $leave)
+                                <tr>
+                                    <td>{{ $leave->leaveType ? $leave->leaveType->name : '-' }}</td>
+                                    <td>{{ $leave->start_date->format('d M Y') }}</td>
+                                    <td>{{ $leave->end_date->format('d M Y') }}</td>
+                                    <td>{{ $leave->days }}</td>
+                                    <td>{{ Str::limit($leave->reason, 30) ?: '-' }}</td>
+                                    <td>
+                                        @php
+                                            $statusColors = [
+                                                'pending' => 'warning',
+                                                'approved' => 'success',
+                                                'rejected' => 'danger',
+                                                'cancelled' => 'secondary',
+                                            ];
+                                            $color = $statusColors[$leave->status] ?? 'secondary';
+                                        @endphp
+                                        <span class="badge badge-line{{ $color }}">{{ ucfirst($leave->status) }}</span>
+                                    </td>
+                                    <td>{{ $leave->created_at->format('d M Y') }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">No leave requests found.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $leaves->links() }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Apply Leave Modal -->
+    <div class="modal fade" id="add-units" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apply for Leave</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="apply-leave-form">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Leave Type <span class="text-danger">*</span></label>
+                            <select class="form-control" name="leave_type_id" required>
+                                <option value="">Select Leave Type</option>
+                                @foreach($leaveTypes as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }} ({{ $type->days_allowed }} days allowed)</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">From Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="start_date" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">To Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="end_date" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Reason</label>
+                            <textarea class="form-control" name="reason" rows="3" placeholder="Enter reason for leave..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() {
+    $('#apply-leave-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '{{ route("leaves.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#add-units').modal('hide');
+                    Swal.fire('Success', response.message, 'success').then(() => location.reload());
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+});
+</script>
 @endsection

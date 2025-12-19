@@ -1,3 +1,6 @@
+ <!-- CSRF Token -->
+ <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+ 
  <!-- Bootstrap CSS -->
  <link rel="stylesheet" href="<?php echo e(url('build/css/bootstrap.min.css')); ?>">
 

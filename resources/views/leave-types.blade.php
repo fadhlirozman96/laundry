@@ -5,250 +5,235 @@
         <div class="content">
             @component('components.breadcrumb')
                 @slot('title')
-                    Leaves
+                    Leave Types
                 @endslot
                 @slot('li_1')
-                    Manage your Leaves
+                    Manage your Leave Types
                 @endslot
                 @slot('li_2')
-                    Add Leave type
+                    Add Leave Type
                 @endslot
             @endcomponent
 
-            <!-- /product list -->
             <div class="card table-list-card">
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="search-path">
-                            <div class="d-flex align-items-center">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>Newest</option>
-                                <option>Oldest</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="box" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Type</option>
-                                            <option>Maternity</option>
-                                            <option>Sick Leave</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="stop-circle" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Status</option>
-                                            <option>Active</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table" id="leave-type-table">
                             <thead>
                                 <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
                                     <th>Name</th>
                                     <th>Leave Quota</th>
+                                    <th>Paid/Unpaid</th>
                                     <th>Created On</th>
                                     <th>Status</th>
-                                    <th class="no-sort">Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($leaveTypes as $type)
                                 <tr>
+                                    <td>{{ $type->name }}</td>
+                                    <td>{{ str_pad($type->days_allowed, 2, '0', STR_PAD_LEFT) }}</td>
                                     <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
+                                        @if($type->is_paid)
+                                            <span class="badge badge-linesuccess">Paid</span>
+                                        @else
+                                            <span class="badge badge-linewarning">Unpaid</span>
+                                        @endif
                                     </td>
+                                    <td>{{ $type->created_at->format('d M Y') }}</td>
                                     <td>
-                                        Sick Leave
+                                        @if($type->is_active)
+                                            <span class="badge badge-linesuccess">Active</span>
+                                        @else
+                                            <span class="badge badge-linedanger">Inactive</span>
+                                        @endif
                                     </td>
-                                    <td>05</td>
-                                    <td>02 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
                                     <td class="action-table-data">
                                         <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
+                                            <a class="me-2 p-2 edit-leave-type" href="javascript:void(0);" data-id="{{ $type->id }}">
                                                 <i data-feather="edit" class="feather-edit"></i>
                                             </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
+                                            <a class="confirm-text p-2 delete-leave-type" href="javascript:void(0);" data-id="{{ $type->id }}">
                                                 <i data-feather="trash-2" class="feather-trash-2"></i>
                                             </a>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Maternity
-                                    <td>05</td>
-                                    <td>03 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Paternity
-                                    </td>
-                                    <td>05</td>
-                                    <td>04 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Casual Leave
-                                    </td>
-                                    <td>05</td>
-                                    <td>07 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Emergency
-                                    </td>
-                                    <td>05</td>
-                                    <td>08 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        Vacation
-                                    </td>
-                                    <td>05</td>
-                                    <td>10 Aug 2023</td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <!-- /product list -->
         </div>
     </div>
+
+    <!-- Add Leave Type Modal -->
+    <div class="modal fade" id="add-leave-type" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Leave Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="add-leave-type-form">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Leave Type Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Days Allowed <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="days_allowed" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_paid" value="1" id="add-is-paid" checked>
+                                <label class="form-check-label" for="add-is-paid">Paid Leave</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Leave Type Modal -->
+    <div class="modal fade" id="edit-leave-type-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Leave Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="edit-leave-type-form">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="leave_type_id" id="edit-leave-type-id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Leave Type Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" id="edit-leave-type-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Days Allowed <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="days_allowed" id="edit-leave-type-days" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" id="edit-leave-type-description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_paid" value="1" id="edit-is-paid">
+                                <label class="form-check-label" for="edit-is-paid">Paid Leave</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" name="is_active" id="edit-leave-type-status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() {
+    $('#leave-type-table').DataTable({ "bFilter": true, "sDom": 'fBtlpi' });
+
+    $('#add-leave-type-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '{{ route("leave-types.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => location.reload());
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.edit-leave-type', function() {
+        var id = $(this).data('id');
+        $.get('/leave-types/' + id, function(response) {
+            if (response.success) {
+                var t = response.leaveType;
+                $('#edit-leave-type-id').val(t.id);
+                $('#edit-leave-type-name').val(t.name);
+                $('#edit-leave-type-days').val(t.days_allowed);
+                $('#edit-leave-type-description').val(t.description);
+                $('#edit-is-paid').prop('checked', t.is_paid);
+                $('#edit-leave-type-status').val(t.is_active ? '1' : '0');
+                $('#edit-leave-type-modal').modal('show');
+            }
+        });
+    });
+
+    $('#edit-leave-type-form').on('submit', function(e) {
+        e.preventDefault();
+        var id = $('#edit-leave-type-id').val();
+        $.ajax({
+            url: '/leave-types/' + id,
+            method: 'PUT',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => location.reload());
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-leave-type', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/leave-types/' + id,
+                    method: 'DELETE',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success').then(() => location.reload());
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 @endsection

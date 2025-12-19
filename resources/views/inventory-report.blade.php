@@ -3,14 +3,94 @@
 @section('content')
     <div class="page-wrapper">
         <div class="content">
-            @component('components.breadcrumb')
-                @slot('title')
-                    Inventory Report
-                @endslot
-                @slot('li_1')
-                    Manage Your Inventory Report
-                @endslot
-            @endcomponent
+            <div class="page-header justify-content-between">
+                <div class="page-title">
+                    <h4>Inventory Report</h4>
+                    <h6>View current stock levels</h6>
+                </div>
+                <ul class="table-top-head">
+                    <li>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img
+                                src="{{ URL::asset('/build/img/icons/pdf.svg') }}" alt="img"></a>
+                    </li>
+                    <li>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Excel"><img
+                                src="{{ URL::asset('/build/img/icons/excel.svg') }}" alt="img"></a>
+                    </li>
+                    <li>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Print"><i data-feather="printer"
+                                class="feather-rotate-ccw"></i></a>
+                    </li>
+                    <li>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh" href="{{ route('inventory-report') }}"><i data-feather="rotate-ccw"
+                                class="feather-rotate-ccw"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Products</h6>
+                                    <h4 class="mb-0">{{ number_format($totalProducts ?? 0) }}</h4>
+                                </div>
+                                <div class="bg-primary rounded-circle p-3">
+                                    <i data-feather="box" class="text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Stock</h6>
+                                    <h4 class="mb-0">{{ number_format($totalStock ?? 0) }}</h4>
+                                </div>
+                                <div class="bg-success rounded-circle p-3">
+                                    <i data-feather="package" class="text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Low Stock</h6>
+                                    <h4 class="mb-0 text-warning">{{ number_format($lowStockProducts ?? 0) }}</h4>
+                                </div>
+                                <div class="bg-warning rounded-circle p-3">
+                                    <i data-feather="alert-triangle" class="text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Out of Stock</h6>
+                                    <h4 class="mb-0 text-danger">{{ number_format($outOfStock ?? 0) }}</h4>
+                                </div>
+                                <div class="bg-danger rounded-circle p-3">
+                                    <i data-feather="x-circle" class="text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- /product list -->
             <div class="card table-list-card">
@@ -28,17 +108,7 @@
                                     <i data-feather="filter" class="filter-icon"></i>
                                     <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
                                 </a>
-
                             </div>
-
-                        </div>
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>25 9 23</option>
-                                <option>12 9 23</option>
-                            </select>
                         </div>
                     </div>
                     <!-- /Filter -->
@@ -47,28 +117,43 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                     <div class="input-blocks">
-                                        <i data-feather="box" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Product</option>
-                                            <option>Bold V3.2</option>
-                                            <option>Nike Jordan</option>
+                                        <label>Product</label>
+                                        <select class="select" id="filter_product">
+                                            <option value="">All Products</option>
+                                            @foreach($products ?? [] as $product)
+                                                <option value="{{ $product->name }}">{{ $product->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="input-blocks">
-                                        <i data-feather="zap" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Category</option>
-                                            <option>Accessories</option>
-                                            <option>Shoe</option>
+                                        <label>Category</label>
+                                        <select class="select" id="filter_category">
+                                            <option value="">All Categories</option>
+                                            @foreach($categories ?? [] as $category)
+                                                <option value="{{ $category->name }}">{{ $category->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 col-sm-6 col-12">
+                                <div class="col-lg-3">
                                     <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
+                                        <label>Stock Status</label>
+                                        <select class="select" id="filter_stock">
+                                            <option value="">All</option>
+                                            <option value="in_stock">In Stock</option>
+                                            <option value="low_stock">Low Stock</option>
+                                            <option value="out_of_stock">Out of Stock</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>&nbsp;</label>
+                                        <a class="btn btn-filters w-100" id="apply-filters"> 
+                                            <i data-feather="search" class="feather-search"></i> Search 
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +161,7 @@
                     </div>
                     <!-- /Filter -->
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table datanew" id="inventory-table">
                             <thead>
                                 <tr>
                                     <th class="no-sort">
@@ -88,13 +173,15 @@
                                     <th>Product Name</th>
                                     <th>SKU</th>
                                     <th>Category</th>
-                                    <th>Brand</th>
                                     <th>Unit</th>
-                                    <th>Instock Qty</th>
+                                    <th>In Stock</th>
+                                    <th>Alert Qty</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                @forelse($inventoryData ?? [] as $item)
+                                <tr data-stock-status="{{ $item->quantity == 0 ? 'out_of_stock' : ($item->track_quantity && $item->quantity <= $item->alert_quantity ? 'low_stock' : 'in_stock') }}">
                                     <td>
                                         <label class="checkboxs">
                                             <input type="checkbox">
@@ -103,217 +190,34 @@
                                     </td>
                                     <td class="productimgname">
                                         <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/stock-img-01.png') }}"
-                                                    alt="product">
-                                            </a>
+                                            @if($item->image)
+                                                <img src="{{ asset('storage/' . $item->image) }}" alt="product" style="width:40px;height:40px;object-fit:cover;">
+                                            @else
+                                                <img src="{{ URL::asset('/build/img/products/default.png') }}" alt="product">
+                                            @endif
                                         </div>
-                                        <a href="javascript:void(0);">Lenovo 3rd Generation</a>
+                                        <a href="javascript:void(0);">{{ $item->name }}</a>
                                     </td>
-                                    <td>PT001</td>
-                                    <td>Computers</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>100</td>
-                                </tr>
-                                <tr>
+                                    <td>{{ $item->sku ?? 'N/A' }}</td>
+                                    <td>{{ $item->category_name ?? 'N/A' }}</td>
+                                    <td>{{ $item->unit_name ?? 'pc' }}</td>
+                                    <td>{{ number_format($item->quantity ?? 0) }}</td>
+                                    <td>{{ number_format($item->alert_quantity ?? 0) }}</td>
                                     <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
+                                        @if($item->quantity == 0)
+                                            <span class="badge badge-linedanger">Out of Stock</span>
+                                        @elseif($item->track_quantity && $item->quantity <= $item->alert_quantity)
+                                            <span class="badges-warning">Low Stock</span>
+                                        @else
+                                            <span class="badge-linesuccess">In Stock</span>
+                                        @endif
                                     </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/stock-img-06.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Bold V3.2</a>
-                                    </td>
-                                    <td>PT002</td>
-                                    <td>Accessories</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>150</td>
                                 </tr>
+                                @empty
                                 <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/stock-img-02.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Nike Jordan</a>
-                                    </td>
-                                    <td>PT003</td>
-                                    <td>Shoe</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>170</td>
+                                    <td colspan="8" class="text-center">No inventory data found</td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/stock-img-03.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Apple Series 5 Watch</a>
-                                    </td>
-                                    <td>PT004</td>
-                                    <td>Accessories</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>120</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/stock-img-04.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Amazon Echo Dot</a>
-                                    </td>
-                                    <td>PT005</td>
-                                    <td>Accessories</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>80</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/stock-img-05.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Lobar Handy</a>
-                                    </td>
-                                    <td>PT006</td>
-                                    <td>Furnitures</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>200</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/expire-product-01.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Red Premium Handy</a>
-                                    </td>
-                                    <td>PT007</td>
-                                    <td>Accessories</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>230</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/expire-product-02.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Iphone 14 Pro</a>
-                                    </td>
-                                    <td>PT008</td>
-                                    <td>Phone</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>370</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/expire-product-03.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Black Slim 200</a>
-                                    </td>
-                                    <td>PT009</td>
-                                    <td>Furnitures</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>260</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <div class="view-product me-2">
-                                            <a href="javascript:void(0);">
-                                                <img src="{{ URL::asset('/build/img/products/expire-product-04.png') }}"
-                                                    alt="product">
-                                            </a>
-                                        </div>
-                                        <a href="javascript:void(0);">Woodcraft Sandal</a>
-                                    </td>
-                                    <td>PT010</td>
-                                    <td>Bags</td>
-                                    <td>N/D</td>
-                                    <td>pc</td>
-                                    <td>340</td>
-                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -323,3 +227,26 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+
+        $('#apply-filters').on('click', function() {
+            var table = $('.datanew').DataTable();
+            var productFilter = $('#filter_product').val();
+            var categoryFilter = $('#filter_category').val();
+            
+            // Combine filters
+            var searchTerm = '';
+            if (productFilter) searchTerm += productFilter + ' ';
+            if (categoryFilter) searchTerm += categoryFilter;
+            
+            table.search(searchTerm.trim()).draw();
+        });
+    });
+</script>
+@endpush

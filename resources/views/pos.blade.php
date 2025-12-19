@@ -39,7 +39,21 @@
                         </ul>
                         <div class="pos-products">
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <h5 class="mb-0">Products</h5>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0 me-3">Products</h5>
+                                    <!-- View Toggle -->
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="View toggle">
+                                        <button type="button" class="btn btn-outline-primary" id="view-original" title="Original (4 columns)">
+                                            <i data-feather="square" class="feather-14"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary active" id="view-compact" title="Compact (6 columns)">
+                                            <i data-feather="grid" class="feather-14"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary" id="view-list" title="List View">
+                                            <i data-feather="list" class="feather-14"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 <div class="search-product" style="max-width: 300px; width: 100%;">
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="product-search" placeholder="Search products..." autocomplete="off">
@@ -106,6 +120,42 @@
                                 </div>
                                 <a href="javascript:void(0);" class="btn btn-primary btn-icon" data-bs-toggle="modal"
                                     data-bs-target="#create" title="Add New Customer"><i data-feather="user-plus" class="feather-16"></i></a>
+                            </div>
+                            <!-- Customer Details (shown when new/walk-in customer) -->
+                            <div id="customer-details-section" class="mt-3">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <input type="text" class="form-control form-control-sm" id="pos-customer-name" placeholder="Customer Name">
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <input type="text" class="form-control form-control-sm" id="pos-customer-phone" placeholder="Phone">
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <input type="email" class="form-control form-control-sm" id="pos-customer-email" placeholder="Email">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Details Section (for Laundry) -->
+                        <div class="block-section order-details-section">
+                            <h6>Order Details</h6>
+                            <div class="row">
+                                <div class="col-12 mb-2">
+                                    <label class="form-label small mb-1">Expected Completion</label>
+                                    <input type="datetime-local" class="form-control form-control-sm" id="expected-completion" 
+                                        min="{{ date('Y-m-d\TH:i') }}">
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label class="form-label small mb-1">Special Instructions</label>
+                                    <textarea class="form-control form-control-sm" id="special-instructions" rows="2" 
+                                        placeholder="e.g., Delicate wash, No bleach, etc."></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small mb-1">Order Notes</label>
+                                    <textarea class="form-control form-control-sm" id="order-notes" rows="2" 
+                                        placeholder="Internal notes about this order..."></textarea>
+                                </div>
                             </div>
                         </div>
 
@@ -387,6 +437,168 @@
         to { transform: rotate(360deg); }
     }
     
+    /* View toggle button styling */
+    .btn-group .btn.active {
+        background-color: #0d6efd !important;
+        color: white !important;
+        border-color: #0d6efd !important;
+    }
+    
+    /* COMPACT VIEW - 6 columns, smaller cards */
+    #products-container.compact-view .product-item {
+        flex: 0 0 16.666% !important;
+        max-width: 16.666% !important;
+        padding: 4px !important;
+    }
+    
+    #products-container.compact-view .product-info {
+        padding: 8px;
+        margin-bottom: 0;
+    }
+    
+    #products-container.compact-view .img-bg {
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+    }
+    
+    #products-container.compact-view .img-bg img {
+        max-height: 48px;
+        width: auto;
+        object-fit: contain;
+    }
+    
+    #products-container.compact-view .cat-name {
+        font-size: 9px;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    #products-container.compact-view .product-name {
+        font-size: 10px;
+        margin-bottom: 4px;
+        line-height: 1.2;
+        max-height: 24px;
+        overflow: hidden;
+    }
+    
+    #products-container.compact-view .price {
+        font-size: 9px;
+    }
+    
+    #products-container.compact-view .price span {
+        font-size: 8px;
+    }
+    
+    #products-container.compact-view .price p {
+        font-size: 10px;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    /* LIST VIEW - horizontal list */
+    #products-container.list-view .product-item {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 3px 0 !important;
+    }
+    
+    #products-container.list-view .product-info {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        padding: 8px 12px !important;
+        margin-bottom: 0;
+    }
+    
+    #products-container.list-view .img-bg {
+        width: 45px !important;
+        height: 45px !important;
+        min-width: 45px;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px;
+        flex-shrink: 0;
+    }
+    
+    #products-container.list-view .img-bg img {
+        max-height: 40px;
+        max-width: 40px;
+        object-fit: contain;
+    }
+    
+    #products-container.list-view .cat-name {
+        font-size: 10px;
+        background: #e9ecef;
+        padding: 2px 8px;
+        border-radius: 8px;
+        margin: 0 10px 0 0;
+        white-space: nowrap;
+    }
+    
+    #products-container.list-view .product-name {
+        flex: 1;
+        font-size: 13px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 10px;
+    }
+    
+    #products-container.list-view .price {
+        margin-left: auto;
+        text-align: right;
+        min-width: 80px;
+        flex-shrink: 0;
+    }
+    
+    #products-container.list-view .price span {
+        display: none;
+    }
+    
+    #products-container.list-view .price p {
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0;
+        color: #0d6efd;
+    }
+    
+    /* Responsive for compact view */
+    @media (max-width: 1600px) {
+        #products-container.compact-view .product-item {
+            flex: 0 0 20% !important;
+            max-width: 20% !important;
+        }
+    }
+    
+    @media (max-width: 1400px) {
+        #products-container.compact-view .product-item {
+            flex: 0 0 25% !important;
+            max-width: 25% !important;
+        }
+    }
+    
+    @media (max-width: 1200px) {
+        #products-container.compact-view .product-item {
+            flex: 0 0 33.333% !important;
+            max-width: 33.333% !important;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        #products-container.compact-view .product-item {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+        }
+    }
+    
     /* Ensure modal backdrop is properly handled */
     .modal-backdrop {
         z-index: 1040;
@@ -575,6 +787,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Render products
     function renderProducts(products) {
         const container = $('#products-container');
+        // Get current view from variable
+        const viewToApply = currentView || 'compact';
+        
         container.empty();
         
         if (products.length === 0) {
@@ -585,6 +800,15 @@ document.addEventListener('DOMContentLoaded', function() {
             container.html(`<div class="text-center py-5 col-12"><p class="text-muted">${message}</p></div>`);
             return;
         }
+        
+        // Ensure view class is maintained after rendering
+        container.removeClass('compact-view list-view');
+        if (viewToApply === 'compact') {
+            container.addClass('compact-view');
+        } else if (viewToApply === 'list') {
+            container.addClass('list-view');
+        }
+        // For 'original', no extra class needed
         
         products.forEach(function(product) {
             const isInCart = cart.some(item => item.product_id === product.id);
@@ -1431,19 +1655,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const tax = (subtotal * taxPercent) / 100;
         const total = subtotal + tax + shipping - discount;
         
+        // Get customer details
+        const customerName = $('#pos-customer-name').val() || $('#customer-select option:selected').text() || 'Walk-in Customer';
+        const customerPhone = $('#pos-customer-phone').val() || '';
+        const customerEmail = $('#pos-customer-email').val() || '';
+        
         $.ajax({
             url: '{{ route("pos.checkout") }}',
             method: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
                 items: items,
-                customer_name: $('#customer-select').val() || 'Walk-in Customer',
+                customer_name: customerName,
+                customer_phone: customerPhone,
+                customer_email: customerEmail,
                 payment_method: selectedPaymentMethod,
                 tax: tax,
                 discount: discount,
                 shipping: shipping,
                 subtotal: subtotal,
-                coupon_id: appliedCoupon ? appliedCoupon.id : null
+                coupon_id: appliedCoupon ? appliedCoupon.id : null,
+                expected_completion: $('#expected-completion').val() || null,
+                special_instructions: $('#special-instructions').val() || null,
+                notes: $('#order-notes').val() || null
             },
             success: function(response) {
                 if (response.success) {
@@ -1466,6 +1700,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         $('#apply-coupon-btn').removeClass('d-none');
                         $('#remove-coupon-btn').addClass('d-none');
                         $('#coupon-success-msg, #coupon-error-msg').addClass('d-none');
+                        
+                        // Reset laundry-specific fields
+                        $('#pos-customer-name, #pos-customer-phone, #pos-customer-email').val('');
+                        $('#expected-completion').val('');
+                        $('#special-instructions, #order-notes').val('');
                         
                         // Remove active state and styles from payment methods
                         $('.payment-method-btn').each(function() {
@@ -1538,6 +1777,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedPaymentMethod = null;
                 $('#order-tax, #order-shipping, #order-discount').val(0);
                 
+                // Reset laundry-specific fields
+                $('#pos-customer-name, #pos-customer-phone, #pos-customer-email').val('');
+                $('#expected-completion').val('');
+                $('#special-instructions, #order-notes').val('');
+                
                 // Reset payment method styles
                 $('.payment-method-btn').each(function() {
                     $(this).removeClass('active');
@@ -1590,6 +1834,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         cart = [];
                         selectedPaymentMethod = null;
                         $('#order-tax, #order-shipping, #order-discount').val(0);
+                        
+                        // Reset laundry-specific fields
+                        $('#pos-customer-name, #pos-customer-phone, #pos-customer-email').val('');
+                        $('#expected-completion').val('');
+                        $('#special-instructions, #order-notes').val('');
                         
                         // Reset payment method styles
                         $('.payment-method-btn').each(function() {
@@ -1791,6 +2040,35 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         });
         
+        // Format expected completion date
+        let expectedCompletionHtml = '';
+        if (order.expected_completion) {
+            const expDate = new Date(order.expected_completion);
+            expectedCompletionHtml = `<p><strong>Expected Completion:</strong> ${expDate.toLocaleString()}</p>`;
+        }
+        
+        // Special instructions
+        let specialInstructionsHtml = '';
+        if (order.special_instructions) {
+            specialInstructionsHtml = `
+                <div class="alert alert-info mt-3">
+                    <strong><i class="fa fa-info-circle"></i> Special Instructions:</strong><br>
+                    ${order.special_instructions}
+                </div>
+            `;
+        }
+        
+        // Order notes
+        let notesHtml = '';
+        if (order.notes) {
+            notesHtml = `
+                <div class="alert alert-secondary mt-2">
+                    <strong><i class="fa fa-sticky-note"></i> Notes:</strong><br>
+                    ${order.notes}
+                </div>
+            `;
+        }
+        
         const modalHtml = `
             <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -1803,14 +2081,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <p><strong>Customer:</strong> ${order.customer_name || 'Walk-in Customer'}</p>
+                                    ${order.customer_phone ? `<p><strong>Phone:</strong> ${order.customer_phone}</p>` : ''}
+                                    ${order.customer_email ? `<p><strong>Email:</strong> ${order.customer_email}</p>` : ''}
                                     <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                                    ${expectedCompletionHtml}
                                 </div>
                                 <div class="col-md-6">
                                     <p><strong>Payment Method:</strong> ${order.payment_method}</p>
                                     <p><strong>Status:</strong> <span class="badge bg-success">${order.payment_status}</span></p>
                                 </div>
                             </div>
-                            <h6>Order Items:</h6>
+                            ${specialInstructionsHtml}
+                            ${notesHtml}
+                            <h6 class="mt-3">Order Items:</h6>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -1975,6 +2258,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load customers on page load
     loadCustomers();
     
+    // Handle customer selection to auto-fill details
+    $(document).on('change', '#customer-select', function() {
+        const selectedOption = $(this).find('option:selected');
+        const customerId = $(this).val();
+        
+        if (customerId) {
+            // Existing customer selected - fetch details
+            const phone = selectedOption.data('phone') || '';
+            const email = selectedOption.data('email') || '';
+            const name = selectedOption.text().split(' - ')[0]; // Get name before phone
+            
+            $('#pos-customer-name').val(name);
+            $('#pos-customer-phone').val(phone);
+            $('#pos-customer-email').val(email);
+        } else {
+            // Walk-in customer - clear fields for manual entry
+            $('#pos-customer-name, #pos-customer-phone, #pos-customer-email').val('');
+        }
+    });
+    
     // Initialize payment method styles on page load
     $('.payment-method-btn').each(function() {
         $(this).css({
@@ -1994,6 +2297,56 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof feather !== 'undefined') {
         feather.replace();
     }
+    
+    // View toggle functionality - 3 modes: original, compact, list
+    let currentView = localStorage.getItem('pos-view') || 'compact';
+    
+    function setView(view) {
+        console.log('Setting view to:', view);
+        currentView = view;
+        localStorage.setItem('pos-view', view);
+        
+        const container = $('#products-container');
+        
+        // Remove all view classes
+        container.removeClass('compact-view list-view');
+        
+        // Remove active from all buttons
+        $('#view-original, #view-compact, #view-list').removeClass('active');
+        
+        // Apply the selected view
+        if (view === 'compact') {
+            container.addClass('compact-view');
+            $('#view-compact').addClass('active');
+        } else if (view === 'list') {
+            container.addClass('list-view');
+            $('#view-list').addClass('active');
+        } else {
+            // Original view - no extra class needed, Bootstrap columns work as-is
+            $('#view-original').addClass('active');
+        }
+        
+        console.log('Container classes:', container.attr('class'));
+    }
+    
+    // Initialize view from localStorage
+    setView(currentView);
+    
+    // View toggle click handlers
+    $(document).on('click', '#view-original', function(e) {
+        e.preventDefault();
+        setView('original');
+    });
+    
+    $(document).on('click', '#view-compact', function(e) {
+        e.preventDefault();
+        setView('compact');
+    });
+    
+    $(document).on('click', '#view-list', function(e) {
+        e.preventDefault();
+        setView('list');
+    });
     
     // Initialize
     updateCartDisplay();

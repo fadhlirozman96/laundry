@@ -203,6 +203,142 @@
 <script src="<?php echo e(URL::asset('/build/js/theme-script.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('/build/js/script.js')); ?>"></script>
 
+<!-- Session Timeout Detection -->
+<?php if(auth()->guard()->check()): ?>
+<script>
+(function() {
+    // Session timeout settings (in minutes)
+    const SESSION_LIFETIME = <?php echo e(config('session.lifetime', 120)); ?>;
+    const WARNING_BEFORE = 5; // Show warning 5 minutes before timeout
+    
+    let lastActivity = Date.now();
+    let warningShown = false;
+    let timeoutId = null;
+    
+    // Track user activity
+    function updateActivity() {
+        lastActivity = Date.now();
+        warningShown = false;
+    }
+    
+    // Listen for user activity
+    ['click', 'keypress', 'scroll', 'mousemove'].forEach(function(event) {
+        document.addEventListener(event, updateActivity, { passive: true });
+    });
+    
+    // Check session periodically
+    function checkSession() {
+        const now = Date.now();
+        const inactiveMinutes = (now - lastActivity) / (1000 * 60);
+        const remainingMinutes = SESSION_LIFETIME - inactiveMinutes;
+        
+        // Show warning before timeout
+        if (remainingMinutes <= WARNING_BEFORE && remainingMinutes > 0 && !warningShown) {
+            warningShown = true;
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Session Expiring Soon',
+                    html: 'Your session will expire in <strong>' + Math.ceil(remainingMinutes) + '</strong> minutes due to inactivity.<br>Click anywhere to stay logged in.',
+                    icon: 'warning',
+                    timer: remainingMinutes * 60 * 1000,
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Stay Logged In',
+                    allowOutsideClick: true
+                }).then(function() {
+                    updateActivity();
+                    // Ping server to extend session
+                    fetch('/session/ping', { 
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '<?php echo e(csrf_token()); ?>',
+                            'Accept': 'application/json'
+                        }
+                    }).catch(function() {});
+                });
+            }
+        }
+        
+        // If session likely expired, verify with server
+        if (remainingMinutes <= 0) {
+            verifySession();
+        }
+    }
+    
+    // Verify session with server
+    function verifySession() {
+        fetch('/session/check', { 
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(function(response) {
+            if (response.status === 401 || response.status === 419) {
+                redirectToLogin('Your session has expired. Please login again.');
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            if (data && !data.authenticated) {
+                redirectToLogin('Your session has expired. Please login again.');
+            }
+        })
+        .catch(function() {
+            // Network error or session expired
+        });
+    }
+    
+    // Redirect to login page
+    function redirectToLogin(message) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Session Expired',
+                text: message,
+                icon: 'warning',
+                confirmButtonText: 'Login',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(function() {
+                window.location.href = '<?php echo e(route("login")); ?>';
+            });
+        } else {
+            alert(message);
+            window.location.href = '<?php echo e(route("login")); ?>';
+        }
+    }
+    
+    // Handle AJAX errors globally
+    $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+        if (jqXHR.status === 401 || jqXHR.status === 419) {
+            redirectToLogin('Your session has expired. Please login again.');
+        }
+    });
+    
+    // Also handle fetch API errors
+    const originalFetch = window.fetch;
+    window.fetch = function() {
+        return originalFetch.apply(this, arguments).then(function(response) {
+            if (response.status === 401 || response.status === 419) {
+                // Check if it's not the login page request
+                if (!response.url.includes('/login') && !response.url.includes('/session/')) {
+                    redirectToLogin('Your session has expired. Please login again.');
+                }
+            }
+            return response;
+        });
+    };
+    
+    // Check session every minute
+    setInterval(checkSession, 60000);
+    
+    // Initial check after 1 second
+    setTimeout(checkSession, 1000);
+})();
+</script>
+<?php endif; ?>
+
 <!-- Page Specific Scripts -->
 <?php echo $__env->yieldPushContent('scripts'); ?>
 <?php /**PATH C:\laragon\www\laundry\resources\views/layout/partials/footer-scripts.blade.php ENDPATH**/ ?>

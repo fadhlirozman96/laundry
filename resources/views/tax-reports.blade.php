@@ -6,7 +6,7 @@
             <div class="page-header justify-content-between">
                 <div class="page-title">
                     <h4>Tax Reports</h4>
-                    <h6>Manage your Tax Reports</h6>
+                    <h6>View tax collected from sales</h6>
                 </div>
                 <ul class="table-top-head">
                     <li>
@@ -22,445 +22,200 @@
                                 class="feather-rotate-ccw"></i></a>
                     </li>
                     <li>
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh"><i data-feather="rotate-ccw"
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh" href="{{ route('tax-reports') }}"><i data-feather="rotate-ccw"
                                 class="feather-rotate-ccw"></i></a>
-                    </li>
-                    <li>
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Collapse" id="collapse-header"><i
-                                data-feather="chevron-up" class="feather-chevron-up"></i></a>
                     </li>
                 </ul>
             </div>
 
-
-            <!-- /product list -->
-            <div class="card table-list-card">
-                <div class="card-body">
-                    <div class="tabs-set">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="purchase-tab" data-bs-toggle="tab"
-                                    data-bs-target="#purchase2" type="button" role="tab" aria-controls="purchase2"
-                                    aria-selected="true">Purchase Tax Report</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales2"
-                                    type="button" role="tab" aria-controls="sales2" aria-selected="false">Sales Tax
-                                    Report</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="purchase2" role="tabpanel"
-                                aria-labelledby="purchase-tab">
-                                <div class="table-top">
-                                    <div class="search-set">
-                                        <div class="search-input">
-                                            <a href="" class="btn btn-searchset"><i data-feather="search"
-                                                    class="feather-search"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="search-path">
-                                        <div class="d-flex align-items-center">
-                                            <a class="btn btn-filter" id="filter_search">
-                                                <i data-feather="filter" class="filter-icon"></i>
-                                                <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}"
-                                                        alt="img"></span>
-                                            </a>
-                                            <a href="" class="me-3 layout-box"><i data-feather="layout"
-                                                    class="feather-search"></i></a>
-                                        </div>
-
-                                    </div>
-                                    <div class="form-sort">
-                                        <i data-feather="sliders" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Sort by Date</option>
-                                            <option>Newest</option>
-                                            <option>Oldest</option>
-                                        </select>
-                                    </div>
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Tax Collected</h6>
+                                    <h4 class="mb-0">MYR {{ number_format($totalSalesTax ?? 0, 2) }}</h4>
                                 </div>
-                                <!-- /Filter -->
-                                <div class="card" id="filter_inputs">
-                                    <div class="card-body pb-0">
-                                        <div class="row">
-                                            <div class="col-lg-2 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <i data-feather="zap" class="info-img"></i>
-                                                    <select class="select">
-                                                        <option>Choose Category</option>
-                                                        <option>Computers</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <i data-feather="credit-card" class="info-img"></i>
-                                                    <select class="select">
-                                                        <option>Payment Method</option>
-                                                        <option>Complete</option>
-                                                        <option>Inprogress</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <div class="position-relative daterange-wraper">
-                                                        <input type="text" class="form-control" name="datetimes"
-                                                            placeholder="From Date - To Date">
-                                                        <i data-feather="calendar" class="feather-14 info-img"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                                <div class="input-blocks">
-                                                    <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                            class="feather-search"></i> Search </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /Filter -->
-                                <div class="table-responsive">
-                                    <table class="table datanew">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </th>
-                                                <th>Supplier</th>
-                                                <th>Date</th>
-                                                <th>Ref No</th>
-                                                <th>Total Amount</th>
-                                                <th>Payment Method</th>
-                                                <th>Discount</th>
-                                                <th>Tax Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td>Lavi</td>
-                                                <td>12 Jul 2023</td>
-                                                <td class="ref-number">#4237300</td>
-                                                <td>$30,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/pay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>10</td>
-                                                <td>$457</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td>Anthony</td>
-                                                <td>18 Aug 2023</td>
-                                                <td class="ref-number">#5628954</td>
-                                                <td>$45,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/stripe.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>12</td>
-                                                <td>$265</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td>Colleen</td>
-                                                <td>27 Aug 2023</td>
-                                                <td class="ref-number">#8745239</td>
-                                                <td>$26,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/razorpay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>08</td>
-                                                <td>$980</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td>Victor</td>
-                                                <td>05 Sep 2023</td>
-                                                <td class="ref-number">#9814586</td>
-                                                <td>$18,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/pay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>15</td>
-                                                <td>$561</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td>Tracy</td>
-                                                <td>23 Sep 2023</td>
-                                                <td class="ref-number">#7590325</td>
-                                                <td>$52,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/pay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>20</td>
-                                                <td>$382</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="bg-primary rounded-circle p-3">
+                                    <i data-feather="percent" class="text-white"></i>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="sales2" role="tabpanel" aria-labelledby="sales-tab">
-                                <div class="table-top">
-                                    <div class="search-set">
-                                        <div class="search-input">
-                                            <a href="" class="btn btn-searchset"><i data-feather="search"
-                                                    class="feather-search"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="search-path">
-                                        <a class="btn btn-filter" id="filter_search2">
-                                            <i data-feather="filter" class="filter-icon"></i>
-                                            <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}"
-                                                    alt="img"></span>
-                                        </a>
-                                    </div>
-                                    <div class="form-sort">
-                                        <i data-feather="sliders" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Sort by Date</option>
-                                            <option>Newest</option>
-                                            <option>Oldest</option>
-                                        </select>
-                                    </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Sales Amount</h6>
+                                    <h4 class="mb-0">MYR {{ number_format($totalSalesAmount ?? 0, 2) }}</h4>
                                 </div>
-                                <!-- /Filter -->
-                                <div class="card" id="filter_inputs2">
-                                    <div class="card-body pb-0">
-                                        <div class="row">
-                                            <div class="col-lg-2 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <i data-feather="zap" class="info-img"></i>
-                                                    <select class="select">
-                                                        <option>Choose Category</option>
-                                                        <option>Computers</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <i data-feather="credit-card" class="info-img"></i>
-                                                    <select class="select">
-                                                        <option>Payment Method</option>
-                                                        <option>Complete</option>
-                                                        <option>Inprogress</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <i data-feather="calendar" class="info-img"></i>
-                                                    <div class="input-groupicon">
-                                                        <input type="text" class="datetimepicker"
-                                                            placeholder="From Date - To Date">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                                <div class="input-blocks">
-                                                    <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                            class="feather-search"></i> Search </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /Filter -->
-                                <div class="table-responsive">
-                                    <table class="table datanew">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </th>
-                                                <th>Customer</th>
-                                                <th>Date</th>
-                                                <th>Invoice Number</th>
-                                                <th>Total Amount</th>
-                                                <th>Payment Method</th>
-                                                <th>Discount</th>
-                                                <th>Tax Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td class="userimgname">
-                                                    <a href="javascript:void(0);" class="product-img">
-                                                        <img src="{{ URL::asset('/build/img/users/user-01.jpg') }}"
-                                                            alt="product">
-                                                    </a>
-                                                    <a href="javascript:void(0);">Mitchum Daniel</a>
-                                                </td>
-                                                <td>12 Jul 2023</td>
-                                                <td class="ref-number">INV4237300</td>
-                                                <td>$30,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/pay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>10</td>
-                                                <td>$457</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td class="userimgname">
-                                                    <a href="javascript:void(0);" class="product-img">
-                                                        <img src="{{ URL::asset('/build/img/users/user-02.jpg') }}"
-                                                            alt="product">
-                                                    </a>
-                                                    <a href="javascript:void(0);">Susan Lopez</a>
-                                                </td>
-                                                <td>04 Aug 2023</td>
-                                                <td class="ref-number">INV5385083</td>
-                                                <td>$27,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/stripe.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>08</td>
-                                                <td>$382</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td class="userimgname">
-                                                    <a href="javascript:void(0);" class="product-img">
-                                                        <img src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                            alt="product">
-                                                    </a>
-                                                    <a href="javascript:void(0);">Robert</a>
-                                                </td>
-                                                <td>25 Aug 2023</td>
-                                                <td class="ref-number">INV7609368</td>
-                                                <td>$45,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/razorpay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>15</td>
-                                                <td>$649</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td class="userimgname">
-                                                    <a href="javascript:void(0);" class="product-img">
-                                                        <img src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                            alt="product">
-                                                    </a>
-                                                    <a href="javascript:void(0);">Russell Belle</a>
-                                                </td>
-                                                <td>16 Sep 2023</td>
-                                                <td class="ref-number">INV2750916</td>
-                                                <td>$18,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/pay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>12</td>
-                                                <td>$104</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label class="checkboxs">
-                                                        <input type="checkbox">
-                                                        <span class="checkmarks"></span>
-                                                    </label>
-                                                </td>
-                                                <td class="userimgname">
-                                                    <a href="javascript:void(0);" class="product-img">
-                                                        <img src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                            alt="product">
-                                                    </a>
-                                                    <a href="javascript:void(0);">Edward Muniz</a>
-                                                </td>
-                                                <td>28 Oct 2023</td>
-                                                <td class="ref-number">INV3478305</td>
-                                                <td>$22,000</td>
-                                                <td class="payment-info">
-                                                    <a href="javascript:void(0);"> <img
-                                                            src="{{ URL::asset('/build/img/icons/pay.svg') }}"
-                                                            alt="Pay"> </a>
-                                                </td>
-                                                <td>20</td>
-                                                <td>$290</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="bg-success rounded-circle p-3">
+                                    <i data-feather="dollar-sign" class="text-white"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- /product list -->
+
+            <!-- Monthly Tax Summary -->
+            @if(isset($monthlyTax) && $monthlyTax->count() > 0)
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Monthly Tax Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Month</th>
+                                            <th class="text-end">Total Sales</th>
+                                            <th class="text-end">Tax Collected</th>
+                                            <th class="text-end">Effective Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($monthlyTax as $month)
+                                        <tr>
+                                            <td>{{ date('F Y', mktime(0, 0, 0, $month->month, 1, $month->year)) }}</td>
+                                            <td class="text-end">MYR {{ number_format($month->total_sales, 2) }}</td>
+                                            <td class="text-end">MYR {{ number_format($month->total_tax, 2) }}</td>
+                                            <td class="text-end">
+                                                {{ $month->total_sales > 0 ? number_format(($month->total_tax / $month->total_sales) * 100, 2) : 0 }}%
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot class="table-primary">
+                                        <tr>
+                                            <th>Total</th>
+                                            <th class="text-end">MYR {{ number_format($totalSalesAmount ?? 0, 2) }}</th>
+                                            <th class="text-end">MYR {{ number_format($totalSalesTax ?? 0, 2) }}</th>
+                                            <th class="text-end">
+                                                {{ ($totalSalesAmount ?? 0) > 0 ? number_format((($totalSalesTax ?? 0) / ($totalSalesAmount ?? 1)) * 100, 2) : 0 }}%
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            <!-- Tax Details -->
+            <div class="card table-list-card">
+                <div class="card-body">
+                    <div class="table-top">
+                        <div class="search-set">
+                            <div class="search-input">
+                                <a href="" class="btn btn-searchset"><i data-feather="search"
+                                        class="feather-search"></i></a>
+                            </div>
+                        </div>
+                        <div class="search-path">
+                            <div class="d-flex align-items-center">
+                                <a class="btn btn-filter" id="filter_search">
+                                    <i data-feather="filter" class="filter-icon"></i>
+                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Filter -->
+                    <div class="card" id="filter_inputs">
+                        <div class="card-body pb-0">
+                            <form method="GET" action="{{ route('tax-reports') }}" class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>Start Date</label>
+                                        <input type="date" class="form-control" name="start_date" value="{{ $startDate ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>End Date</label>
+                                        <input type="date" class="form-control" name="end_date" value="{{ $endDate ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-filters w-100"> 
+                                            <i data-feather="search" class="feather-search"></i> Search 
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /Filter -->
+                    <div class="table-responsive">
+                        <table class="table datanew">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <label class="checkboxs">
+                                            <input type="checkbox">
+                                            <span class="checkmarks"></span>
+                                        </label>
+                                    </th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Order #</th>
+                                    <th>Total Amount</th>
+                                    <th>Payment Method</th>
+                                    <th>Discount</th>
+                                    <th>Tax Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($salesTaxData ?? [] as $order)
+                                <tr>
+                                    <td>
+                                        <label class="checkboxs">
+                                            <input type="checkbox">
+                                            <span class="checkmarks"></span>
+                                        </label>
+                                    </td>
+                                    <td>{{ $order->customer_name ?? 'Walk-in' }}</td>
+                                    <td>{{ $order->created_at->format('d M Y') }}</td>
+                                    <td class="ref-number">{{ $order->order_number }}</td>
+                                    <td>MYR {{ number_format($order->total, 2) }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ ucfirst($order->payment_method ?? 'N/A') }}</span>
+                                    </td>
+                                    <td>MYR {{ number_format($order->discount, 2) }}</td>
+                                    <td><strong>MYR {{ number_format($order->tax, 2) }}</strong></td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="8" class="text-center">No tax data found for the selected period</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    });
+</script>
+@endpush

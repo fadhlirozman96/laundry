@@ -22,6 +22,10 @@ Route::get('/login', [CustomAuthController::class, 'index'])->name('login'); // 
 Route::post('custom-login', [CustomAuthController::class, 'customSignin'])->name('signin.custom'); 
 Route::get('logout', [CustomAuthController::class, 'signOut'])->name('logout');
 Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
+
+// Session management routes
+Route::get('/session/check', [App\Http\Controllers\SessionController::class, 'check'])->name('session.check');
+Route::post('/session/ping', [App\Http\Controllers\SessionController::class, 'ping'])->name('session.ping');
 // Route::get('register', [CustomAuthController::class, 'registration'])->name('register');
 // Route::post('custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
 
@@ -191,49 +195,75 @@ Route::get('/edit-employee', function () {
     return view('edit-employee');
 })->name('edit-employee');     
 
-Route::get('/department-grid', function () {                         
-    return view('department-grid');
-})->name('department-grid');   
+// Department Routes
+Route::get('/department-grid', [App\Http\Controllers\DepartmentController::class, 'index'])->name('department-grid')->middleware('auth');
+Route::get('/departments/data', [App\Http\Controllers\DepartmentController::class, 'getDepartmentData'])->name('departments.data')->middleware('auth');
+Route::post('/departments', [App\Http\Controllers\DepartmentController::class, 'store'])->name('departments.store')->middleware('auth');
+Route::get('/departments/{id}', [App\Http\Controllers\DepartmentController::class, 'show'])->name('departments.show')->middleware('auth');
+Route::put('/departments/{id}', [App\Http\Controllers\DepartmentController::class, 'update'])->name('departments.update')->middleware('auth');
+Route::delete('/departments/{id}', [App\Http\Controllers\DepartmentController::class, 'destroy'])->name('departments.destroy')->middleware('auth');
 
-Route::get('/designation', function () {                         
-    return view('designation');
-})->name('designation');   
+// Designation Routes
+Route::get('/designation', [App\Http\Controllers\DesignationController::class, 'index'])->name('designation')->middleware('auth');
+Route::get('/designations/data', [App\Http\Controllers\DesignationController::class, 'getDesignationData'])->name('designations.data')->middleware('auth');
+Route::post('/designations', [App\Http\Controllers\DesignationController::class, 'store'])->name('designations.store')->middleware('auth');
+Route::get('/designations/{id}', [App\Http\Controllers\DesignationController::class, 'show'])->name('designations.show')->middleware('auth');
+Route::put('/designations/{id}', [App\Http\Controllers\DesignationController::class, 'update'])->name('designations.update')->middleware('auth');
+Route::delete('/designations/{id}', [App\Http\Controllers\DesignationController::class, 'destroy'])->name('designations.destroy')->middleware('auth');
 
-Route::get('/shift', function () {                         
-    return view('shift');
-})->name('shift'); 
+// Shift Routes
+Route::get('/shift', [App\Http\Controllers\ShiftController::class, 'index'])->name('shift')->middleware('auth');
+Route::get('/shifts/data', [App\Http\Controllers\ShiftController::class, 'getShiftData'])->name('shifts.data')->middleware('auth');
+Route::post('/shifts', [App\Http\Controllers\ShiftController::class, 'store'])->name('shifts.store')->middleware('auth');
+Route::get('/shifts/{id}', [App\Http\Controllers\ShiftController::class, 'show'])->name('shifts.show')->middleware('auth');
+Route::put('/shifts/{id}', [App\Http\Controllers\ShiftController::class, 'update'])->name('shifts.update')->middleware('auth');
+Route::delete('/shifts/{id}', [App\Http\Controllers\ShiftController::class, 'destroy'])->name('shifts.destroy')->middleware('auth');
 
-Route::get('/attendance-employee', function () {                         
-    return view('attendance-employee');
-})->name('attendance-employee'); 
+// Attendance Routes
+Route::get('/attendance-employee', [App\Http\Controllers\AttendanceController::class, 'employeeIndex'])->name('attendance-employee')->middleware('auth');
+Route::get('/attendance-admin', [App\Http\Controllers\AttendanceController::class, 'adminIndex'])->name('attendance-admin')->middleware('auth');
+Route::get('/attendances/data', [App\Http\Controllers\AttendanceController::class, 'getAttendanceData'])->name('attendances.data')->middleware('auth');
+Route::post('/attendances', [App\Http\Controllers\AttendanceController::class, 'store'])->name('attendances.store')->middleware('auth');
+Route::get('/attendances/{id}', [App\Http\Controllers\AttendanceController::class, 'show'])->name('attendances.show')->middleware('auth');
+Route::put('/attendances/{id}', [App\Http\Controllers\AttendanceController::class, 'update'])->name('attendances.update')->middleware('auth');
+Route::delete('/attendances/{id}', [App\Http\Controllers\AttendanceController::class, 'destroy'])->name('attendances.destroy')->middleware('auth');
+Route::post('/attendances/clock-in', [App\Http\Controllers\AttendanceController::class, 'clockIn'])->name('attendances.clock-in')->middleware('auth');
+Route::post('/attendances/clock-out', [App\Http\Controllers\AttendanceController::class, 'clockOut'])->name('attendances.clock-out')->middleware('auth');
 
-Route::get('/attendance-admin', function () {                         
-    return view('attendance-admin');
-})->name('attendance-admin'); 
+// Leave Type Routes
+Route::get('/leave-types', [App\Http\Controllers\LeaveTypeController::class, 'index'])->name('leave-types')->middleware('auth');
+Route::get('/leave-types/data', [App\Http\Controllers\LeaveTypeController::class, 'getLeaveTypeData'])->name('leave-types.data')->middleware('auth');
+Route::post('/leave-types', [App\Http\Controllers\LeaveTypeController::class, 'store'])->name('leave-types.store')->middleware('auth');
+Route::get('/leave-types/{id}', [App\Http\Controllers\LeaveTypeController::class, 'show'])->name('leave-types.show')->middleware('auth');
+Route::put('/leave-types/{id}', [App\Http\Controllers\LeaveTypeController::class, 'update'])->name('leave-types.update')->middleware('auth');
+Route::delete('/leave-types/{id}', [App\Http\Controllers\LeaveTypeController::class, 'destroy'])->name('leave-types.destroy')->middleware('auth');
 
-Route::get('/leaves-admin', function () {                         
-    return view('leaves-admin');
-})->name('leaves-admin'); 
+// Leave Routes
+Route::get('/leaves-admin', [App\Http\Controllers\LeaveController::class, 'adminIndex'])->name('leaves-admin')->middleware('auth');
+Route::get('/leaves-employee', [App\Http\Controllers\LeaveController::class, 'employeeIndex'])->name('leaves-employee')->middleware('auth');
+Route::get('/leaves/data', [App\Http\Controllers\LeaveController::class, 'getLeaveData'])->name('leaves.data')->middleware('auth');
+Route::post('/leaves', [App\Http\Controllers\LeaveController::class, 'store'])->name('leaves.store')->middleware('auth');
+Route::get('/leaves/{id}', [App\Http\Controllers\LeaveController::class, 'show'])->name('leaves.show')->middleware('auth');
+Route::post('/leaves/{id}/approve', [App\Http\Controllers\LeaveController::class, 'approve'])->name('leaves.approve')->middleware('auth');
+Route::post('/leaves/{id}/reject', [App\Http\Controllers\LeaveController::class, 'reject'])->name('leaves.reject')->middleware('auth');
+Route::delete('/leaves/{id}', [App\Http\Controllers\LeaveController::class, 'destroy'])->name('leaves.destroy')->middleware('auth');
 
-Route::get('/leaves-employee', function () {                         
-    return view('leaves-employee');
-})->name('leaves-employee'); 
+// Holiday Routes
+Route::get('/holidays', [App\Http\Controllers\HolidayController::class, 'index'])->name('holidays')->middleware('auth');
+Route::get('/holidays/data', [App\Http\Controllers\HolidayController::class, 'getHolidayData'])->name('holidays.data')->middleware('auth');
+Route::post('/holidays', [App\Http\Controllers\HolidayController::class, 'store'])->name('holidays.store')->middleware('auth');
+Route::get('/holidays/{id}', [App\Http\Controllers\HolidayController::class, 'show'])->name('holidays.show')->middleware('auth');
+Route::put('/holidays/{id}', [App\Http\Controllers\HolidayController::class, 'update'])->name('holidays.update')->middleware('auth');
+Route::delete('/holidays/{id}', [App\Http\Controllers\HolidayController::class, 'destroy'])->name('holidays.destroy')->middleware('auth');
 
-Route::get('/leave-types', function () {                         
-    return view('leave-types');
-})->name('leave-types'); 
-
-Route::get('/holidays', function () {                         
-    return view('holidays');
-})->name('holidays'); 
-
-Route::get('/payroll-list', function () {                         
-    return view('payroll-list');
-})->name('payroll-list'); 
-
-Route::get('/payslip', function () {                         
-    return view('payslip');
-})->name('payslip'); 
+// Payroll Routes
+Route::get('/payroll-list', [App\Http\Controllers\PayrollController::class, 'index'])->name('payroll-list')->middleware('auth');
+Route::get('/payrolls/data', [App\Http\Controllers\PayrollController::class, 'getPayrollData'])->name('payrolls.data')->middleware('auth');
+Route::post('/payrolls', [App\Http\Controllers\PayrollController::class, 'store'])->name('payrolls.store')->middleware('auth');
+Route::get('/payrolls/{id}', [App\Http\Controllers\PayrollController::class, 'show'])->name('payrolls.show')->middleware('auth');
+Route::put('/payrolls/{id}', [App\Http\Controllers\PayrollController::class, 'update'])->name('payrolls.update')->middleware('auth');
+Route::delete('/payrolls/{id}', [App\Http\Controllers\PayrollController::class, 'destroy'])->name('payrolls.destroy')->middleware('auth');
+Route::get('/payrolls/{id}/payslip', [App\Http\Controllers\PayrollController::class, 'payslip'])->name('payroll.payslip')->middleware('auth'); 
 
 
 // Sales Module Routes
@@ -315,7 +345,7 @@ Route::get('/storefront-preview/{storeId}', [App\Http\Controllers\StoreThemeCont
 
 // Store Frontend Routes (must be after CMS routes to avoid conflicts)
 // Exclude common admin routes from being matched as store slugs
-Route::prefix('{slug}')->where(['slug' => '^(?!index|product-list|add-product|store-list|pos|login|logout|signin|signout|register|api|admin|storefront-cms|storefront-theme|storefront-preview).*$'])->group(function () {
+Route::prefix('{slug}')->where(['slug' => '^(?!index|product-list|add-product|store-list|pos|login|logout|signin|signout|register|api|admin|storefront-cms|storefront-theme|storefront-preview|laundry|audit-trail|users|roles-permissions|delete-account|session|expense|payroll|attendance|leave|holiday|shift|designation|department|employee|quotation|invoice|sales|coupon|customer|supplier|warehouse|report|inventory|purchase|tax|profit|income).*$'])->group(function () {
     Route::get('/', [StoreFrontController::class, 'index'])->name('storefront.index');
     Route::get('/products', [StoreFrontController::class, 'products'])->name('storefront.products');
     Route::get('/product/{productSlug}', [StoreFrontController::class, 'product'])->name('storefront.product');
@@ -546,17 +576,27 @@ Route::get('/icon-flag', function () {
     return view('icon-flag');
 })->name('icon-flag');
 
-Route::get('/users', function () {
-    return view('users');
-})->name('users');
-
-Route::get('/roles-permissions', function () {
-    return view('roles-permissions');
-})->name('roles-permissions');
-
-Route::get('/delete-account', function () {
-    return view('delete-account');
-})->name('delete-account');
+// User Management Routes
+Route::middleware('auth')->group(function () {
+    // Users - accessible by Super Admin and Business Owner
+    Route::get('/users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('users.index');
+    Route::get('/users/data', [App\Http\Controllers\UserManagementController::class, 'getUsersData'])->name('users.data');
+    Route::post('/users', [App\Http\Controllers\UserManagementController::class, 'store'])->name('users.store');
+    Route::get('/users/{id}', [App\Http\Controllers\UserManagementController::class, 'show'])->name('users.show');
+    Route::put('/users/{id}', [App\Http\Controllers\UserManagementController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [App\Http\Controllers\UserManagementController::class, 'destroy'])->name('users.destroy');
+    
+    // Roles & Permissions - Super Admin only
+    Route::get('/roles-permissions', [App\Http\Controllers\UserManagementController::class, 'rolesPermissions'])->name('roles-permissions');
+    Route::get('/roles/data', [App\Http\Controllers\UserManagementController::class, 'getRolesData'])->name('roles.data');
+    Route::post('/roles', [App\Http\Controllers\UserManagementController::class, 'storeRole'])->name('roles.store');
+    Route::put('/roles/{id}', [App\Http\Controllers\UserManagementController::class, 'updateRole'])->name('roles.update');
+    Route::delete('/roles/{id}', [App\Http\Controllers\UserManagementController::class, 'destroyRole'])->name('roles.destroy');
+    
+    // Delete Account Requests - Super Admin only
+    Route::get('/delete-account', [App\Http\Controllers\UserManagementController::class, 'deleteAccountRequests'])->name('delete-account');
+    Route::delete('/delete-account/{id}', [App\Http\Controllers\UserManagementController::class, 'processDeleteRequest'])->name('delete-account.process');
+});
 
 Route::get('/permissions', function () {
     return view('permissions');
@@ -621,41 +661,20 @@ Route::get('/data-tables', function () {
     return view('data-tables');
 })->name('data-tables');
 
-Route::get('/sales-report', function () {
-    return view('sales-report');
-})->name('sales-report');
-
-Route::get('/purchase-report', function () {
-    return view('purchase-report');
-})->name('purchase-report');
-
-Route::get('/inventory-report', function () {
-    return view('inventory-report');
-})->name('inventory-report');
-
-// invoice-report route is now handled by InvoiceController (defined earlier in this file)
-
-Route::get('/supplier-report', function () {
-    return view('supplier-report');
-})->name('supplier-report');
-
-Route::get('/customer-report', function () {
-    return view('customer-report');
-})->name('customer-report');
-
-Route::get('/expense-report', [App\Http\Controllers\ExpenseController::class, 'report'])->name('expense-report')->middleware('auth');
-
-Route::get('/income-report', function () {
-    return view('income-report');
-})->name('income-report');
-
-Route::get('/tax-reports', function () {
-    return view('tax-reports');
-})->name('tax-reports');
-
-Route::get('/profit-and-loss', function () {
-    return view('profit-and-loss');
-})->name('profit-and-loss');
+// Report Routes - All handled by ReportController
+Route::middleware('auth')->group(function () {
+    Route::get('/sales-report', [App\Http\Controllers\ReportController::class, 'salesReport'])->name('sales-report');
+    Route::get('/sales-report/data', [App\Http\Controllers\ReportController::class, 'getSalesReportData'])->name('sales-report.data');
+    Route::get('/purchase-report', [App\Http\Controllers\ReportController::class, 'purchaseReport'])->name('purchase-report');
+    Route::get('/inventory-report', [App\Http\Controllers\ReportController::class, 'inventoryReport'])->name('inventory-report');
+    // invoice-report route is handled by InvoiceController (defined earlier in this file)
+    Route::get('/supplier-report', [App\Http\Controllers\ReportController::class, 'supplierReport'])->name('supplier-report');
+    Route::get('/customer-report', [App\Http\Controllers\ReportController::class, 'customerReport'])->name('customer-report');
+    Route::get('/expense-report', [App\Http\Controllers\ExpenseController::class, 'report'])->name('expense-report');
+    Route::get('/income-report', [App\Http\Controllers\ReportController::class, 'incomeReport'])->name('income-report');
+    Route::get('/tax-reports', [App\Http\Controllers\ReportController::class, 'taxReport'])->name('tax-reports');
+    Route::get('/profit-loss', [App\Http\Controllers\ReportController::class, 'profitLossReport'])->name('profit-loss');
+});
 
 Route::get('/profile', function () {
     return view('profile');
@@ -902,7 +921,59 @@ Route::get('/language-settings-web', function () {
     return view('language-settings-web');
 })->name('language-settings-web');
 
+// ========== AUDIT TRAIL MODULE ==========
+Route::middleware('auth')->prefix('audit-trail')->name('audit-trail.')->group(function () {
+    Route::get('/', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('index');
+    Route::get('/data', [App\Http\Controllers\ActivityLogController::class, 'getData'])->name('data');
+    Route::get('/export', [App\Http\Controllers\ActivityLogController::class, 'export'])->name('export');
+    Route::get('/stats', [App\Http\Controllers\ActivityLogController::class, 'stats'])->name('stats');
+    Route::get('/user/{userId?}', [App\Http\Controllers\ActivityLogController::class, 'userActivity'])->name('user');
+    Route::get('/model/{modelType}/{modelId}', [App\Http\Controllers\ActivityLogController::class, 'modelHistory'])->name('model');
+    Route::get('/{id}', [App\Http\Controllers\ActivityLogController::class, 'show'])->name('show');
+});
 
+// ========== LAUNDRY OPERATIONS MODULE ==========
+Route::middleware('auth')->prefix('laundry')->name('laundry.')->group(function () {
+    // Dashboard
+    Route::get('/', [App\Http\Controllers\LaundryController::class, 'dashboard'])->name('dashboard');
+    
+    // Orders
+    Route::get('/orders', [App\Http\Controllers\LaundryController::class, 'index'])->name('orders');
+    Route::get('/orders/create', [App\Http\Controllers\LaundryController::class, 'create'])->name('create');
+    Route::post('/orders', [App\Http\Controllers\LaundryController::class, 'store'])->name('store');
+    Route::get('/orders/{id}', [App\Http\Controllers\LaundryController::class, 'show'])->name('show');
+    Route::put('/orders/{id}/status', [App\Http\Controllers\LaundryController::class, 'updateStatus'])->name('update-status');
+    
+    // QR/Order Search
+    Route::post('/scan-qr', [App\Http\Controllers\LaundryController::class, 'scanQR'])->name('scan-qr');
+    Route::post('/find-order', [App\Http\Controllers\LaundryController::class, 'findByOrderNumber'])->name('find-order');
+    Route::get('/orders/{id}/qr', [App\Http\Controllers\LaundryController::class, 'generateQRImage'])->name('qr-image');
+    
+    // Garment Types
+    Route::get('/garment-types', [App\Http\Controllers\LaundryController::class, 'garmentTypes'])->name('garment-types');
+    Route::post('/garment-types', [App\Http\Controllers\LaundryController::class, 'storeGarmentType'])->name('garment-types.store');
+    Route::put('/garment-types/{id}', [App\Http\Controllers\LaundryController::class, 'updateGarmentType'])->name('garment-types.update');
+    Route::delete('/garment-types/{id}', [App\Http\Controllers\LaundryController::class, 'deleteGarmentType'])->name('garment-types.delete');
+    
+    // Machines
+    Route::get('/machines', [App\Http\Controllers\MachineController::class, 'index'])->name('machines');
+    Route::post('/machines', [App\Http\Controllers\MachineController::class, 'store'])->name('machines.store');
+    Route::put('/machines/{id}', [App\Http\Controllers\MachineController::class, 'update'])->name('machines.update');
+    Route::delete('/machines/{id}', [App\Http\Controllers\MachineController::class, 'destroy'])->name('machines.destroy');
+    Route::get('/machines/status', [App\Http\Controllers\MachineController::class, 'getStatus'])->name('machines.status');
+    
+    // Machine Usage
+    Route::get('/machine-usage', [App\Http\Controllers\MachineController::class, 'usageHistory'])->name('machine-usage');
+    Route::post('/machines/start', [App\Http\Controllers\MachineController::class, 'startUsage'])->name('machines.start');
+    Route::put('/machines/usage/{id}/end', [App\Http\Controllers\MachineController::class, 'endUsage'])->name('machines.end');
+    
+    // Quality Control
+    Route::get('/qc', [App\Http\Controllers\QualityCheckController::class, 'index'])->name('qc.index');
+    Route::get('/qc/history', [App\Http\Controllers\QualityCheckController::class, 'history'])->name('qc.history');
+    Route::get('/qc/{orderId}', [App\Http\Controllers\QualityCheckController::class, 'create'])->name('qc.create');
+    Route::post('/qc/{orderId}', [App\Http\Controllers\QualityCheckController::class, 'store'])->name('qc.store');
+    Route::get('/qc/view/{id}', [App\Http\Controllers\QualityCheckController::class, 'show'])->name('qc.show');
+});
 
 
 

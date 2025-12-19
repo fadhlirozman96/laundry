@@ -163,16 +163,16 @@
                         <li class="<?php echo e(Request::is('customers') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('customers')); ?>"><i data-feather="user"></i><span>Customers</span></a>
                         </li>
-                        <li class="<?php echo e(Request::is('suppliers') ? 'active' : ''); ?>"><a
+                        <!-- <li class="<?php echo e(Request::is('suppliers') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('suppliers')); ?>"><i data-feather="users"></i><span>Suppliers</span></a>
-                        </li>
+                        </li> -->
                         <li class="<?php echo e(Request::is('store-list') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('store-list')); ?>"><i data-feather="home"></i><span>Stores</span></a>
                         </li>
-                        <li class="<?php echo e(Request::is('warehouse') ? 'active' : ''); ?>"><a
+                        <!-- <li class="<?php echo e(Request::is('warehouse') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('warehouse')); ?>"><i
                                     data-feather="archive"></i><span>Warehouses</span></a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
                 <li class="submenu-open">
@@ -184,7 +184,12 @@
                                     data-feather="globe"></i><span>Storefront</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <?php
-                                    $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : (auth()->user()->getAccessibleStores()->first() ?? null);
+                                    $selectedStore = null;
+                                    if (session('selected_store_id')) {
+                                        $selectedStore = \App\Models\Store::find(session('selected_store_id'));
+                                    } elseif (auth()->check() && auth()->user()) {
+                                        $selectedStore = auth()->user()->getAccessibleStores()->first() ?? null;
+                                    }
                                 ?>
                                 <?php if($selectedStore): ?>
                                 <li><a href="<?php echo e(route('storefront.index', $selectedStore->slug)); ?>" target="_blank"
@@ -266,6 +271,26 @@
                     </ul>
                 </li>
                 <li class="submenu-open">
+                    <h6 class="submenu-hdr">Laundry Operations</h6>
+                    <ul>
+                        <li class="<?php echo e(Request::is('laundry') || Request::is('laundry/') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('laundry.dashboard')); ?>"><i data-feather="home"></i><span>Dashboard</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('laundry/orders*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('laundry.orders')); ?>"><i data-feather="package"></i><span>Orders</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('laundry/qc*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('laundry.qc.index')); ?>"><i data-feather="check-square"></i><span>Quality Control</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('laundry/machines*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('laundry.machines')); ?>"><i data-feather="settings"></i><span>Machines</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('laundry/garment-types*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('laundry.garment-types')); ?>"><i data-feather="tag"></i><span>Garment Types</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
                     <h6 class="submenu-hdr">Reports</h6>
                     <ul>
                         <li class="<?php echo e(Request::is('sales-report') ? 'active' : ''); ?>"><a
@@ -295,25 +320,40 @@
                         <li class="<?php echo e(Request::is('tax-reports') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('tax-reports')); ?>"><i data-feather="database"></i><span>Tax
                                     Report</span></a></li>
-                        <li class="<?php echo e(Request::is('profit-and-loss') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('profit-and-loss')); ?>"><i data-feather="pie-chart"></i><span>Profit &
+                        <li class="<?php echo e(Request::is('profit-loss') ? 'active' : ''); ?>"><a
+                                href="<?php echo e(route('profit-loss')); ?>"><i data-feather="pie-chart"></i><span>Profit &
                                     Loss</span></a></li>
                     </ul>
                 </li>
+                <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">User Management</h6>
                     <ul>
-                        <li class="<?php echo e(Request::is('users') ? 'active' : ''); ?>"><a href="<?php echo e(url('users')); ?>"><i
+                        <li class="<?php echo e(Request::is('users') ? 'active' : ''); ?>"><a href="<?php echo e(route('users.index')); ?>"><i
                                     data-feather="user-check"></i><span>Users</span></a>
                         </li>
+                        <?php if(auth()->user()->isSuperAdmin()): ?>
                         <li class="<?php echo e(Request::is('roles-permissions','permissions') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('roles-permissions')); ?>"><i data-feather="shield"></i><span>Roles &
+                                href="<?php echo e(route('roles-permissions')); ?>"><i data-feather="shield"></i><span>Roles &
                                     Permissions</span></a></li>
                         <li class="<?php echo e(Request::is('delete-account') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('delete-account')); ?>"><i data-feather="lock"></i><span>Delete Account
+                                href="<?php echo e(route('delete-account')); ?>"><i data-feather="lock"></i><span>Delete Account
                                     Request</span></a></li>
+                        <?php endif; ?>
                     </ul>
                 </li>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Security & Audit</h6>
+                    <ul>
+                        <li class="<?php echo e(Request::is('audit-trail*') ? 'active' : ''); ?>"><a href="<?php echo e(route('audit-trail.index')); ?>"><i
+                                    data-feather="activity"></i><span>Audit Trail</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('audit-trail/user*') ? 'active' : ''); ?>"><a href="<?php echo e(route('audit-trail.user')); ?>"><i
+                                    data-feather="user"></i><span>My Activity</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Pages</h6>
                     <ul>

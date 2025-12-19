@@ -178,20 +178,22 @@
                             </li>
                         </ul>
                     </li>
+                    <?php if(auth()->check() && auth()->user()->isSuperAdmin()): ?>
                     <li class="submenu">
                         <a href="javascript:void(0);"
                             class="<?php echo e(Request::is('roles-permissions', 'delete-account','permissions') ? 'active subdrop' : ''); ?> "><span>Roles
                                 &amp; Permissions</span><span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="<?php echo e(url('roles-permissions')); ?>"
+                            <li><a href="<?php echo e(route('roles-permissions')); ?>"
                                     class="<?php echo e(Request::is('roles-permissions','permissions') ? 'active' : ''); ?>"><span>Roles &
                                         Permissions</span></a></li>
-                            <li><a href="<?php echo e(url('delete-account')); ?>"
+                            <li><a href="<?php echo e(route('delete-account')); ?>"
                                     class="<?php echo e(Request::is('delete-account') ? 'active' : ''); ?>"><span>Delete Account
                                         Request</span></a></li>
 
                         </ul>
                     </li>
+                    <?php endif; ?>
                     <li class="submenu">
                         <a href="javascript:void(0);"
                             class="<?php echo e(Request::is('ui-alerts', 'ui-accordion', 'ui-avatar', 'ui-badges', 'ui-borders', 'ui-buttons', 'ui-buttons-group', 'ui-breadcrumb', 'ui-cards', 'ui-carousel', 'ui-colors', 'ui-dropdowns', 'ui-grid', 'ui-images', 'ui-lightbox', 'ui-modals', 'ui-media', 'ui-offcanvas', 'ui-pagination', 'ui-popovers', 'ui-progress', 'ui-placeholders', 'ui-rangeslider', 'ui-spinner', 'ui-sweetalerts', 'ui-nav-tabs', 'ui-toasts', 'ui-tooltips', 'ui-typography', 'ui-video') ? 'active subdrop' : ''); ?> "><span>Base
@@ -581,7 +583,7 @@
             </li>
             <li class="submenu">
                 <a href="javascript:void(0);"
-                    class="<?php echo e(Request::is('sales-report', 'purchase-report', 'inventory-report', 'invoice-report', 'supplier-report', 'customer-report', 'expense-report', 'income-report', 'tax-reports', 'profit-and-loss') ? 'active subdrop' : ''); ?>"><img
+                    class="<?php echo e(Request::is('sales-report', 'purchase-report', 'inventory-report', 'invoice-report', 'supplier-report', 'customer-report', 'expense-report', 'income-report', 'tax-reports', 'profit-loss') ? 'active subdrop' : ''); ?>"><img
                         src="<?php echo e(URL::asset('/build/img/icons/printer.svg')); ?>" alt="img"><span>Reports</span> <span
                         class="menu-arrow"></span></a>
                 <ul>
@@ -612,8 +614,8 @@
                     <li><a class="<?php echo e(Request::is('tax-reports') ? 'active' : ''); ?>"
                             href="<?php echo e(url('tax-reports')); ?>"><span>Tax
                                 Report</span></a></li>
-                    <li><a class="<?php echo e(Request::is('profit-and-loss') ? 'active' : ''); ?>"
-                            href="<?php echo e(url('profit-and-loss')); ?>"><span>Profit &
+                    <li><a class="<?php echo e(Request::is('profit-loss') ? 'active' : ''); ?>"
+                            href="<?php echo e(route('profit-loss')); ?>"><span>Profit &
                                 Loss</span></a></li>
                 </ul>
             </li>

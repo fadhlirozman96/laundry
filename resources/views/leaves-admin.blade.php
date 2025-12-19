@@ -5,509 +5,209 @@
         <div class="content">
             @component('components.breadcrumb')
                 @slot('title')
-                    Leaves
+                    Leave Management
                 @endslot
                 @slot('li_1')
-                    Manage your Leaves
+                    Manage Employee Leaves
                 @endslot
                 @slot('li_2')
-                    Leave type
+                    Add Leave Request
                 @endslot
             @endcomponent
 
-            <!-- /product list -->
             <div class="card table-list-card">
                 <div class="card-body pb-0">
-                    <div class="table-top">
-
-                        <div class="input-blocks search-set mb-0">
-                            <!-- <div class="total-employees">
-                                <h6><i data-feather="users" class="feather-user"></i>Total Employees <span>21</span></h6>
-                            </div> -->
-                            <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-
-                        </div>
-                        <div class="search-path">
-                            <div class="d-flex align-items-center">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                                <div class="layout-hide-box">
-                                    <a href="javascript:void(0);" class="me-3 layout-box"><i data-feather="layout"
-                                            class="feather-search"></i></a>
-                                    <div class="layout-drop-item card">
-                                        <div class="drop-item-head">
-                                            <h5>Want to manage datatable?</h5>
-                                            <p>Please drag and drop your column to reorder your table and enable see option
-                                                as you want.</p>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Shop</span>
-                                                    <input type="checkbox" id="option1" class="check" checked>
-                                                    <label for="option1" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Product</span>
-                                                    <input type="checkbox" id="option2" class="check" checked>
-                                                    <label for="option2" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Reference No</span>
-                                                    <input type="checkbox" id="option3" class="check" checked>
-                                                    <label for="option3" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Date</span>
-                                                    <input type="checkbox" id="option4" class="check" checked>
-                                                    <label for="option4" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Responsible Person</span>
-                                                    <input type="checkbox" id="option5" class="check" checked>
-                                                    <label for="option5" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Notes</span>
-                                                    <input type="checkbox" id="option6" class="check" checked>
-                                                    <label for="option6" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Quantity</span>
-                                                    <input type="checkbox" id="option7" class="check" checked>
-                                                    <label for="option7" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Actions</span>
-                                                    <input type="checkbox" id="option8" class="check" checked>
-                                                    <label for="option8" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div class="search-path d-flex align-items-center search-path-new">
-                            <a class="btn btn-filter" id="filter_search">
-                                <i data-feather="filter" class="filter-icon"></i>
-                                <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                            </a>
-                            <a href="employees-list" class="btn-list active"><i data-feather="list" class="feather-user"></i></a>
-                            <a href="employees-grid" class="btn-grid"><i data-feather="grid" class="feather-user"></i></a>
-
-                        </div> -->
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>Newest</option>
-                                <option>Oldest</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="user" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Employee</option>
-                                            <option>Mitchum Daniel</option>
-                                            <option>Susan Lopez</option>
-                                            <option>Robert Grossman</option>
-                                            <option>Janet Hembre</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="box" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Type</option>
-                                            <option>Sick Leave</option>
-                                            <option>Maternity</option>
-                                            <option>Vacation</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="calendar" class="info-img"></i>
-                                        <div class="input-groupicon">
-                                            <input type="text" class="datetimepicker"
-                                                placeholder="From Date - To Date">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="calendar" class="info-img"></i>
-                                        <div class="input-groupicon">
-                                            <input type="text" class="datetimepicker" placeholder="Applied Date">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="stop-circle" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Status</option>
-                                            <option>Approved</option>
-                                            <option>Rejected</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table" id="leaves-table">
                             <thead>
                                 <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
-                                    <th>Emp Name</th>
-                                    <th>Emp Id</th>
-                                    <th>Type</th>
-                                    <th>From Date</th>
-                                    <th>To Date</th>
-                                    <th>Days/Hours</th>
-                                    <th>Shift</th>
-                                    <th>Applied On</th>
+                                    <th>Employee</th>
+                                    <th>Leave Type</th>
+                                    <th>Date Range</th>
+                                    <th>Duration</th>
+                                    <th>Reason</th>
                                     <th>Status</th>
-                                    <th class="no-sort">Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-01.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Mitchum Daniel</a>
-                                                <span class="emp-team">Database Administrator</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>POS001</td>
-                                    <td>Sick Leave</td>
-                                    <td>02 Aug 2023</td>
-                                    <td>03 Aug 2023</td>
-                                    <td>01 Day</td>
-                                    <td>Regular</td>
-                                    <td>02 Aug 2023</td>
-                                    <td><span class="badges status-badge">Approved</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-3 confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-02.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Susan Lopez</a>
-                                                <span class="emp-team">Curator</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>POS002</td>
-                                    <td>Sick Leave</td>
-                                    <td>07 Aug 2023</td>
-                                    <td>07 Aug 2023</td>
-                                    <td>2 hrs</td>
-                                    <td>Regular</td>
-                                    <td>07 Aug 2023</td>
-                                    <td><span class="badges unstatus-badge">Rejected</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-3 confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Robert Grossman</a>
-                                                <span class="emp-team">System Administrator</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>
-                                        POS003
-                                    </td>
-                                    <td>
-                                        Sick Leave
-                                    </td>
-                                    <td>03 Aug 2023</td>
-                                    <td>
-                                        04 Aug 2023
-                                    </td>
-                                    <td>01 Day</td>
-                                    <td>Regular</td>
-                                    <td>03 Aug 2023</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-3 confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Janet Hembre</a>
-                                                <span class="emp-team">Administrative Officer</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>
-                                        POS004
-                                    </td>
-                                    <td>
-                                        Maternity
-                                    </td>
-                                    <td>05 Aug 2023</td>
-                                    <td>
-                                        07 Aug 2023
-                                    </td>
-                                    <td>02 Days</td>
-                                    <td>Regular</td>
-                                    <td>05 Aug 2023</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-3 confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Russell Belle</a>
-                                                <span class="emp-team">Technician</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>
-                                        POS005
-                                    </td>
-                                    <td>
-                                        Vacation
-                                    </td>
-                                    <td>08 Aug 2023</td>
-                                    <td>
-                                        10 Aug 2023
-                                    </td>
-                                    <td>03 Days</td>
-                                    <td>Regular</td>
-                                    <td>08 Aug 2023</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-3 confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Edward K. Muniz</a>
-                                                <span class="emp-team">Office Support Secretary</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>
-                                        POS006
-                                    </td>
-                                    <td>
-                                        Sick Leave
-                                    </td>
-                                    <td>03 Aug 2023</td>
-                                    <td>03 Aug 2023</td>
-                                    <td>2 hrs</td>
-                                    <td>
-                                        Regular
-                                    </td>
-                                    <td>03 Aug 2023</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-3 confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <!-- /product list -->
-
         </div>
     </div>
+
+    <!-- Add Leave Modal -->
+    <div class="modal fade" id="add-leave" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Leave Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="add-leave-form">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Employee <span class="text-danger">*</span></label>
+                            <select class="form-control select" name="user_id" required>
+                                <option value="">Select Employee</option>
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Leave Type <span class="text-danger">*</span></label>
+                            <select class="form-control select" name="leave_type_id" required>
+                                <option value="">Select Leave Type</option>
+                                @foreach($leaveTypes as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }} ({{ $type->days_allowed }} days)</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="start_date" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">End Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="end_date" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Reason</label>
+                            <textarea class="form-control" name="reason" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() {
+    var table = $('#leaves-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route("leaves.data") }}',
+        columns: [
+            { data: 'employee_name', name: 'user.name' },
+            { data: 'leave_type_name', name: 'leaveType.name' },
+            { data: 'date_range', name: 'start_date' },
+            { data: 'duration', name: 'days' },
+            { data: 'reason', name: 'reason', render: function(data) { return data || '-'; } },
+            { data: 'status_badge', name: 'status' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+        ],
+        order: [[2, 'desc']],
+        drawCallback: function() {
+            feather.replace();
+        }
+    });
+
+    $('#add-leave-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '{{ route("leaves.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#add-leave').modal('hide');
+                    Swal.fire('Success', response.message, 'success');
+                    table.ajax.reload();
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.approve-leave', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Approve Leave?',
+            text: "Are you sure you want to approve this leave request?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'Yes, approve it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/leaves/' + id + '/approve',
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        Swal.fire('Approved!', response.message, 'success');
+                        table.ajax.reload();
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.reject-leave', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Reject Leave?',
+            input: 'textarea',
+            inputLabel: 'Rejection Reason',
+            inputPlaceholder: 'Enter reason for rejection...',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Reject'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/leaves/' + id + '/reject',
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}', rejection_reason: result.value },
+                    success: function(response) {
+                        Swal.fire('Rejected!', response.message, 'success');
+                        table.ajax.reload();
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-leave', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/leaves/' + id,
+                    method: 'DELETE',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success');
+                        table.ajax.reload();
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 @endsection

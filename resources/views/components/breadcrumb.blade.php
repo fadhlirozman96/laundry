@@ -161,7 +161,7 @@
         @endif
         @if (Route::is(['shift']))
             <div class="page-btn">
-                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-units"><i
+                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-shift"><i
                         data-feather="plus-circle" class="me-2"></i>Add New Shift</a>
             </div>
         @endif
@@ -193,9 +193,8 @@
         @endif
         @if (Route::is(['payroll-list']))
             <div class="page-btn">
-                <button class="btn btn-primary add-em-payroll" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasRight-add" aria-controls="offcanvasRight-add"><i
-                        data-feather="plus-circle" class="me-2"></i>Add New Payoll</button>
+                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-payroll"><i
+                        data-feather="plus-circle" class="me-2"></i>Add New Payroll</a>
             </div>
         @endif
         @if (Route::is(['manage-stocks']))
@@ -212,18 +211,20 @@
         @endif
         @if (Route::is(['leaves-admin']))
             <div class="page-btn">
-                <a href="{{ url('leave-types') }}" class="btn btn-added">Leave type</a>
+                <a href="{{ url('leave-types') }}" class="btn btn-secondary me-2">Leave Types</a>
+                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-leave"><i
+                        data-feather="plus-circle" class="me-2"></i>Add Leave Request</a>
             </div>
         @endif
         @if (Route::is(['leave-types']))
             <div class="page-btn">
-                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-units"><i
-                        data-feather="plus-circle" class="me-2"></i>Add Leave type</a>
+                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-leave-type"><i
+                        data-feather="plus-circle" class="me-2"></i>Add Leave Type</a>
             </div>
         @endif
         @if (Route::is(['holidays']))
             <div class="page-btn">
-                <a href="" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-department"><i
+                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-holiday"><i
                         data-feather="plus-circle" class="me-2"></i>Add New Holiday</a>
             </div>
         @endif
@@ -247,7 +248,7 @@
         @endif
         @if (Route::is(['designation']))
             <div class="page-btn">
-                <a href="" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-department"><i
+                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-designation"><i
                         data-feather="plus-circle" class="me-2"></i>Add New Designation</a>
             </div>
         @endif
@@ -289,7 +290,7 @@
         @endif
         @if (Route::is(['attendance-admin']))
             <div class="page-btn">
-                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-units"><i
+                <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-attendance"><i
                         data-feather="plus-circle" class="me-2"></i>Add New Attendance</a>
             </div>
         @endif

@@ -7,6 +7,7 @@ use Hash;
 use Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Services\ActivityLogger;
 
 class CustomAuthController extends Controller
 {
@@ -36,6 +37,9 @@ class CustomAuthController extends Controller
         $credentials = $request->only('email', 'password');
         
         if (Auth::attempt($credentials)) {
+            // Log login activity
+            ActivityLogger::logLogin(Auth::user());
+            
             return redirect()->intended('index')
                         ->withSuccess('Signed in');
         }
@@ -98,6 +102,11 @@ class CustomAuthController extends Controller
     
 
     public function signOut() {
+        // Log logout activity before logging out
+        if (Auth::check()) {
+            ActivityLogger::logLogout(Auth::user());
+        }
+        
         Session::flush();
         Auth::logout();
   

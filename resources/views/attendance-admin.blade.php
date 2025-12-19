@@ -8,506 +8,247 @@
                     Attendance
                 @endslot
                 @slot('li_1')
-                    Manage your Attendance
+                    Manage Employee Attendance
                 @endslot
                 @slot('li_2')
-                    Add New Attendance
+                    Add Attendance
                 @endslot
             @endcomponent
 
-            <!-- /product list -->
             <div class="card table-list-card">
                 <div class="card-body pb-0">
-                    <div class="table-top">
-
-                        <div class="input-blocks search-set mb-0">
-                            <!-- <div class="total-employees">
-                                    <h6><i data-feather="users" class="feather-user"></i>Total Employees <span>21</span></h6>
-                                </div> -->
-                            <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-
-                        </div>
-                        <div class="search-path d-flex align-items-center search-path-new">
-                            <div class="d-flex align-items-center">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                                <div class="layout-hide-box">
-                                    <a href="javascript:void(0);" class="me-3 layout-box"><i data-feather="layout"
-                                            class="feather-search"></i></a>
-                                    <div class="layout-drop-item card">
-                                        <div class="drop-item-head">
-                                            <h5>Want to manage datatable?</h5>
-                                            <p>Please drag and drop your column to reorder your table and enable see option
-                                                as you want.</p>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Shop</span>
-                                                    <input type="checkbox" id="option1" class="check" checked>
-                                                    <label for="option1" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Product</span>
-                                                    <input type="checkbox" id="option2" class="check" checked>
-                                                    <label for="option2" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Reference No</span>
-                                                    <input type="checkbox" id="option3" class="check" checked>
-                                                    <label for="option3" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Date</span>
-                                                    <input type="checkbox" id="option4" class="check" checked>
-                                                    <label for="option4" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Responsible Person</span>
-                                                    <input type="checkbox" id="option5" class="check" checked>
-                                                    <label for="option5" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Notes</span>
-                                                    <input type="checkbox" id="option6" class="check" checked>
-                                                    <label for="option6" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Quantity</span>
-                                                    <input type="checkbox" id="option7" class="check" checked>
-                                                    <label for="option7" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div
-                                                    class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                    <span class="status-label"><i data-feather="menu"
-                                                            class="feather-menu"></i>Actions</span>
-                                                    <input type="checkbox" id="option8" class="check" checked>
-                                                    <label for="option8" class="checktoggle"> </label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <a href="javascript:void(0);" class="btn-grid active"><i data-feather="grid"
-                                        class="feather-user"></i></a>
-                            </div>
-                        </div>
-                        <!-- <div class="search-path d-flex align-items-center search-path-new">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                                <a href="employees-list" class="btn-list active"><i data-feather="list" class="feather-user"></i></a>
-                                <a href="employees-grid" class="btn-grid"><i data-feather="grid" class="feather-user"></i></a>
-
-                            </div> -->
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>Newest</option>
-                                <option>Oldest</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="user" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Name</option>
-                                            <option>Mitchum Daniel</option>
-                                            <option>Susan Lopez</option>
-                                            <option>Robert Grossman</option>
-                                            <option>Janet Hembre</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="stop-circle" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Status</option>
-                                            <option>Approved</option>
-                                            <option>Rejected</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table" id="attendance-table">
                             <thead>
                                 <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
-                                    <th>Emp Name</th>
-                                    <th>Emp Id</th>
+                                    <th>Employee</th>
+                                    <th>Emp ID</th>
                                     <th>Date</th>
                                     <th>Shift</th>
                                     <th>Clock In</th>
-                                    <th>Production</th>
-                                    <th>Overtime</th>
+                                    <th>Clock Out</th>
                                     <th>Total Hours</th>
-                                    <th>Approval</th>
-                                    <th class="no-sort">Action</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-01.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Mitchum Daniel</a>
-                                                <span class="emp-team">Administrator</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>POS001</td>
-                                    <td>15 Jan 2023</td>
-                                    <td>Regular</td>
-                                    <td>09:15 AM</td>
-                                    <td>9h 22m</td>
-                                    <td>1h 13m</td>
-                                    <td>10h 15m</td>
-                                    <td><span class="badges status-badge">Approved</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#">
-                                                <i data-feather="eye" class="feather-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="me-0 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete-units">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Janet Hembre</a>
-                                                <span class="emp-team">Administrative</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>POS003</td>
-                                    <td>15 Jan 2023</td>
-                                    <td>Regular</td>
-                                    <td>09:07 AM</td>
-                                    <td>9h 55m</td>
-                                    <td>0h 50m</td>
-                                    <td>10h 50m</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#">
-                                                <i data-feather="eye" class="feather-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i></a>
-                                            <a class="me-0 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete-units">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Russell Belle</a>
-                                                <span class="emp-team">Technician</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>POS004</td>
-                                    <td>15 Jan 2023</td>
-                                    <td>Regular</td>
-                                    <td>08:58 AM</td>
-                                    <td>9h 10m</td>
-                                    <td>1h 05m</td>
-                                    <td>10h 05m</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#">
-                                                <i data-feather="eye" class="feather-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i></a>
-                                            <a class="me-0 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete-units">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Robert Grossman</a>
-                                                <span class="emp-team">Administrator</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>POS005</td>
-                                    <td>15 Jan 2023</td>
-                                    <td>Regular</td>
-                                    <td>09:02 AM</td>
-                                    <td>9h 20m</td>
-                                    <td>1h 03m</td>
-                                    <td>10h 03m</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#">
-                                                <i data-feather="eye" class="feather-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i></a>
-                                            <a class="me-0 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete-units">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Edward Muniz</a>
-                                                <span class="emp-team">Secretary</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>POS006</td>
-                                    <td>15 Jan 2023</td>
-                                    <td>Regular</td>
-                                    <td>09:08 AM</td>
-                                    <td>9h 30m</td>
-                                    <td>1h 55m</td>
-                                    <td>10h 55m</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#">
-                                                <i data-feather="eye" class="feather-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i></a>
-                                            <a class="me-0  p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete-units">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ URL::asset('/build/img/users/user-02.jpg') }}"
-                                                    alt="product">
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">Susan Moore</a>
-                                                <span class="emp-team">Tech Lead</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td>POS007</td>
-                                    <td>15 Jan 2023</td>
-                                    <td>Regular</td>
-                                    <td>09:13 AM</td>
-                                    <td>9h 40m</td>
-                                    <td>1h 52m</td>
-                                    <td>10h 52m</td>
-                                    <td>
-                                        <div class="input-blocks leave-table">
-                                            <select class="select">
-                                                <option>Approve</option>
-                                                <option>Rejected</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="#">
-                                                <i data-feather="eye" class="feather-eye"></i>
-                                            </a>
-                                            <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit-units">
-                                                <i data-feather="edit" class="feather-edit"></i></a>
-                                            <a class="me-0 p-2" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete-units">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <!-- /product list -->
-
         </div>
     </div>
+
+    <!-- Add Attendance Modal -->
+    <div class="modal fade" id="add-attendance" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Attendance</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="add-attendance-form">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Employee <span class="text-danger">*</span></label>
+                            <select class="form-control select" name="user_id" required>
+                                <option value="">Select Employee</option>
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="date" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Shift</label>
+                            <select class="form-control select" name="shift_id">
+                                <option value="">Select Shift</option>
+                                @foreach($shifts as $shift)
+                                    <option value="{{ $shift->id }}">{{ $shift->name }} ({{ $shift->time_range }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Clock In</label>
+                                    <input type="time" class="form-control" name="clock_in">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Clock Out</label>
+                                    <input type="time" class="form-control" name="clock_out">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" name="status" required>
+                                <option value="present">Present</option>
+                                <option value="absent">Absent</option>
+                                <option value="late">Late</option>
+                                <option value="half_day">Half Day</option>
+                                <option value="on_leave">On Leave</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Attendance Modal -->
+    <div class="modal fade" id="edit-attendance-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Attendance Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="edit-attendance-form">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="attendance_id" id="edit-attendance-id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                            <select class="form-control" name="status" id="edit-attendance-status" required>
+                                <option value="present">Present</option>
+                                <option value="absent">Absent</option>
+                                <option value="late">Late</option>
+                                <option value="half_day">Half Day</option>
+                                <option value="on_leave">On Leave</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" id="edit-attendance-notes" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() {
+    var table = $('#attendance-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route("attendances.data") }}',
+        columns: [
+            { data: 'employee_name', name: 'user.name' },
+            { data: 'employee_id', name: 'user.employee_id' },
+            { data: 'date', name: 'date' },
+            { data: 'shift_name', name: 'shift.name' },
+            { data: 'clock_in_time', name: 'clock_in' },
+            { data: 'clock_out_time', name: 'clock_out' },
+            { data: 'total', name: 'total_hours' },
+            { data: 'status_badge', name: 'status' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+        ],
+        order: [[2, 'desc']],
+        drawCallback: function() {
+            feather.replace();
+        }
+    });
+
+    $('#add-attendance-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '{{ route("attendances.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#add-attendance').modal('hide');
+                    Swal.fire('Success', response.message, 'success');
+                    table.ajax.reload();
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.edit-attendance', function() {
+        var id = $(this).data('id');
+        $.get('/attendances/' + id, function(response) {
+            if (response.success) {
+                var a = response.attendance;
+                $('#edit-attendance-id').val(a.id);
+                $('#edit-attendance-status').val(a.status);
+                $('#edit-attendance-notes').val(a.notes);
+                $('#edit-attendance-modal').modal('show');
+            }
+        });
+    });
+
+    $('#edit-attendance-form').on('submit', function(e) {
+        e.preventDefault();
+        var id = $('#edit-attendance-id').val();
+        $.ajax({
+            url: '/attendances/' + id,
+            method: 'PUT',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#edit-attendance-modal').modal('hide');
+                    Swal.fire('Success', response.message, 'success');
+                    table.ajax.reload();
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-attendance', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/attendances/' + id,
+                    method: 'DELETE',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success');
+                        table.ajax.reload();
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 @endsection

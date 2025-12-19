@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class Invoice extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    // Activity Log methods
+    public function getActivityLogName() { return 'Invoice'; }
+    public function getActivityIdentifier() { return $this->invoice_number; }
+    public function getActivityModule() { return 'invoice'; }
 
     protected $fillable = [
         'invoice_number',

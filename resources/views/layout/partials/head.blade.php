@@ -1,3 +1,6 @@
+ <!-- CSRF Token -->
+ <meta name="csrf-token" content="{{ csrf_token() }}">
+ 
  <!-- Bootstrap CSS -->
  <link rel="stylesheet" href="{{ url('build/css/bootstrap.min.css') }}">
 

@@ -15,106 +15,49 @@
                 @endslot
             @endcomponent
 
-            <!-- /product list -->
             <div class="card">
                 <div class="card-body pb-0">
                     <div class="table-top table-top-new">
-
                         <div class="search-set mb-0">
                             <div class="total-employees">
-                                <h6><i data-feather="users" class="feather-user"></i>Total Employees <span>21</span></h6>
+                                <h6><i data-feather="users" class="feather-user"></i>Total Departments <span>{{ $departments->count() }}</span></h6>
                             </div>
                             <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                                <input type="search" class="form-control">
+                                <input type="text" class="form-control" id="search-department" placeholder="Search...">
                             </div>
-
                         </div>
                         <div class="search-path d-flex align-items-center search-path-new">
-                            <div class="d-flex">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <i data-feather="filter" class="filter-icon"></i>
-                                    <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                                </a>
-                                <a href="{{ url('department-list') }}" class="btn-list"><i data-feather="list"
-                                        class="feather-user"></i></a>
-                                <a href="{{ url('department-grid') }}" class="btn-grid active"><i data-feather="grid"
-                                        class="feather-user"></i></a>
-                            </div>
-                            <div class="form-sort">
-                                <i data-feather="sliders" class="info-img"></i>
-                                <select class="select">
-                                    <option>Sort by Date</option>
-                                    <option>Newest</option>
-                                    <option>Oldest</option>
-                                </select>
-                            </div>
+                            <a href="{{ url('department-list') }}" class="btn-list"><i data-feather="list" class="feather-user"></i></a>
+                            <a href="{{ url('department-grid') }}" class="btn-grid active"><i data-feather="grid" class="feather-user"></i></a>
                         </div>
                     </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="file-text" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Department</option>
-                                            <option>UI/UX</option>
-                                            <option>HR</option>
-                                            <option>Admin</option>
-                                            <option>Engineering</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="users" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose HOD</option>
-                                            <option>Mitchum Daniel</option>
-                                            <option>Susan Lopez</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-
                 </div>
             </div>
-            <!-- /product list -->
 
             <div class="employee-grid-widget">
-                <div class="row">
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
+                <div class="row" id="departments-container">
+                    @forelse($departments as $department)
+                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 department-card">
                         <div class="employee-grid-profile">
                             <div class="profile-head">
                                 <div class="dep-name">
-                                    <h5 class="active">UI/UX</h5>
+                                    <h5 class="{{ $department->is_active ? 'active' : 'inactive' }}">{{ $department->name }}</h5>
                                 </div>
                                 <div class="profile-head-action">
                                     <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
+                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i data-feather="more-vertical" class="feather-user"></i>
+                                        </a>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal"
-                                                    data-bs-target="#edit-department"><i data-feather="edit"
-                                                        class="info-img"></i>Edit</a>
+                                                <a href="javascript:void(0);" class="dropdown-item edit-department" data-id="{{ $department->id }}">
+                                                    <i data-feather="edit" class="info-img"></i>Edit
+                                                </a>
                                             </li>
                                             <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
+                                                <a href="javascript:void(0);" class="dropdown-item delete-department mb-0" data-id="{{ $department->id }}">
+                                                    <i data-feather="trash-2" class="info-img"></i>Delete
+                                                </a>
                                             </li>
                                         </ul>
                                     </div>
@@ -122,769 +65,238 @@
                             </div>
                             <div class="profile-info department-profile-info">
                                 <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-01.jpg') }}" alt="">
+                                    @if($department->head && $department->head->profile_photo)
+                                        <img src="{{ asset('storage/' . $department->head->profile_photo) }}" alt="">
+                                    @else
+                                        <img src="{{ URL::asset('/build/img/users/user-01.jpg') }}" alt="">
+                                    @endif
                                 </div>
-                                <h4>Mitchum Daniel</h4>
+                                <h4>{{ $department->head ? $department->head->name : 'No Head Assigned' }}</h4>
                             </div>
                             <ul class="team-members">
                                 <li>
-                                    Total Members: 07
+                                    Total Members: {{ str_pad($department->employees->count(), 2, '0', STR_PAD_LEFT) }}
                                 </li>
                                 <li>
                                     <ul>
+                                        @foreach($department->employees->take(4) as $index => $employee)
                                         <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-01.jpg') }}"
-                                                    alt=""></a>
+                                            <a href="javascript:void(0);">
+                                                @if($employee->profile_photo)
+                                                    <img src="{{ asset('storage/' . $employee->profile_photo) }}" alt="">
+                                                @else
+                                                    <img src="{{ URL::asset('/build/img/users/user-0' . (($index % 9) + 1) . '.jpg') }}" alt="">
+                                                @endif
+                                                @if($index == 3 && $department->employees->count() > 4)
+                                                    <span>+{{ $department->employees->count() - 4 }}</span>
+                                                @endif
+                                            </a>
                                         </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-02.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""><span>+4</span></a>
-                                        </li>
+                                        @endforeach
                                     </ul>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="active">HR</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-02.jpg') }}" alt="">
-                                </div>
-                                <h4>Susan Lopez</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 05
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
+                    @empty
+                    <div class="col-12">
+                        <div class="alert alert-info">No departments found. Click "Add New Department" to create one.</div>
                     </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="inactive">Admin</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-03.jpg') }}" alt="">
-                                </div>
-                                <h4>Robert Grossman</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 06
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="active">Admin</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-06.jpg') }}" alt="">
-                                </div>
-                                <h4>Janet Hembre</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 04
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="inactive">Technician</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-04.jpg') }}" alt="">
-                                </div>
-                                <h4>Russell Belle</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 08
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="active">Support</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-05.jpg') }}" alt="">
-                                </div>
-                                <h4>Edward K. Muniz</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 04
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="inactive">Engineering</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-07.jpg') }}" alt="">
-                                </div>
-                                <h4>Susan Moore</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 10
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-09.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+6</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="inactive">Admin</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-08.jpg') }}" alt="">
-                                </div>
-                                <h4>Lance Jackson</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 03
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="inactive">PHP Development</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-11.jpg') }}" alt="">
-                                </div>
-                                <h4>Mitchum Daniel</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 09
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="active">React</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-12.jpg') }}" alt="">
-                                </div>
-                                <h4>Susan Moore</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 07
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="active">Angular</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-09.jpg') }}" alt="">
-                                </div>
-                                <h4>Lance Jackson</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 07
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6">
-                        <div class="employee-grid-profile">
-                            <div class="profile-head">
-                                <div class="dep-name">
-                                    <h5 class="active">NodeJS</h5>
-                                </div>
-                                <div class="profile-head-action">
-                                    <div class="dropdown profile-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false"><i data-feather="more-vertical"
-                                                class="feather-user"></i></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item"
-                                                    data-bs-toggle="modal" data-bs-target="#edit-department"><i
-                                                        data-feather="edit" class="info-img"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"><i
-                                                        data-feather="trash-2" class="info-img"></i>Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile-info department-profile-info">
-                                <div class="profile-pic">
-                                    <img src="{{ URL::asset('/build/img/users/user-13.jpg') }}" alt="">
-                                </div>
-                                <h4>Robert Grossman</h4>
-                            </div>
-                            <ul class="team-members">
-                                <li>
-                                    Total Members: 07
-                                </li>
-                                <li>
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-03.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-04.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-06.jpg') }}"
-                                                    alt=""></a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);"><img
-                                                    src="{{ URL::asset('/build/img/users/user-05.jpg') }}"
-                                                    alt=""><span>+3</span></a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container-fluid">
-                <div class="row custom-pagination">
-                    <div class="col-md-12">
-                        <div class="paginations d-flex justify-content-end mb-3">
-                            <span><i class="fas fa-chevron-left"></i></span>
-                            <ul class="d-flex align-items-center page-wrap">
-                                <li>
-                                    <a href="javascript:void(0);" class="active">
-                                        1
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        2
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        3
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        4
-                                    </a>
-                                </li>
-                            </ul>
-                            <span><i class="fas fa-chevron-right"></i></span>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Add Department Modal -->
+    <div class="modal fade" id="add-department" tabindex="-1" aria-labelledby="addDepartmentLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDepartmentLabel">Add New Department</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="add-department-form">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Department Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Department Head</label>
+                            <select class="form-control select" name="head_id">
+                                <option value="">Select Head</option>
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Department</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Department Modal -->
+    <div class="modal fade" id="edit-department" tabindex="-1" aria-labelledby="editDepartmentLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editDepartmentLabel">Edit Department</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="edit-department-form">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="department_id" id="edit-department-id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Department Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" id="edit-department-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" id="edit-department-description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Department Head</label>
+                            <select class="form-control select" name="head_id" id="edit-department-head">
+                                <option value="">Select Head</option>
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-control select" name="is_active" id="edit-department-status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Department</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() {
+    // Search functionality
+    $('#search-department').on('keyup', function() {
+        var value = $(this).val().toLowerCase();
+        $('.department-card').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+
+    // Add Department
+    $('#add-department-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '{{ route("departments.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => {
+                        location.reload();
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    // Edit Department
+    $(document).on('click', '.edit-department', function() {
+        var id = $(this).data('id');
+        $.get('/departments/' + id, function(response) {
+            if (response.success) {
+                var dept = response.department;
+                $('#edit-department-id').val(dept.id);
+                $('#edit-department-name').val(dept.name);
+                $('#edit-department-description').val(dept.description);
+                $('#edit-department-head').val(dept.head_id);
+                $('#edit-department-status').val(dept.is_active ? '1' : '0');
+                $('#edit-department').modal('show');
+            }
+        });
+    });
+
+    $('#edit-department-form').on('submit', function(e) {
+        e.preventDefault();
+        var id = $('#edit-department-id').val();
+        $.ajax({
+            url: '/departments/' + id,
+            method: 'PUT',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => {
+                        location.reload();
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    // Delete Department
+    $(document).on('click', '.delete-department', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/departments/' + id,
+                    method: 'DELETE',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    // Trigger add modal from breadcrumb button
+    $('[data-bs-target="#add-department"]').on('click', function() {
+        $('#add-department').modal('show');
+    });
+});
+</script>
 @endsection

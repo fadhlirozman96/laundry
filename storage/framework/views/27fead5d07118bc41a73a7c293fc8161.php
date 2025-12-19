@@ -50,7 +50,7 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="tablinks nav-link <?php echo e(Request::is('sales-report', 'purchase-report', 'inventory-report', 'invoice-report', 'supplier-report', 'customer-report', 'expense-report', 'income-report', 'tax-reports', 'profit-and-loss') ? 'active' : ''); ?>" href="#set3" id="set-tab3" data-bs-toggle="tab"
+                        <a class="tablinks nav-link <?php echo e(Request::is('sales-report', 'purchase-report', 'inventory-report', 'invoice-report', 'supplier-report', 'customer-report', 'expense-report', 'income-report', 'tax-reports', 'profit-loss') ? 'active' : ''); ?>" href="#set3" id="set-tab3" data-bs-toggle="tab"
                             data-bs-target="#report" role="tab" aria-selected="true">
                             <img src="<?php echo e(URL::asset('/build/img/icons/printer.svg')); ?>" alt="">
                         </a>
@@ -257,7 +257,7 @@
                         </ul>
                     </li>
                 </ul>
-                <ul class="tab-pane <?php echo e(Request::is('sales-report', 'purchase-report', 'inventory-report', 'invoice-report', 'supplier-report', 'customer-report', 'expense-report', 'income-report', 'tax-reports', 'profit-and-loss') ? 'active' : ''); ?>"
+                <ul class="tab-pane <?php echo e(Request::is('sales-report', 'purchase-report', 'inventory-report', 'invoice-report', 'supplier-report', 'customer-report', 'expense-report', 'income-report', 'tax-reports', 'profit-loss') ? 'active' : ''); ?>"
                     id="report" aria-labelledby="set-tab3">
                     <li><a href="<?php echo e(url('sales-report')); ?>"
                             class="<?php echo e(Request::is('sales-report') ? 'active' : ''); ?>"><span>Sales Report</span></a>
@@ -285,20 +285,24 @@
                     </li>
                     <li><a href="<?php echo e(url('tax-reports')); ?>"
                             class="<?php echo e(Request::is('tax-reports') ? 'active' : ''); ?>"><span>Tax Report</span></a></li>
-                    <li><a href="<?php echo e(url('profit-and-loss')); ?>"
-                            class="<?php echo e(Request::is('profit-and-loss') ? 'active' : ''); ?>"><span>Profit &
+                    <li><a href="<?php echo e(route('profit-loss')); ?>"
+                            class="<?php echo e(Request::is('profit-loss') ? 'active' : ''); ?>"><span>Profit &
                                 Loss</span></a></li>
                 </ul>
                 <ul class="tab-pane <?php echo e(Request::is('tables-basic','data-tables','form-wizard','form-select2','form-validation','form-floating-labels','form-vertical','form-horizontal','form-basic-inputs','form-checkbox-radios','form-input-groups','form-grid-gutters','form-select','form-mask','form-fileupload','icon-fontawesome','icon-feather','icon-ionic','icon-material','icon-pe7','icon-simpleline','icon-themify','icon-weather','icon-typicon','icon-flag','chart-apex','chart-c3','chart-js','chart-morris','chart-flot','chart-peity','roles-permissions','permissions','delete-account','users','ui-alerts','ui-accordion','ui-avatar','ui-badges','ui-borders','ui-buttons','ui-buttons-group','ui-breadcrumb','ui-cards','ui-carousel','ui-colors','ui-dropdowns','ui-grid','ui-images','ui-lightbox','ui-modals','ui-media','ui-offcanvas','ui-pagination','ui-popovers','ui-progress','ui-placeholders','ui-rangeslider','ui-spinner','ui-sweetalerts','ui-nav-tabs','ui-toasts','ui-tooltips','ui-typography','ui-video','ui-ribbon','ui-clipboard','ui-drag-drop','ui-rangeslider','ui-rating','ui-text-editor','ui-counter','ui-scrollbar','ui-stickynote','ui-timeline')? 'active': ''); ?>"
                     id="permission" aria-labelledby="set-tab4">
-                    <li><a href="<?php echo e(url('users')); ?>"
+                    <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
+                    <li><a href="<?php echo e(route('users.index')); ?>"
                             class="<?php echo e(Request::is('users') ? 'active' : ''); ?>"><span>Users</span></a></li>
-                    <li><a href="<?php echo e(url('roles-permissions')); ?>"
+                    <?php if(auth()->user()->isSuperAdmin()): ?>
+                    <li><a href="<?php echo e(route('roles-permissions')); ?>"
                             class="<?php echo e(Request::is('roles-permissions','permissions') ? 'active' : ''); ?>"><span>Roles &
                                 Permissions</span></a></li>
-                    <li><a href="<?php echo e(url('delete-account')); ?>"
+                    <li><a href="<?php echo e(route('delete-account')); ?>"
                             class="<?php echo e(Request::is('delete-account') ? 'active' : ''); ?>"><span>Delete Account
                                 Request</span></a></li>
+                    <?php endif; ?>
+                    <?php endif; ?>
 
                     <li class="submenu">
                         <a href="javascript:void(0);"

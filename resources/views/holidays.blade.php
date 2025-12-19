@@ -5,347 +5,237 @@
         <div class="content">
             @component('components.breadcrumb')
                 @slot('title')
-                    Holiday
+                    Holidays
                 @endslot
                 @slot('li_1')
-                    Manage your Holiday
+                    Manage your Holidays
                 @endslot
                 @slot('li_2')
                     Add New Holiday
                 @endslot
             @endcomponent
 
-            <!-- /product list -->
             <div class="card table-list-card">
                 <div class="card-body pb-0">
-                    <div class="table-top">
-                        <div class="input-blocks search-set mb-0">
-                            <div class="search-input">
-                                <a href="" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="search-path d-flex align-items-center search-path-new">
-                            <a class="btn btn-filter" id="filter_search">
-                                <i data-feather="filter" class="filter-icon"></i>
-                                <span><img src="{{ URL::asset('/build/img/icons/closes.svg') }}" alt="img"></span>
-                            </a>
-                            <div class="layout-hide-box">
-                                <a href="javascript:void(0);" class="me-3 layout-box"><i data-feather="layout"
-                                        class="feather-search"></i></a>
-                                <div class="layout-drop-item card">
-                                    <div class="drop-item-head">
-                                        <h5>Want to manage datatable?</h5>
-                                        <p>Please drag and drop your column to reorder your table and enable see option as
-                                            you want.</p>
-                                    </div>
-                                    <ul>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Shop</span>
-                                                <input type="checkbox" id="option1" class="check" checked>
-                                                <label for="option1" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Product</span>
-                                                <input type="checkbox" id="option2" class="check" checked>
-                                                <label for="option2" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Reference No</span>
-                                                <input type="checkbox" id="option3" class="check" checked>
-                                                <label for="option3" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Date</span>
-                                                <input type="checkbox" id="option4" class="check" checked>
-                                                <label for="option4" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Responsible Person</span>
-                                                <input type="checkbox" id="option5" class="check" checked>
-                                                <label for="option5" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Notes</span>
-                                                <input type="checkbox" id="option6" class="check" checked>
-                                                <label for="option6" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Quantity</span>
-                                                <input type="checkbox" id="option7" class="check" checked>
-                                                <label for="option7" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <span class="status-label"><i data-feather="menu"
-                                                        class="feather-menu"></i>Actions</span>
-                                                <input type="checkbox" id="option8" class="check" checked>
-                                                <label for="option8" class="checktoggle"> </label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-sort">
-                            <i data-feather="sliders" class="info-img"></i>
-                            <select class="select">
-                                <option>Sort by Date</option>
-                                <option>Newest</option>
-                                <option>Oldest</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="file-text" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Holiday</option>
-                                            <option>UI/UX</option>
-                                            <option>HR</option>
-                                            <option>Admin</option>
-                                            <option>Engineering</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="users" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose HOD</option>
-                                            <option>Mitchum Daniel</option>
-                                            <option>Susan Lopez</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="input-blocks">
-                                        <i data-feather="stop-circle" class="info-img"></i>
-                                        <select class="select">
-                                            <option>Choose Status</option>
-                                            <option>Mitchum Daniel</option>
-                                            <option>Susan Lopez</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
-                                    <div class="input-blocks">
-                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
-                                                class="feather-search"></i> Search </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Filter -->
-                    <!-- product list -->
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table" id="holiday-table">
                             <thead>
                                 <tr>
-                                    <th class="no-sort">
-                                        <label class="checkboxs">
-                                            <input type="checkbox" id="select-all">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </th>
                                     <th>Name</th>
                                     <th>Date</th>
                                     <th>Duration</th>
                                     <th>Created On</th>
                                     <th>Status</th>
-                                    <th class="no-sort">Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($holidays as $holiday)
                                 <tr>
+                                    <td>{{ $holiday->name }}</td>
+                                    <td>{{ $holiday->date->format('d M Y') }}</td>
+                                    <td>{{ $holiday->duration }}</td>
+                                    <td>{{ $holiday->created_at->format('d M Y') }}</td>
                                     <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
+                                        @if($holiday->is_active)
+                                            <span class="badge badge-linesuccess">Active</span>
+                                        @else
+                                            <span class="badge badge-linedanger">Inactive</span>
+                                        @endif
                                     </td>
-                                    <td>Newyear</td>
-
-                                    <td>
-                                        01 Jan 2024
-                                    </td>
-                                    <td>1 Day</td>
-                                    <td>
-                                        04 Aug 2023
-                                    </td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
                                     <td class="action-table-data">
                                         <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#edit-department">
+                                            <a class="me-2 p-2 edit-holiday" href="javascript:void(0);" data-id="{{ $holiday->id }}">
                                                 <i data-feather="edit" class="feather-edit"></i>
                                             </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
+                                            <a class="confirm-text p-2 delete-holiday" href="javascript:void(0);" data-id="{{ $holiday->id }}">
                                                 <i data-feather="trash-2" class="feather-trash-2"></i>
                                             </a>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Pongal</td>
-
-                                    <td>
-                                        14 Jan 2024
-                                    </td>
-                                    <td>1 Day</td>
-                                    <td>
-                                        31 Jan 2022
-                                    </td>
-                                    <td><span class="badge badge-linesuccess">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#edit-department">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Republic Day</td>
-
-                                    <td>
-                                        25 Jan 2024
-                                    </td>
-                                    <td>1 Day</td>
-                                    <td>
-                                        21 July 2023
-                                    </td>
-                                    <td><span class="badges-success">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#edit-department">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Worker’s Day</td>
-
-                                    <td>
-                                        01 May 2024
-                                    </td>
-                                    <td>1 Day</td>
-                                    <td>
-                                        15 May 2023
-                                    </td>
-                                    <td><span class="badges-success">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#edit-department">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td>Deepavali</td>
-
-                                    <td>
-                                        14 Oct 2024
-                                    </td>
-                                    <td>1 Day</td>
-                                    <td>
-                                        04 Aug 2023
-                                    </td>
-                                    <td><span class="badges-success">Active</span></td>
-                                    <td class="action-table-data">
-                                        <div class="edit-delete-action">
-                                            <a class="me-2 p-2" href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#edit-department">
-                                                <i data-feather="edit" class="feather-edit"></i>
-                                            </a>
-                                            <a class="confirm-text p-2" href="javascript:void(0);">
-                                                <i data-feather="trash-2" class="feather-trash-2"></i>
-                                            </a>
-                                        </div>
-
-                                    </td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
-                    <!-- /product list -->
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Add Holiday Modal -->
+    <div class="modal fade" id="add-holiday" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Holiday</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="add-holiday-form">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Holiday Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="date" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" class="form-control" name="end_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Holiday Modal -->
+    <div class="modal fade" id="edit-holiday-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Holiday</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="edit-holiday-form">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="holiday_id" id="edit-holiday-id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Holiday Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" id="edit-holiday-name" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="date" id="edit-holiday-date" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" class="form-control" name="end_date" id="edit-holiday-end-date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" id="edit-holiday-description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" name="is_active" id="edit-holiday-status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() {
+    $('#holiday-table').DataTable({ "bFilter": true, "sDom": 'fBtlpi' });
+
+    $('#add-holiday-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '{{ route("holidays.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => location.reload());
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.edit-holiday', function() {
+        var id = $(this).data('id');
+        $.get('/holidays/' + id, function(response) {
+            if (response.success) {
+                var h = response.holiday;
+                $('#edit-holiday-id').val(h.id);
+                $('#edit-holiday-name').val(h.name);
+                $('#edit-holiday-date').val(h.date.split('T')[0]);
+                $('#edit-holiday-end-date').val(h.end_date ? h.end_date.split('T')[0] : '');
+                $('#edit-holiday-description').val(h.description);
+                $('#edit-holiday-status').val(h.is_active ? '1' : '0');
+                $('#edit-holiday-modal').modal('show');
+            }
+        });
+    });
+
+    $('#edit-holiday-form').on('submit', function(e) {
+        e.preventDefault();
+        var id = $('#edit-holiday-id').val();
+        $.ajax({
+            url: '/holidays/' + id,
+            method: 'PUT',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', response.message, 'success').then(() => location.reload());
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'An error occurred', 'error');
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-holiday', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/holidays/' + id,
+                    method: 'DELETE',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success').then(() => location.reload());
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 @endsection

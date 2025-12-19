@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivity;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    // Activity Log methods
+    public function getActivityLogName() { return 'Product'; }
+    public function getActivityIdentifier() { return $this->name; }
+    public function getActivityModule() { return 'inventory'; }
 
     protected $fillable = [
         'store_id',
