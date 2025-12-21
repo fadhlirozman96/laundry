@@ -256,3 +256,4 @@ class AttendanceController extends Controller
     }
 }
 
+

@@ -346,19 +346,6 @@
     #coupon-table_wrapper .dataTables_length,
     #coupon-table_wrapper .dataTables_filter { display: none !important; }
     .table-top .search-set label { display: none !important; }
-    
-    .edit-delete-action { display: flex; align-items: center; gap: 5px; }
-    .edit-delete-action a {
-        display: inline-flex; align-items: center; justify-content: center;
-        width: 32px; height: 32px; border-radius: 8px; transition: all 0.3s ease;
-    }
-    .edit-delete-action a.action-edit { background-color: rgba(13, 202, 240, 0.1); }
-    .edit-delete-action a.action-edit:hover { background-color: rgba(13, 202, 240, 0.2); }
-    .edit-delete-action a.action-delete { background-color: rgba(220, 53, 69, 0.1); }
-    .edit-delete-action a.action-delete:hover { background-color: rgba(220, 53, 69, 0.2); }
-    .edit-delete-action a i, .edit-delete-action a svg { width: 16px; height: 16px; }
-    .edit-delete-action a.action-edit i { color: #0dcaf0; }
-    .edit-delete-action a.action-delete i { color: #dc3545; }
 </style>
 
 <script>
@@ -381,7 +368,7 @@ $(document).ready(function() {
             { data: 'used' },
             { data: 'valid' },
             { data: 'status' },
-            { data: 'action', orderable: false, searchable: false }
+            { data: 'action', orderable: false, searchable: false, className: 'action-table-data' }
         ],
         order: [[1, 'asc']],
         pageLength: 10,

@@ -60,17 +60,17 @@ class PayrollController extends Controller
                 return '<span class="badge badge-line'.$color.'">'.ucfirst($payroll->status).'</span>';
             })
             ->addColumn('action', function($payroll) {
-                return '<div class="edit-delete-action data-view">
-                    <a class="me-2 view-payroll" href="javascript:void(0);" data-id="'.$payroll->id.'">
-                        <i data-feather="eye" class="action-eye"></i>
+                return '<div class="edit-delete-action">
+                    <a class="me-2 p-2 view-payroll" href="javascript:void(0);" data-id="'.$payroll->id.'" title="View">
+                        <i data-feather="eye" class="feather-eye"></i>
                     </a>
-                    <a class="me-2 download-payslip" href="'.route('payroll.payslip', $payroll->id).'">
-                        <i data-feather="download" class="action-download"></i>
+                    <a class="me-2 p-2 download-payslip" href="'.route('payroll.payslip', $payroll->id).'" title="Download">
+                        <i data-feather="download" class="feather-download"></i>
                     </a>
-                    <a class="me-2 edit-payroll" href="javascript:void(0);" data-id="'.$payroll->id.'">
-                        <i data-feather="edit" class="action-edit"></i>
+                    <a class="me-2 p-2 edit-payroll" href="javascript:void(0);" data-id="'.$payroll->id.'" title="Edit">
+                        <i data-feather="edit" class="feather-edit"></i>
                     </a>
-                    <a class="confirm-text delete-payroll" href="javascript:void(0);" data-id="'.$payroll->id.'">
+                    <a class="confirm-text p-2 delete-payroll" href="javascript:void(0);" data-id="'.$payroll->id.'" title="Delete">
                         <i data-feather="trash-2" class="feather-trash-2"></i>
                     </a>
                 </div>';
@@ -203,4 +203,5 @@ class PayrollController extends Controller
         return $query->get();
     }
 }
+
 

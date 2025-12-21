@@ -101,10 +101,10 @@ class CouponController extends Controller
     protected function getActionButtons($coupon)
     {
         return '<div class="edit-delete-action">
-                    <a class="me-2 p-2 action-edit" href="javascript:void(0);" onclick="editCoupon(' . $coupon->id . ')" title="Edit Coupon">
+                    <a class="me-2 p-2" href="javascript:void(0);" onclick="editCoupon(' . $coupon->id . ')" title="Edit Coupon">
                         <i data-feather="edit" class="feather-edit"></i>
                     </a>
-                    <a class="p-2 action-delete" href="javascript:void(0);" onclick="deleteCoupon(' . $coupon->id . ')" title="Delete Coupon">
+                    <a class="confirm-text p-2" href="javascript:void(0);" onclick="deleteCoupon(' . $coupon->id . ')" title="Delete Coupon">
                         <i data-feather="trash-2" class="feather-trash-2"></i>
                     </a>
                 </div>';

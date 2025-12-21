@@ -98,13 +98,13 @@ class ProductController extends Controller
                                         <a href="javascript:void(0);">' . ($product->creator->name ?? 'Admin') . '</a>
                                      </div>',
                     'action' => '<div class="edit-delete-action">
-                                    <a class="action-view" href="' . route('product-details', $product->id) . '" title="View Product">
+                                    <a class="me-2 p-2" href="' . route('product-details', $product->id) . '" title="View Product">
                                         <i data-feather="eye" class="feather-eye"></i>
                                     </a>
-                                    <a class="action-edit" href="' . route('edit-product', $product->id) . '" title="Edit Product">
+                                    <a class="me-2 p-2" href="' . route('edit-product', $product->id) . '" title="Edit Product">
                                         <i data-feather="edit" class="feather-edit"></i>
                                     </a>
-                                    <a class="action-delete" href="javascript:void(0);" onclick="deleteProduct(' . $product->id . ')" title="Delete Product">
+                                    <a class="confirm-text p-2" href="javascript:void(0);" onclick="deleteProduct(' . $product->id . ')" title="Delete Product">
                                         <i data-feather="trash-2" class="feather-trash-2"></i>
                                     </a>
                                  </div>'

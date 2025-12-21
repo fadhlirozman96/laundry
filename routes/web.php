@@ -49,9 +49,13 @@ Route::get('/low-stocks', function () {
     return view('low-stocks');
 })->name('low-stocks');
 
-Route::get('/category-list', function () {
-    return view('category-list');
-})->name('category-list');
+// Categories
+Route::get('/category-list', [App\Http\Controllers\CategoryController::class, 'index'])->name('category-list')->middleware('auth');
+Route::post('/categories', [App\Http\Controllers\CategoryController::class, 'store'])->name('categories.store')->middleware('auth');
+Route::get('/categories/{id}', [App\Http\Controllers\CategoryController::class, 'show'])->name('categories.show')->middleware('auth');
+Route::put('/categories/{id}', [App\Http\Controllers\CategoryController::class, 'update'])->name('categories.update')->middleware('auth');
+Route::delete('/categories/{id}', [App\Http\Controllers\CategoryController::class, 'destroy'])->name('categories.destroy')->middleware('auth');
+Route::post('/categories/{id}/toggle-status', [App\Http\Controllers\CategoryController::class, 'toggleStatus'])->name('categories.toggle-status')->middleware('auth');
 
 Route::get('/sub-categories', function () {
     return view('sub-categories');

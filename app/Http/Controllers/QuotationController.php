@@ -179,24 +179,24 @@ class QuotationController extends Controller
         
         // Show Accept button for pending/sent quotations
         if (in_array($quotation->status, ['pending', 'sent'])) {
-            $actionBtn = '<a class="action-accept" href="javascript:void(0);" onclick="acceptQuotation(' . $quotation->id . ')" title="Accept Quotation">
+            $actionBtn = '<a class="me-2 p-2" href="javascript:void(0);" onclick="acceptQuotation(' . $quotation->id . ')" title="Accept Quotation">
                             <i data-feather="check-circle" class="feather-check-circle"></i>
                           </a>';
         }
         
         // Show View Invoice button for accepted quotations
         if ($quotation->status == 'accepted') {
-            $actionBtn = '<a class="action-invoice" href="javascript:void(0);" onclick="viewQuotationInvoice(' . $quotation->id . ')" title="View Invoice">
+            $actionBtn = '<a class="me-2 p-2" href="javascript:void(0);" onclick="viewQuotationInvoice(' . $quotation->id . ')" title="View Invoice">
                             <i data-feather="file-text" class="feather-file-text"></i>
                           </a>';
         }
         
         return '<div class="edit-delete-action">
-                    <a class="action-view" href="javascript:void(0);" onclick="viewQuotation(' . $quotation->id . ')" title="View">
+                    <a class="me-2 p-2" href="javascript:void(0);" onclick="viewQuotation(' . $quotation->id . ')" title="View">
                         <i data-feather="eye" class="feather-eye"></i>
                     </a>
                     ' . $actionBtn . '
-                    <a class="action-delete" href="javascript:void(0);" onclick="deleteQuotation(' . $quotation->id . ')" title="Delete">
+                    <a class="confirm-text p-2" href="javascript:void(0);" onclick="deleteQuotation(' . $quotation->id . ')" title="Delete">
                         <i data-feather="trash-2" class="feather-trash-2"></i>
                     </a>
                 </div>';

@@ -110,7 +110,7 @@ $(document).ready(function() {
             { data: 'duration', name: 'days' },
             { data: 'reason', name: 'reason', render: function(data) { return data || '-'; } },
             { data: 'status_badge', name: 'status' },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action-table-data' }
         ],
         order: [[2, 'desc']],
         drawCallback: function() {

@@ -372,3 +372,4 @@ class LaundryController extends Controller
     }
 }
 
+

@@ -285,7 +285,7 @@ $(document).ready(function() {
             { data: 'month_year', name: 'month' },
             { data: 'salary_formatted', name: 'net_salary' },
             { data: 'status_badge', name: 'status' },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action-table-data' }
         ],
         order: [[3, 'desc']],
         drawCallback: function() {

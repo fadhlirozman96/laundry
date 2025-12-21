@@ -87,10 +87,10 @@ class ExpenseCategoryController extends Controller
     protected function getActionButtons($category)
     {
         return '<div class="edit-delete-action">
-                    <a class="me-2 p-2 action-edit" href="javascript:void(0);" onclick="editCategory(' . $category->id . ')" title="Edit">
+                    <a class="me-2 p-2" href="javascript:void(0);" onclick="editCategory(' . $category->id . ')" title="Edit">
                         <i data-feather="edit" class="feather-edit"></i>
                     </a>
-                    <a class="p-2 action-delete" href="javascript:void(0);" onclick="deleteCategory(' . $category->id . ')" title="Delete">
+                    <a class="confirm-text p-2" href="javascript:void(0);" onclick="deleteCategory(' . $category->id . ')" title="Delete">
                         <i data-feather="trash-2" class="feather-trash-2"></i>
                     </a>
                 </div>';

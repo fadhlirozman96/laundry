@@ -251,3 +251,4 @@ class MachineController extends Controller
     }
 }
 
+

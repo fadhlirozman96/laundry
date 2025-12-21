@@ -35,3 +35,4 @@ class GarmentType extends Model
     }
 }
 
+

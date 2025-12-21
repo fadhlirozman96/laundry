@@ -125,13 +125,13 @@ class SalesController extends Controller
     protected function getActionButtons($order)
     {
         return '<div class="edit-delete-action">
-                    <a class="action-view" href="javascript:void(0);" onclick="viewSale(' . $order->id . ')" title="View Sale">
+                    <a class="me-2 p-2" href="javascript:void(0);" onclick="viewSale(' . $order->id . ')" title="View Sale">
                         <i data-feather="eye" class="feather-eye"></i>
                     </a>
-                    <a class="action-print" href="javascript:void(0);" onclick="printSale(' . $order->id . ')" title="Print">
+                    <a class="me-2 p-2" href="javascript:void(0);" onclick="printSale(' . $order->id . ')" title="Print">
                         <i data-feather="printer" class="feather-printer"></i>
                     </a>
-                    <a class="action-delete" href="javascript:void(0);" onclick="deleteSale(' . $order->id . ')" title="Delete">
+                    <a class="confirm-text p-2" href="javascript:void(0);" onclick="deleteSale(' . $order->id . ')" title="Delete">
                         <i data-feather="trash-2" class="feather-trash-2"></i>
                     </a>
                 </div>';

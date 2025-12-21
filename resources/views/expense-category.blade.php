@@ -130,15 +130,6 @@
 @push('scripts')
 <style>
     #category-table_wrapper .dataTables_length, #category-table_wrapper .dataTables_filter { display: none !important; }
-    .edit-delete-action { display: flex; align-items: center; gap: 5px; }
-    .edit-delete-action a {
-        display: inline-flex; align-items: center; justify-content: center;
-        width: 32px; height: 32px; border-radius: 8px; transition: all 0.3s ease;
-    }
-    .edit-delete-action a.action-edit { background-color: rgba(255, 193, 7, 0.1); }
-    .edit-delete-action a.action-edit:hover { background-color: rgba(255, 193, 7, 0.2); }
-    .edit-delete-action a.action-delete { background-color: rgba(220, 53, 69, 0.1); }
-    .edit-delete-action a.action-delete:hover { background-color: rgba(220, 53, 69, 0.2); }
     .badge-linesuccess {
         background-color: transparent;
         border: 1px solid #28a745;
@@ -174,7 +165,7 @@
                 { data: 'name', name: 'name' },
                 { data: 'description', name: 'description' },
                 { data: 'status', name: 'status' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
+                { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action-table-data' }
             ],
             order: [[1, 'asc']],
             language: {

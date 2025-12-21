@@ -75,3 +75,4 @@ class MachineUsageLog extends Model
     }
 }
 
+

@@ -89,10 +89,10 @@ class OrderController extends Controller
                     'status' => '<span class="badge ' . $statusBadge . '">' . $order->payment_status . '</span>',
                     'date' => $order->created_at->format('Y-m-d H:i'),
                     'action' => '<div class="edit-delete-action">
-                                    <a class="action-view" href="javascript:void(0);" onclick="viewOrder(' . $order->id . ')" title="View Order">
+                                    <a class="me-2 p-2" href="javascript:void(0);" onclick="viewOrder(' . $order->id . ')" title="View Order">
                                         <i data-feather="eye" class="feather-eye"></i>
                                     </a>
-                                    <a class="action-print" href="javascript:void(0);" onclick="printOrder(' . $order->id . ')" title="Print Order">
+                                    <a class="me-2 p-2" href="javascript:void(0);" onclick="printOrder(' . $order->id . ')" title="Print Order">
                                         <i data-feather="printer" class="feather-printer"></i>
                                     </a>
                                  </div>'

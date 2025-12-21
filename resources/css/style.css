@@ -24230,6 +24230,28 @@ table tbody td.action-table-data a .feather-eye {
   width: 14px;
   height: 14px;
 }
+/* Standardize all feather icons in action buttons */
+table tbody td.action-table-data a svg,
+table tbody td.action-table-data a i[data-feather],
+.edit-delete-action a svg {
+  width: 14px;
+  height: 14px;
+}
+table tbody td.action-table-data a .feather-printer {
+  color: #3577f1;
+}
+table tbody td.action-table-data a .feather-download {
+  color: #3577f1;
+}
+table tbody td.action-table-data a .feather-check-circle {
+  color: #28a745;
+}
+table tbody td.action-table-data a .feather-file-text {
+  color: #0067e2;
+}
+table tbody td.action-table-data a .feather-dollar-sign {
+  color: #28a745;
+}
 table tbody td.action-table-data a .action-download {
   color: #3577f1;
   width: 14px;

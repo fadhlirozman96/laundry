@@ -216,17 +216,6 @@
 @push('scripts')
 <style>
     #returns-table_wrapper .dataTables_length, #returns-table_wrapper .dataTables_filter { display: none !important; }
-    .edit-delete-action { display: flex; align-items: center; gap: 5px; }
-    .edit-delete-action a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; transition: all 0.3s ease; }
-    .edit-delete-action a.action-view { background-color: rgba(13, 202, 240, 0.1); }
-    .edit-delete-action a.action-view:hover { background-color: rgba(13, 202, 240, 0.2); }
-    .edit-delete-action a.action-view svg { color: #0dcaf0; stroke: #0dcaf0; }
-    .edit-delete-action a.action-edit { background-color: rgba(0, 103, 226, 0.1); }
-    .edit-delete-action a.action-edit:hover { background-color: rgba(0, 103, 226, 0.2); }
-    .edit-delete-action a.action-edit svg { color: #0067e2; stroke: #0067e2; }
-    .edit-delete-action a.action-delete { background-color: rgba(234, 84, 85, 0.1); }
-    .edit-delete-action a.action-delete:hover { background-color: rgba(234, 84, 85, 0.2); }
-    .edit-delete-action a.action-delete svg { color: #ea5455; stroke: #ea5455; }
 </style>
 <script>
 var returnsTable, products = [], itemIndex = 0;
@@ -241,7 +230,7 @@ $(document).ready(function() {
             { data: 'row_number', orderable: false, searchable: false },
             { data: 'product' }, { data: 'date' }, { data: 'customer' }, { data: 'status' },
             { data: 'grand_total' }, { data: 'paid' }, { data: 'due' }, { data: 'payment_status' },
-            { data: 'action', orderable: false, searchable: false }
+            { data: 'action', orderable: false, searchable: false, className: 'action-table-data' }
         ],
         order: [[2, 'desc']],
         language: { info: "Showing _START_ - _END_ of _TOTAL_ Results", paginate: { previous: '<i class="fa fa-angle-left"></i>', next: '<i class="fa fa-angle-right"></i>' } },

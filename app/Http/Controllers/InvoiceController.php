@@ -122,20 +122,20 @@ class InvoiceController extends Controller
     {
         $paymentBtn = '';
         if ($invoice->status !== 'paid') {
-            $paymentBtn = '<a class="action-payment" href="javascript:void(0);" onclick="openPaymentModal(' . $invoice->id . ', \'' . $invoice->invoice_number . '\', ' . $invoice->amount_due . ')" title="Record Payment">
+            $paymentBtn = '<a class="me-2 p-2" href="javascript:void(0);" onclick="openPaymentModal(' . $invoice->id . ', \'' . $invoice->invoice_number . '\', ' . $invoice->amount_due . ')" title="Record Payment">
                             <i data-feather="dollar-sign" class="feather-dollar-sign"></i>
                           </a>';
         }
         
         return '<div class="edit-delete-action">
-                    <a class="action-view" href="javascript:void(0);" onclick="viewInvoice(' . $invoice->id . ')" title="View">
+                    <a class="me-2 p-2" href="javascript:void(0);" onclick="viewInvoice(' . $invoice->id . ')" title="View">
                         <i data-feather="eye" class="feather-eye"></i>
                     </a>
                     ' . $paymentBtn . '
-                    <a class="action-print" href="javascript:void(0);" onclick="printInvoice(' . $invoice->id . ')" title="Print">
+                    <a class="me-2 p-2" href="javascript:void(0);" onclick="printInvoice(' . $invoice->id . ')" title="Print">
                         <i data-feather="printer" class="feather-printer"></i>
                     </a>
-                    <a class="action-delete" href="javascript:void(0);" onclick="deleteInvoice(' . $invoice->id . ')" title="Delete">
+                    <a class="confirm-text p-2" href="javascript:void(0);" onclick="deleteInvoice(' . $invoice->id . ')" title="Delete">
                         <i data-feather="trash-2" class="feather-trash-2"></i>
                     </a>
                 </div>';

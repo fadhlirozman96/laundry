@@ -1,0 +1,518 @@
+<?php $page = 'employees-grid'; ?>
+
+<?php $__env->startSection('content'); ?>
+    <div class="page-wrapper">
+        <div class="content">
+            <?php $__env->startComponent('components.breadcrumb'); ?>
+                <?php $__env->slot('title'); ?>
+                    Employees
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_1'); ?>
+                    Manage your employees
+                <?php $__env->endSlot(); ?>
+                <?php $__env->slot('li_2'); ?>
+                    Add New Employee
+                <?php $__env->endSlot(); ?>
+            <?php echo $__env->renderComponent(); ?>
+
+            <?php if(session('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?php echo e(session('success')); ?>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <?php echo e(session('error')); ?>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+
+            <!-- /product list -->
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="table-top table-top-two table-top-new">
+                        <div class="search-set mb-0">
+                            <div class="total-employees">
+                                <h6><i data-feather="users" class="feather-user"></i>Total Employees <span><?php echo e($employees->count()); ?></span></h6>
+                            </div>
+                            <div class="search-input">
+                                <a href="" class="btn btn-searchset"><i data-feather="search"
+                                        class="feather-search"></i></a>
+                                <input type="search" class="form-control" id="employee-search" placeholder="Search employees...">
+                            </div>
+                        </div>
+                        <div class="search-path d-flex align-items-center search-path-new">
+                            <div class="d-flex">
+                                <a class="btn btn-filter" id="filter_search">
+                                    <i data-feather="filter" class="filter-icon"></i>
+                                    <span><img src="<?php echo e(URL::asset('/build/img/icons/closes.svg')); ?>" alt="img"></span>
+                                </a>
+                                <a href="<?php echo e(url('employees-list')); ?>" class="btn-list"><i data-feather="list"
+                                        class="feather-user"></i></a>
+                                <a href="<?php echo e(url('employees-grid')); ?>" class="btn-grid active"><i data-feather="grid"
+                                        class="feather-user"></i></a>
+                            </div>
+                            <div class="form-sort">
+                                <i data-feather="sliders" class="info-img"></i>
+                                <select class="select" id="sort-employees">
+                                    <option value="">Sort by Date</option>
+                                    <option value="newest">Newest</option>
+                                    <option value="oldest">Oldest</option>
+                                </select>
+                            </div>
+                            <div class="search-path ms-auto">
+                                <a class="btn btn-filter" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#add-employee">
+                                    <img src="<?php echo e(URL::asset('/build/img/icons/plus.svg')); ?>" alt="img" class="me-2">
+                                    <span>Add Employee</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Filter -->
+                    <div class="card" id="filter_inputs">
+                        <div class="card-body pb-0">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <i data-feather="home" class="info-img"></i>
+                                        <select class="select" id="filter-store">
+                                            <option value="">All Stores</option>
+                                            <?php $__currentLoopData = $stores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($store->id); ?>"><?php echo e($store->name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <i data-feather="user" class="info-img"></i>
+                                        <select class="select" id="filter-role">
+                                            <option value="">All Roles</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="staff">Staff</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <i data-feather="stop-circle" class="info-img"></i>
+                                        <select class="select" id="filter-status">
+                                            <option value="">All Status</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12 ms-auto">
+                                    <div class="input-blocks">
+                                        <a class="btn btn-filters ms-auto"> <i data-feather="search"
+                                                class="feather-search"></i> Search </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Filter -->
+                </div>
+            </div>
+            <!-- /product list -->
+
+            <div class="employee-grid-widget">
+                <div class="row" id="employee-grid-container">
+                    <?php $__empty_1 = true; $__currentLoopData = $employees; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $employee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <?php
+                        $assignedStore = $employee->stores->first();
+                        $empId = 'EMP' . str_pad($employee->id, 3, '0', STR_PAD_LEFT);
+                    ?>
+                    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 employee-card" 
+                         data-store-id="<?php echo e($assignedStore ? $assignedStore->id : ''); ?>"
+                         data-role="<?php echo e($employee->role ? $employee->role->name : ''); ?>"
+                         data-name="<?php echo e(strtolower($employee->name)); ?>"
+                         data-email="<?php echo e(strtolower($employee->email)); ?>">
+                        <div class="employee-grid-profile">
+                            <div class="profile-head">
+                                <label class="checkboxs">
+                                    <input type="checkbox" value="<?php echo e($employee->id); ?>">
+                                    <span class="checkmarks"></span>
+                                </label>
+                                <div class="profile-head-action">
+                                    <span class="badge badge-linesuccess text-center w-auto me-1">Active</span>
+                                    <div class="dropdown profile-action">
+                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false"><i data-feather="more-vertical"
+                                                class="feather-user"></i></a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="javascript:void(0);" class="dropdown-item" 
+                                                   data-bs-toggle="modal" data-bs-target="#edit-employee"
+                                                   onclick="editEmployee(<?php echo e($employee->id); ?>, <?php echo e(json_encode($employee->name)); ?>, <?php echo e(json_encode($employee->email)); ?>, '<?php echo e($employee->role ? $employee->role->name : ''); ?>', <?php echo e($assignedStore ? $assignedStore->id : 'null'); ?>)">
+                                                    <i data-feather="edit" class="info-img"></i>Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0);" class="dropdown-item confirm-text mb-0"
+                                                   onclick="deleteEmployee(<?php echo e($employee->id); ?>)">
+                                                    <i data-feather="trash-2" class="info-img"></i>Delete
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-pic active-profile">
+                                    <img src="<?php echo e(URL::asset('/build/img/users/user-' . str_pad(($employee->id % 8) + 1, 2, '0', STR_PAD_LEFT) . '.jpg')); ?>" alt="<?php echo e($employee->name); ?>">
+                                </div>
+                                <h5>EMP ID : <?php echo e($empId); ?></h5>
+                                <h4><?php echo e($employee->name); ?></h4>
+                                <span><?php echo e($employee->role ? $employee->role->display_name : 'N/A'); ?></span>
+                            </div>
+                            <ul class="department">
+                                <li>
+                                    Email
+                                    <span><?php echo e($employee->email); ?></span>
+                                </li>
+                                <li>
+                                    Store
+                                    <span><?php echo e($assignedStore ? $assignedStore->name : 'Not Assigned'); ?></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5>No employees found</h5>
+                            <p>Click "Add Employee" to create your first staff member.</p>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div class="modal fade" id="add-employee">
+        <div class="modal-dialog modal-dialog-centered custom-modal-two">
+            <div class="modal-content">
+                <div class="page-wrapper-new p-0">
+                    <div class="content">
+                        <div class="modal-header border-0 custom-modal-header">
+                            <div class="page-title">
+                                <h4>Add Employee</h4>
+                            </div>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body custom-modal-body">
+                            <form action="<?php echo e(route('employees.store')); ?>" method="POST">
+                                <?php echo csrf_field(); ?>
+                                <div class="mb-3">
+                                    <label class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control" required>
+                                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" class="form-control" required>
+                                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password <span class="text-danger">*</span></label>
+                                    <div class="pass-group">
+                                        <input type="password" name="password" class="form-control pass-input" required>
+                                        <span class="fas toggle-password fa-eye-slash"></span>
+                                    </div>
+                                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Role <span class="text-danger">*</span></label>
+                                    <select name="role" class="select" required>
+                                        <option value="">Choose Role</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="staff">Staff</option>
+                                    </select>
+                                    <?php $__errorArgs = ['role'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Store <span class="text-danger">*</span></label>
+                                    <select name="store_id" class="select" required>
+                                        <option value="">Choose Store</option>
+                                        <?php $__currentLoopData = $stores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($store->id); ?>"><?php echo e($store->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                    <?php $__errorArgs = ['store_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="modal-footer-btn">
+                                    <button type="button" class="btn btn-cancel me-2"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-submit">Create</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Add Employee Modal -->
+
+    <!-- Edit Employee Modal -->
+    <div class="modal fade" id="edit-employee">
+        <div class="modal-dialog modal-dialog-centered custom-modal-two">
+            <div class="modal-content">
+                <div class="page-wrapper-new p-0">
+                    <div class="content">
+                        <div class="modal-header border-0 custom-modal-header">
+                            <div class="page-title">
+                                <h4>Edit Employee</h4>
+                            </div>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body custom-modal-body">
+                            <form id="edit-employee-form" method="POST">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('PUT'); ?>
+                                <input type="hidden" id="edit-employee-id" name="employee_id">
+                                <div class="mb-3">
+                                    <label class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" id="edit-employee-name" class="form-control" required>
+                                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" id="edit-employee-email" class="form-control" required>
+                                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <div class="pass-group">
+                                        <input type="password" name="password" class="form-control pass-input" placeholder="Leave blank to keep current password">
+                                        <span class="fas toggle-password fa-eye-slash"></span>
+                                    </div>
+                                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Role <span class="text-danger">*</span></label>
+                                    <select name="role" id="edit-employee-role" class="select" required>
+                                        <option value="">Choose Role</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="staff">Staff</option>
+                                    </select>
+                                    <?php $__errorArgs = ['role'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Store <span class="text-danger">*</span></label>
+                                    <select name="store_id" id="edit-employee-store" class="select" required>
+                                        <option value="">Choose Store</option>
+                                        <?php $__currentLoopData = $stores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($store->id); ?>"><?php echo e($store->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                    <?php $__errorArgs = ['store_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" name="phone" id="edit-employee-phone" class="form-control">
+                                    <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <span class="text-danger"><?php echo e($message); ?></span>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="modal-footer-btn">
+                                    <button type="button" class="btn btn-cancel me-2"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-submit">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Edit Employee Modal -->
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script>
+function editEmployee(id, name, email, role, storeId) {
+    document.getElementById('edit-employee-id').value = id;
+    document.getElementById('edit-employee-name').value = name;
+    document.getElementById('edit-employee-email').value = email;
+    document.getElementById('edit-employee-role').value = role;
+    document.getElementById('edit-employee-store').value = storeId || '';
+    document.getElementById('edit-employee-form').action = '/employees/' + id;
+}
+
+function deleteEmployee(id) {
+    if (confirm('Are you sure you want to delete this employee?')) {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/employees/' + id;
+        
+        var csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = '<?php echo e(csrf_token()); ?>';
+        form.appendChild(csrf);
+        
+        var method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'DELETE';
+        form.appendChild(method);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Simple search and filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('employee-search');
+    const filterStore = document.getElementById('filter-store');
+    const filterRole = document.getElementById('filter-role');
+    const employeeCards = document.querySelectorAll('.employee-card');
+    
+    function filterEmployees() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedStore = filterStore.value;
+        const selectedRole = filterRole.value;
+        
+        employeeCards.forEach(card => {
+            const name = card.getAttribute('data-name');
+            const email = card.getAttribute('data-email');
+            const storeId = card.getAttribute('data-store-id');
+            const role = card.getAttribute('data-role');
+            
+            const matchesSearch = !searchTerm || name.includes(searchTerm) || email.includes(searchTerm);
+            const matchesStore = !selectedStore || storeId === selectedStore;
+            const matchesRole = !selectedRole || role === selectedRole;
+            
+            if (matchesSearch && matchesStore && matchesRole) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    if (searchInput) searchInput.addEventListener('input', filterEmployees);
+    if (filterStore) filterStore.addEventListener('change', filterEmployees);
+    if (filterRole) filterRole.addEventListener('change', filterEmployees);
+});
+
+// Reinitialize feather icons
+if (typeof feather !== 'undefined') {
+    feather.replace();
+}
+</script>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/employees-grid.blade.php ENDPATH**/ ?>

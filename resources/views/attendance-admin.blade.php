@@ -167,7 +167,7 @@ $(document).ready(function() {
             { data: 'clock_out_time', name: 'clock_out' },
             { data: 'total', name: 'total_hours' },
             { data: 'status_badge', name: 'status' },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'action-table-data' }
         ],
         order: [[2, 'desc']],
         drawCallback: function() {
