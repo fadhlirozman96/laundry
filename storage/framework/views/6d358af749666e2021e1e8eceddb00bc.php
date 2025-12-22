@@ -1,6 +1,6 @@
 <?php $page = 'profile'; ?>
-@extends('layout.mainlayout')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -10,23 +10,24 @@
                 </div>
             </div>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
+                    <?php echo e(session('success')); ?>
+
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            @if($errors->any())
+            <?php if($errors->any()): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <ul class="mb-0">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <!-- Profile Info Card -->
             <div class="card">
@@ -36,54 +37,55 @@
                         <div class="profile-top">
                             <div class="profile-content">
                                 <div class="profile-contentimg">
-                                    <img src="{{ $user->avatar ?? URL::asset('/build/img/customer/customer5.jpg') }}" alt="Profile" id="profile-image">
+                                    <img src="<?php echo e($user->avatar ?? URL::asset('/build/img/customer/customer5.jpg')); ?>" alt="Profile" id="profile-image">
                                     <div class="profileupload">
                                         <input type="file" id="imgInp" accept="image/*">
-                                        <a href="javascript:void(0);"><img src="{{ URL::asset('/build/img/icons/edit-set.svg') }}" alt="Edit"></a>
+                                        <a href="javascript:void(0);"><img src="<?php echo e(URL::asset('/build/img/icons/edit-set.svg')); ?>" alt="Edit"></a>
                                     </div>
                                 </div>
                                 <div class="profile-contentname">
-                                    <h2>{{ $user->name }}</h2>
+                                    <h2><?php echo e($user->name); ?></h2>
                                     <h4>
-                                        @php $role = $user->roles->first(); @endphp
-                                        {{ $role ? ucfirst(str_replace('_', ' ', $role->name)) : 'User' }}
+                                        <?php $role = $user->roles->first(); ?>
+                                        <?php echo e($role ? ucfirst(str_replace('_', ' ', $role->name)) : 'User'); ?>
+
                                     </h4>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <form action="{{ route('profile.update') }}" method="POST">
-                        @csrf
-                        @method('PUT')
+                    <form action="<?php echo e(route('profile.update')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
                         <div class="row mt-4">
                             <div class="col-lg-6 col-sm-12">
                                 <div class="input-blocks">
                                     <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="name" value="{{ old('name', $user->name) }}" required>
+                                    <input type="text" class="form-control" name="name" value="<?php echo e(old('name', $user->name)); ?>" required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-12">
                                 <div class="input-blocks">
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" name="email" value="{{ old('email', $user->email) }}" required>
+                                    <input type="email" class="form-control" name="email" value="<?php echo e(old('email', $user->email)); ?>" required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-12">
                                 <div class="input-blocks">
                                     <label class="form-label">Phone</label>
-                                    <input type="text" class="form-control" name="phone" value="{{ old('phone', $user->phone) }}">
+                                    <input type="text" class="form-control" name="phone" value="<?php echo e(old('phone', $user->phone)); ?>">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-12">
                                 <div class="input-blocks">
                                     <label class="form-label">Member Since</label>
-                                    <input type="text" class="form-control" value="{{ $user->created_at->format('d M Y') }}" disabled>
+                                    <input type="text" class="form-control" value="<?php echo e($user->created_at->format('d M Y')); ?>" disabled>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-submit me-2">Update Profile</button>
-                                <a href="{{ route('index') }}" class="btn btn-cancel">Cancel</a>
+                                <a href="<?php echo e(route('index')); ?>" class="btn btn-cancel">Cancel</a>
                             </div>
                         </div>
                     </form>
@@ -96,9 +98,9 @@
                     <h5 class="card-title mb-0">Change Password</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('profile.password') }}" method="POST">
-                        @csrf
-                        @method('PUT')
+                    <form action="<?php echo e(route('profile.password')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
                         <div class="row">
                             <div class="col-lg-4 col-sm-12">
                                 <div class="input-blocks">
@@ -136,9 +138,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 $(document).ready(function() {
     // Password toggle
@@ -166,4 +168,6 @@ $(document).ready(function() {
     });
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/profile.blade.php ENDPATH**/ ?>

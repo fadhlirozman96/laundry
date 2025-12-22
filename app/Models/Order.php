@@ -20,6 +20,7 @@ class Order extends Model
         'invoice_id',
         'coupon_id',
         'user_id',
+        'customer_id',
         'store_id',
         'customer_name',
         'customer_email',
@@ -54,6 +55,11 @@ class Order extends Model
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function invoice()

@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -198,14 +199,67 @@ class POSController extends Controller
                 }
             }
             
+            // Handle customer - create or find existing customer if not walk-in
+            $customerId = null;
+            $customerName = $request->customer_name;
+            $customerEmail = $request->customer_email;
+            $customerPhone = $request->customer_phone;
+            
+            // Only create/link customer if name is provided and is not "Walk-in Customer"
+            if ($customerName && trim(strtolower($customerName)) !== 'walk-in customer') {
+                // Try to find existing customer by phone or email in the same store
+                $customer = null;
+                
+                if ($customerPhone) {
+                    $customer = Customer::where('store_id', $storeId)
+                                      ->where('phone', $customerPhone)
+                                      ->first();
+                }
+                
+                if (!$customer && $customerEmail) {
+                    $customer = Customer::where('store_id', $storeId)
+                                      ->where('email', $customerEmail)
+                                      ->first();
+                }
+                
+                // If customer not found, create new one
+                if (!$customer) {
+                    $customer = Customer::create([
+                        'name' => $customerName,
+                        'email' => $customerEmail,
+                        'phone' => $customerPhone,
+                        'store_id' => $storeId,
+                        'status' => 'active',
+                    ]);
+                } else {
+                    // Update existing customer info if provided
+                    $updateData = [];
+                    if ($customerName && $customer->name !== $customerName) {
+                        $updateData['name'] = $customerName;
+                    }
+                    if ($customerEmail && $customer->email !== $customerEmail) {
+                        $updateData['email'] = $customerEmail;
+                    }
+                    if ($customerPhone && $customer->phone !== $customerPhone) {
+                        $updateData['phone'] = $customerPhone;
+                    }
+                    if (!empty($updateData)) {
+                        $customer->update($updateData);
+                    }
+                }
+                
+                $customerId = $customer->id;
+            }
+            
             // Create order
             $order = Order::create([
                 'order_number' => $orderNumber,
                 'user_id' => Auth::id(),
+                'customer_id' => $customerId,
                 'store_id' => $storeId,
-                'customer_name' => $request->customer_name,
-                'customer_email' => $request->customer_email,
-                'customer_phone' => $request->customer_phone,
+                'customer_name' => $customerName,
+                'customer_email' => $customerEmail,
+                'customer_phone' => $customerPhone,
                 'subtotal' => $subtotal,
                 'tax' => $tax,
                 'discount' => $discount,

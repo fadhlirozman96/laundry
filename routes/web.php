@@ -309,9 +309,15 @@ Route::post('/pos/checkout', [App\Http\Controllers\POSController::class, 'checko
 Route::get('/pos/orders', [App\Http\Controllers\POSController::class, 'getOrders'])->name('pos.orders')->middleware('auth');
 Route::get('/pos/order/{id}', [App\Http\Controllers\POSController::class, 'getOrder'])->name('pos.order')->middleware('auth');
 
+// Customer Routes
+Route::get('/customers', [App\Http\Controllers\CustomerController::class, 'index'])->name('customers')->middleware('auth');
+Route::get('/customers/{id}', [App\Http\Controllers\CustomerController::class, 'show'])->name('customers.show')->middleware('auth');
+Route::post('/customers', [App\Http\Controllers\CustomerController::class, 'store'])->name('customers.store')->middleware('auth');
+Route::put('/customers/{id}', [App\Http\Controllers\CustomerController::class, 'update'])->name('customers.update')->middleware('auth');
+Route::delete('/customers/{id}', [App\Http\Controllers\CustomerController::class, 'destroy'])->name('customers.destroy')->middleware('auth');
+
 // Customer API Routes (for POS)
 Route::get('/pos/customers', [App\Http\Controllers\CustomerController::class, 'getCustomers'])->name('customers.list')->middleware('auth');
-Route::post('/pos/customers', [App\Http\Controllers\CustomerController::class, 'store'])->name('customers.store')->middleware('auth');  
 
 // Coupons
 Route::get('/coupons', [App\Http\Controllers\CouponController::class, 'index'])->name('coupons')->middleware('auth');
@@ -322,10 +328,6 @@ Route::delete('/coupons/{id}', [App\Http\Controllers\CouponController::class, 'd
 Route::post('/coupons/{id}/toggle-status', [App\Http\Controllers\CouponController::class, 'toggleStatus'])->name('coupons.toggle-status')->middleware('auth');
 Route::get('/coupons-generate-code', [App\Http\Controllers\CouponController::class, 'generateCode'])->name('coupons.generate-code')->middleware('auth');
 Route::post('/coupons/apply', [App\Http\Controllers\CouponController::class, 'applyCoupon'])->name('coupons.apply')->middleware('auth');  
-
-Route::get('/customers', function () {                         
-    return view('customers');
-})->name('customers');  
 
 Route::get('/suppliers', function () {                         
     return view('suppliers');
@@ -349,7 +351,7 @@ Route::get('/storefront-preview/{storeId}', [App\Http\Controllers\StoreThemeCont
 
 // Store Frontend Routes (must be after CMS routes to avoid conflicts)
 // Exclude common admin routes from being matched as store slugs
-Route::prefix('{slug}')->where(['slug' => '^(?!index|product-list|add-product|store-list|pos|login|logout|signin|signout|register|api|admin|storefront-cms|storefront-theme|storefront-preview|laundry|audit-trail|users|roles-permissions|delete-account|session|expense|payroll|attendance|leave|holiday|shift|designation|department|employee|quotation|invoice|sales|coupon|customer|supplier|warehouse|report|inventory|purchase|tax|profit|income).*$'])->group(function () {
+Route::prefix('{slug}')->where(['slug' => '^(?!index|product-list|add-product|store-list|pos|login|logout|signin|signout|register|api|admin|storefront-cms|storefront-theme|storefront-preview|laundry|audit-trail|users|roles-permissions|delete-account|session|expense|payroll|attendance|leave|holiday|shift|designation|department|employee|quotation|invoice|sales|coupon|customer|customers|supplier|warehouse|report|inventory|purchase|tax|profit|income|profile|category-list|categories|units|service|brand|sub-categories|general-settings|security-settings|notification|connected-apps|system-settings|company-settings|localization-settings|prefixes|preference|appearance|social-authentication|language-settings|language-settings-web|invoice-settings|printer-settings|pos-settings|custom-fields|email-settings|sms-gateway|otp-settings|gdpr-settings|payment-gateway-settings|bank-settings-grid|bank-settings-list|tax-rates|currency-settings|storage-settings|ban-ip-address).*$'])->group(function () {
     Route::get('/', [StoreFrontController::class, 'index'])->name('storefront.index');
     Route::get('/products', [StoreFrontController::class, 'products'])->name('storefront.products');
     Route::get('/product/{productSlug}', [StoreFrontController::class, 'product'])->name('storefront.product');
@@ -680,9 +682,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profit-loss', [App\Http\Controllers\ReportController::class, 'profitLossReport'])->name('profit-loss');
 });
 
-Route::get('/profile', function () {
-    return view('profile');
-})->name('profile');
+Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile')->middleware('auth');
+Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
+Route::put('/profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password')->middleware('auth');
 
 Route::get('/under-maintenance', function () {
     return view('under-maintenance');
@@ -797,133 +799,54 @@ Route::get('/success', function () {
     return view('success');
 })->name('success');
 
-Route::get('/general-settings', function () {
-    return view('general-settings');
-})->name('general-settings');
-
-Route::get('/security-settings', function () {
-    return view('security-settings');
-})->name('security-settings');
-
-Route::get('/notification', function () {
-    return view('notification');
-})->name('notification');
-
-Route::get('/connected-apps', function () {
-    return view('connected-apps');
-})->name('connected-apps');
-
-Route::get('/system-settings', function () {
-    return view('system-settings');
-})->name('system-settings');
-
-Route::get('/company-settings', function () {
-    return view('company-settings');
-})->name('company-settings');
-
-Route::get('/localization-settings', function () {
-    return view('localization-settings');
-})->name('localization-settings');
-
-Route::get('/prefixes', function () {
-    return view('prefixes');
-})->name('prefixes');
-
-Route::get('/preference', function () {
-    return view('preference');
-})->name('preference');
-
-Route::get('/appearance', function () {
-    return view('appearance');
-})->name('appearance');
-
-Route::get('/social-authentication', function () {
-    return view('social-authentication');
-})->name('social-authentication');
-
-Route::get('/language-settings', function () {
-    return view('language-settings');
-})->name('language-settings');
-
-Route::get('/invoice-settings', function () {
-    return view('invoice-settings');
-})->name('invoice-settings');
-
-Route::get('/printer-settings', function () {
-    return view('printer-settings');
-})->name('printer-settings');
-
-Route::get('/pos-settings', function () {
-    return view('pos-settings');
-})->name('pos-settings');
-
-Route::get('/custom-fields', function () {
-    return view('custom-fields');
-})->name('custom-fields');
-
-Route::get('/email-settings', function () {
-    return view('email-settings');
-})->name('email-settings');
-
-Route::get('/sms-gateway', function () {
-    return view('sms-gateway');
-})->name('sms-gateway');
-
-Route::get('/otp-settings', function () {
-    return view('otp-settings');
-})->name('otp-settings');
-
-Route::get('/gdpr-settings', function () {
-    return view('gdpr-settings');
-})->name('gdpr-settings');
-
-Route::get('/payment-gateway-settings', function () {
-    return view('payment-gateway-settings');
-})->name('payment-gateway-settings');
-
-Route::get('/bank-settings-grid', function () {
-    return view('bank-settings-grid');
-})->name('bank-settings-grid');     
-
-Route::get('/tax-rates', function () {
-    return view('tax-rates');
-})->name('tax-rates');   
-
-Route::get('/currency-settings', function () {
-    return view('currency-settings');
-})->name('currency-settings');    
-
-Route::get('/storage-settings', function () {
-    return view('storage-settings');
-})->name('storage-settings');   
-
-Route::get('/ban-ip-address', function () {
-    return view('ban-ip-address');
-})->name('ban-ip-address'); 
-
-Route::get('/activities', function () {
-    return view('activities');
-})->name('activities'); 
-
-Route::get('/add-employee', function () {
-    return view('add-employee');
-})->name('add-employee');
-
-Route::get('/bank-settings-list', function () {
-    return view('bank-settings-list');
-})->name('bank-settings-list');
-
-Route::get('/department-list', function () {
-    return view('department-list');
-})->name('department-list');
-
-Route::get('/employees-list', function () {
-    return view('employees-list');
-})->name('employees-list');
-
-Route::get('/language-settings-web', function () {
-    return view('language-settings-web');
-})->name('language-settings-web');
+// ========== SETTINGS ROUTES (Protected) ==========
+Route::middleware('auth')->group(function () {
+    // General Settings
+    Route::get('/general-settings', function () { return view('general-settings'); })->name('general-settings');
+    Route::get('/security-settings', function () { return view('security-settings'); })->name('security-settings');
+    Route::get('/notification', function () { return view('notification'); })->name('notification');
+    Route::get('/connected-apps', function () { return view('connected-apps'); })->name('connected-apps');
+    
+    // Website Settings
+    Route::get('/system-settings', function () { return view('system-settings'); })->name('system-settings');
+    Route::get('/company-settings', function () { return view('company-settings'); })->name('company-settings');
+    Route::get('/localization-settings', function () { return view('localization-settings'); })->name('localization-settings');
+    Route::get('/prefixes', function () { return view('prefixes'); })->name('prefixes');
+    Route::get('/preference', function () { return view('preference'); })->name('preference');
+    Route::get('/appearance', function () { return view('appearance'); })->name('appearance');
+    Route::get('/social-authentication', function () { return view('social-authentication'); })->name('social-authentication');
+    Route::get('/language-settings', function () { return view('language-settings'); })->name('language-settings');
+    Route::get('/language-settings-web', function () { return view('language-settings-web'); })->name('language-settings-web');
+    
+    // App Settings
+    Route::get('/invoice-settings', function () { return view('invoice-settings'); })->name('invoice-settings');
+    Route::get('/printer-settings', function () { return view('printer-settings'); })->name('printer-settings');
+    Route::get('/pos-settings', function () { return view('pos-settings'); })->name('pos-settings');
+    Route::get('/custom-fields', function () { return view('custom-fields'); })->name('custom-fields');
+    
+    // System Settings
+    Route::get('/email-settings', function () { return view('email-settings'); })->name('email-settings');
+    Route::get('/sms-gateway', function () { return view('sms-gateway'); })->name('sms-gateway');
+    Route::get('/otp-settings', function () { return view('otp-settings'); })->name('otp-settings');
+    Route::get('/gdpr-settings', function () { return view('gdpr-settings'); })->name('gdpr-settings');
+    
+    // Financial Settings
+    Route::get('/payment-gateway-settings', function () { return view('payment-gateway-settings'); })->name('payment-gateway-settings');
+    Route::get('/bank-settings-grid', function () { return view('bank-settings-grid'); })->name('bank-settings-grid');
+    Route::get('/bank-settings-list', function () { return view('bank-settings-list'); })->name('bank-settings-list');
+    Route::get('/tax-rates', function () { return view('tax-rates'); })->name('tax-rates');
+    Route::get('/currency-settings', function () { return view('currency-settings'); })->name('currency-settings');
+    
+    // Other Settings
+    Route::get('/storage-settings', function () { return view('storage-settings'); })->name('storage-settings');
+    Route::get('/ban-ip-address', function () { return view('ban-ip-address'); })->name('ban-ip-address');
+    
+    // Misc
+    Route::get('/activities', function () { return view('activities'); })->name('activities');
+    Route::get('/add-employee', function () { return view('add-employee'); })->name('add-employee');
+    Route::get('/department-list', function () { return view('department-list'); })->name('department-list');
+    Route::get('/employees-list', function () { return view('employees-list'); })->name('employees-list');
+});
 
 // ========== AUDIT TRAIL MODULE ==========
 Route::middleware('auth')->prefix('audit-trail')->name('audit-trail.')->group(function () {
