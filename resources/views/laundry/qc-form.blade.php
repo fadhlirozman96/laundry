@@ -109,14 +109,14 @@
                                         <input class="form-check-input" type="checkbox" name="quantity_check" id="quantity_check" value="1" required>
                                         <label class="form-check-label" for="quantity_check">
                                             <strong>Quantity Verified</strong>
-                                            <br><small class="text-muted">All {{ $order->total_garments }} items are accounted for</small>
+                                            <br><small class="text-muted">All {{ $order->total_services }} items are accounted for</small>
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Items Counted</label>
                                     <input type="number" class="form-control" name="items_counted" min="0" required placeholder="Count items">
-                                    <small class="text-muted">Expected: {{ $order->total_garments }}</small>
+                                    <small class="text-muted">Expected: {{ $order->total_services }}</small>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Notes</label>
@@ -223,14 +223,14 @@
                     <div class="card-body">
                         <p><strong>Order:</strong> {{ $order->order_number }}</p>
                         <p><strong>Customer:</strong> {{ $order->customer_name }}</p>
-                        <p><strong>Items:</strong> {{ $order->total_garments }} pcs</p>
+                        <p><strong>Items:</strong> {{ $order->total_services }} pcs</p>
                         <hr>
                         <h6>Items List:</h6>
                         <ul class="list-unstyled">
                             @foreach($order->items as $item)
                             <li class="mb-2">
-                                <code>{{ $item->garment_code }}</code>
-                                {{ $item->garment_name }} 
+                                <code>{{ $item->item_code }}</code>
+                                {{ $item->service_name }} 
                                 <span class="badge bg-secondary">x{{ $item->quantity }}</span>
                                 @if($item->color)
                                     <span class="badge" style="background: {{ strtolower($item->color) }}; border: 1px solid #ccc;">&nbsp;</span>

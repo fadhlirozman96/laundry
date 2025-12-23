@@ -20,8 +20,9 @@ class DatabaseSeeder extends Seeder
         // ]);
         
         $this->call([
-            PermissionSeeder::class,      // Seed permissions first
-            TestAccountsSeeder::class,    // Seed test accounts and stores
+            RoleSeeder::class,            // Seed roles first
+            PermissionSeeder::class,      // Seed permissions (depends on roles)
+            TestAccountsSeeder::class,    // Seed test accounts and stores (depends on roles)
             SuperAdminSeeder::class,      // Keep existing seeder (optional)
             LaundryServiceSeeder::class,  // Seed laundry services (replaces ProductSeeder)
         ]);

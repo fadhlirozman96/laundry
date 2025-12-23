@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -19,6 +20,17 @@ class TestAccountsSeeder extends Seeder
     {
         $this->command->info('🌱 Seeding test accounts and stores...');
 
+        // Get roles
+        $superAdminRole = Role::superAdmin();
+        $businessOwnerRole = Role::businessOwner();
+        $adminRole = Role::admin();
+        $staffRole = Role::staff();
+
+        if (!$superAdminRole || !$businessOwnerRole || !$adminRole || !$staffRole) {
+            $this->command->error('❌ Roles not found. Please run RoleSeeder first.');
+            return;
+        }
+
         // 1. Create Super Admin
         $superAdmin = User::firstOrCreate(
             ['email' => 'superadmin@dreampos.com'],
@@ -26,11 +38,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'Super Admin',
                 'email' => 'superadmin@dreampos.com',
                 'password' => Hash::make('superadmin123'),
-                'role' => 'super_admin',
                 'account_owner_id' => null,
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$superAdmin->roles()->where('role_id', $superAdminRole->id)->exists()) {
+            $superAdmin->roles()->attach($superAdminRole->id);
+        }
         $this->command->info('✅ Super Admin created: superadmin@dreampos.com');
 
         // 2. Create Business Owner A - John
@@ -40,11 +55,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'John Business Owner',
                 'email' => 'owner.john@business.com',
                 'password' => Hash::make('owner123'),
-                'role' => 'business_owner',
                 'account_owner_id' => null, // Business owners don't have account owners
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$john->roles()->where('role_id', $businessOwnerRole->id)->exists()) {
+            $john->roles()->attach($businessOwnerRole->id);
+        }
         $this->command->info('✅ Business Owner A (John) created: owner.john@business.com');
 
         // 3. Create Business Owner B - Emma
@@ -54,11 +72,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'Emma Business Owner',
                 'email' => 'owner.emma@retail.com',
                 'password' => Hash::make('owner123'),
-                'role' => 'business_owner',
                 'account_owner_id' => null,
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$emma->roles()->where('role_id', $businessOwnerRole->id)->exists()) {
+            $emma->roles()->attach($businessOwnerRole->id);
+        }
         $this->command->info('✅ Business Owner B (Emma) created: owner.emma@retail.com');
 
         // 4. Create Stores for John
@@ -112,11 +133,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'Mike Manager',
                 'email' => 'mike.manager@bbsblaundry.com',
                 'password' => Hash::make('admin123'),
-                'role' => 'admin',
                 'account_owner_id' => $john->id, // Linked to John (business owner)
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$mike->roles()->where('role_id', $adminRole->id)->exists()) {
+            $mike->roles()->attach($adminRole->id);
+        }
         // Assign Mike to Downtown store
         if (!$mike->stores->contains($downtownStore->id)) {
             $mike->stores()->attach($downtownStore->id);
@@ -130,11 +154,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'Sarah Cashier',
                 'email' => 'sarah.cashier@bbsblaundry.com',
                 'password' => Hash::make('staff123'),
-                'role' => 'staff',
                 'account_owner_id' => $john->id,
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$sarah->roles()->where('role_id', $staffRole->id)->exists()) {
+            $sarah->roles()->attach($staffRole->id);
+        }
         // Assign Sarah to Downtown store
         if (!$sarah->stores->contains($downtownStore->id)) {
             $sarah->stores()->attach($downtownStore->id);
@@ -148,11 +175,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'Tom Sales',
                 'email' => 'tom.sales@bbsblaundry.com',
                 'password' => Hash::make('staff123'),
-                'role' => 'staff',
                 'account_owner_id' => $john->id,
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$tom->roles()->where('role_id', $staffRole->id)->exists()) {
+            $tom->roles()->attach($staffRole->id);
+        }
         // Assign Tom to Mall store
         if (!$tom->stores->contains($mallStore->id)) {
             $tom->stores()->attach($mallStore->id);
@@ -166,11 +196,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'Lisa Manager',
                 'email' => 'lisa.manager@emmalaundry.com',
                 'password' => Hash::make('admin123'),
-                'role' => 'admin',
                 'account_owner_id' => $emma->id,
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$lisa->roles()->where('role_id', $adminRole->id)->exists()) {
+            $lisa->roles()->attach($adminRole->id);
+        }
         // Assign Lisa to Central store
         if (!$lisa->stores->contains($centralStore->id)) {
             $lisa->stores()->attach($centralStore->id);
@@ -184,11 +217,14 @@ class TestAccountsSeeder extends Seeder
                 'name' => 'Bob Cashier',
                 'email' => 'bob.cashier@emmalaundry.com',
                 'password' => Hash::make('staff123'),
-                'role' => 'staff',
                 'account_owner_id' => $emma->id,
                 'email_verified_at' => now(),
             ]
         );
+        // Attach role if not already attached
+        if (!$bob->roles()->where('role_id', $staffRole->id)->exists()) {
+            $bob->roles()->attach($staffRole->id);
+        }
         // Assign Bob to Central store
         if (!$bob->stores->contains($centralStore->id)) {
             $bob->stores()->attach($centralStore->id);

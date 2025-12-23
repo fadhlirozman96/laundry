@@ -182,7 +182,7 @@
                                     </a>
                                 </td>
                                 <td><?php echo e($order->customer_name); ?></td>
-                                <td><?php echo e($order->total_garments); ?> pcs</td>
+                                <td><?php echo e($order->total_services); ?> pcs</td>
                                 <td><?php echo $order->getStatusBadge(); ?></td>
                                 <td>
                                     <?php if($order->qc_passed): ?>

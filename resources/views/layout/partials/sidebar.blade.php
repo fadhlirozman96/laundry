@@ -56,6 +56,23 @@
                         </li>
                     </ul>
                 </li>
+                 <li class="submenu-open">
+                    <h6 class="submenu-hdr">Laundry Operations</h6>
+                    <ul>
+                        <li class="{{ Request::is('laundry') || Request::is('laundry/') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
+                        </li>
+                        <li class="{{ Request::is('laundry/orders*') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.orders') }}"><i data-feather="package"></i><span>Orders</span></a>
+                        </li>
+                        <li class="{{ Request::is('laundry/qc*') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.qc.index') }}"><i data-feather="check-square"></i><span>Quality Control</span></a>
+                        </li>
+                        <li class="{{ Request::is('laundry/machines*') ? 'active' : '' }}">
+                            <a href="{{ route('laundry.machines') }}"><i data-feather="settings"></i><span>Machines</span></a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Services</h6>
                     <ul>
@@ -270,26 +287,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="submenu-open">
-                    <h6 class="submenu-hdr">Laundry Operations</h6>
-                    <ul>
-                        <li class="{{ Request::is('laundry') || Request::is('laundry/') ? 'active' : '' }}">
-                            <a href="{{ route('laundry.dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
-                        </li>
-                        <li class="{{ Request::is('laundry/orders*') ? 'active' : '' }}">
-                            <a href="{{ route('laundry.orders') }}"><i data-feather="package"></i><span>Orders</span></a>
-                        </li>
-                        <li class="{{ Request::is('laundry/qc*') ? 'active' : '' }}">
-                            <a href="{{ route('laundry.qc.index') }}"><i data-feather="check-square"></i><span>Quality Control</span></a>
-                        </li>
-                        <li class="{{ Request::is('laundry/machines*') ? 'active' : '' }}">
-                            <a href="{{ route('laundry.machines') }}"><i data-feather="settings"></i><span>Machines</span></a>
-                        </li>
-                        <li class="{{ Request::is('laundry/garment-types*') ? 'active' : '' }}">
-                            <a href="{{ route('laundry.garment-types') }}"><i data-feather="tag"></i><span>Garment Types</span></a>
-                        </li>
-                    </ul>
-                </li>
+               
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Reports</h6>
                     <ul>

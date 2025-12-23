@@ -83,7 +83,7 @@
                 <!-- Items List -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Order Items ({{ $order->total_garments }} items)</h5>
+                        <h5 class="card-title mb-0">Order Items ({{ $order->total_services }} items)</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -102,11 +102,11 @@
                                 <tbody>
                                     @foreach($order->items as $item)
                                     <tr>
-                                        <td><code>{{ $item->garment_code }}</code></td>
+                                        <td><code>{{ $item->item_code }}</code></td>
                                         <td>
-                                            <strong>{{ $item->garment_name }}</strong>
-                                            @if($item->garmentType)
-                                                <br><small class="text-muted">{{ $item->garmentType->name }}</small>
+                                            <strong>{{ $item->service_name }}</strong>
+                                            @if($item->service)
+                                                <br><small class="text-muted">{{ $item->service->name }}</small>
                                             @endif
                                         </td>
                                         <td>{{ $item->color ?? '-' }}</td>

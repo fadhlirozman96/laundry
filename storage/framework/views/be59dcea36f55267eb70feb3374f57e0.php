@@ -72,7 +72,7 @@
                                 </td>
                                 <td><?php echo e($order->customer_name); ?></td>
                                 <td><?php echo e($order->customer_phone ?? '-'); ?></td>
-                                <td><?php echo e($order->total_garments); ?> pcs</td>
+                                <td><?php echo e($order->total_services); ?> pcs</td>
                                 <td>MYR <?php echo e(number_format($order->total, 2)); ?></td>
                                 <td><?php echo $order->getStatusBadge(); ?></td>
                                 <td>

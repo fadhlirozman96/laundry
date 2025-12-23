@@ -182,7 +182,7 @@
                                     </a>
                                 </td>
                                 <td>{{ $order->customer_name }}</td>
-                                <td>{{ $order->total_garments }} pcs</td>
+                                <td>{{ $order->total_services }} pcs</td>
                                 <td>{!! $order->getStatusBadge() !!}</td>
                                 <td>
                                     @if($order->qc_passed)

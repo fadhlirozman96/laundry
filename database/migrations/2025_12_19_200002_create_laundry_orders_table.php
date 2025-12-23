@@ -30,7 +30,7 @@ return new class extends Migration
             
             // Tracking
             $table->integer('total_items')->default(0);
-            $table->integer('total_garments')->default(0);
+            $table->integer('total_services')->default(0);
             
             // Dates
             $table->timestamp('received_at')->nullable();

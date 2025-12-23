@@ -43,7 +43,10 @@
                                     <h5 class="mb-0 me-3">Products</h5>
                                     <!-- View Toggle -->
                                     <div class="btn-group btn-group-sm" role="group" aria-label="View toggle">
-                                        <button type="button" class="btn btn-outline-primary active" id="view-grid" title="Grid View">
+                                        <button type="button" class="btn btn-outline-primary" id="view-original" title="Original (4 columns)">
+                                            <i data-feather="square" class="feather-14"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary active" id="view-compact" title="Compact (6 columns)">
                                             <i data-feather="grid" class="feather-14"></i>
                                         </button>
                                         <button type="button" class="btn btn-outline-primary" id="view-list" title="List View">
@@ -65,9 +68,9 @@
                             </div>
                             <div class="tabs_container">
                                 <div class="tab_content active" data-tab="all">
-                                    <div class="grid-view" id="products-container">
+                                    <div class="row" id="products-container">
                                         <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <div class="product-item" data-product-id="<?php echo e($product->id); ?>" data-category-id="<?php echo e($product->category_id); ?>">
+                                        <div class="col-sm-2 col-md-6 col-lg-3 col-xl-3 pe-2 product-item" data-product-id="<?php echo e($product->id); ?>" data-category-id="<?php echo e($product->category_id); ?>">
                                             <div class="product-info default-cover card">
                                                 <a href="javascript:void(0);" class="img-bg add-to-cart" data-product-id="<?php echo e($product->id); ?>">
                                                     <img src="<?php echo e($product->image ? URL::asset($product->image) : URL::asset('/build/img/products/pos-product-01.png')); ?>" alt="<?php echo e($product->name); ?>">
@@ -434,25 +437,26 @@
         to { transform: rotate(360deg); }
     }
     
-    /* Products Container - Flexbox layout */
-    #products-container {
-        display: flex;
-        flex-wrap: wrap;
+    /* View toggle button styling */
+    .btn-group .btn.active {
+        background-color: #0d6efd !important;
+        color: white !important;
+        border-color: #0d6efd !important;
     }
     
-    /* Compact Grid View (default) */
-    #products-container.grid-view .product-item {
-        flex: 0 0 16.666%;
-        max-width: 16.666%;
-        padding: 4px;
+    /* COMPACT VIEW - 6 columns, smaller cards */
+    #products-container.compact-view .product-item {
+        flex: 0 0 16.666% !important;
+        max-width: 16.666% !important;
+        padding: 4px !important;
     }
     
-    #products-container.grid-view .product-info {
+    #products-container.compact-view .product-info {
         padding: 8px;
         margin-bottom: 0;
     }
     
-    #products-container.grid-view .img-bg {
+    #products-container.compact-view .img-bg {
         height: 55px;
         display: flex;
         align-items: center;
@@ -460,13 +464,13 @@
         padding: 4px;
     }
     
-    #products-container.grid-view .img-bg img {
+    #products-container.compact-view .img-bg img {
         max-height: 48px;
         width: auto;
         object-fit: contain;
     }
     
-    #products-container.grid-view .cat-name {
+    #products-container.compact-view .cat-name {
         font-size: 9px;
         margin-bottom: 2px;
         white-space: nowrap;
@@ -474,7 +478,7 @@
         text-overflow: ellipsis;
     }
     
-    #products-container.grid-view .product-name {
+    #products-container.compact-view .product-name {
         font-size: 10px;
         margin-bottom: 4px;
         line-height: 1.2;
@@ -482,46 +486,40 @@
         overflow: hidden;
     }
     
-    #products-container.grid-view .price {
+    #products-container.compact-view .price {
         font-size: 9px;
     }
     
-    #products-container.grid-view .price span {
+    #products-container.compact-view .price span {
         font-size: 8px;
     }
     
-    #products-container.grid-view .price p {
+    #products-container.compact-view .price p {
         font-size: 10px;
         font-weight: 600;
         margin: 0;
     }
     
-    /* List View */
-    #products-container.list-view {
-        flex-direction: column;
-        flex-wrap: nowrap;
-    }
-    
+    /* LIST VIEW - horizontal list */
     #products-container.list-view .product-item {
-        flex: 0 0 100%;
-        max-width: 100%;
-        padding: 3px 0;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 3px 0 !important;
     }
     
     #products-container.list-view .product-info {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 6px 10px;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        padding: 8px 12px !important;
         margin-bottom: 0;
-        position: relative;
     }
     
     #products-container.list-view .img-bg {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-        margin-right: 10px;
+        width: 45px !important;
+        height: 45px !important;
+        min-width: 45px;
+        margin-right: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -530,37 +528,34 @@
     }
     
     #products-container.list-view .img-bg img {
-        max-height: 36px;
-        max-width: 36px;
+        max-height: 40px;
+        max-width: 40px;
         object-fit: contain;
     }
     
     #products-container.list-view .cat-name {
-        position: absolute;
-        top: 50%;
-        right: 100px;
-        transform: translateY(-50%);
-        font-size: 9px;
+        font-size: 10px;
         background: #e9ecef;
-        padding: 2px 6px;
+        padding: 2px 8px;
         border-radius: 8px;
-        margin: 0;
+        margin: 0 10px 0 0;
+        white-space: nowrap;
     }
     
     #products-container.list-view .product-name {
         flex: 1;
-        font-size: 12px;
+        font-size: 13px;
         margin: 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        padding-right: 8px;
+        padding-right: 10px;
     }
     
     #products-container.list-view .price {
         margin-left: auto;
         text-align: right;
-        min-width: 70px;
+        min-width: 80px;
         flex-shrink: 0;
     }
     
@@ -569,52 +564,38 @@
     }
     
     #products-container.list-view .price p {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
         margin: 0;
         color: #0d6efd;
     }
     
-    #products-container.list-view .check-icon {
-        right: 60px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-    
-    /* View toggle button styling */
-    #view-grid.active,
-    #view-list.active {
-        background-color: #0d6efd !important;
-        color: white !important;
-        border-color: #0d6efd !important;
-    }
-    
-    /* Responsive adjustments for compact grid */
+    /* Responsive for compact view */
     @media (max-width: 1600px) {
-        #products-container.grid-view .product-item {
-            flex: 0 0 20%;
-            max-width: 20%;
+        #products-container.compact-view .product-item {
+            flex: 0 0 20% !important;
+            max-width: 20% !important;
         }
     }
     
     @media (max-width: 1400px) {
-        #products-container.grid-view .product-item {
-            flex: 0 0 25%;
-            max-width: 25%;
+        #products-container.compact-view .product-item {
+            flex: 0 0 25% !important;
+            max-width: 25% !important;
         }
     }
     
     @media (max-width: 1200px) {
-        #products-container.grid-view .product-item {
-            flex: 0 0 33.333%;
-            max-width: 33.333%;
+        #products-container.compact-view .product-item {
+            flex: 0 0 33.333% !important;
+            max-width: 33.333% !important;
         }
     }
     
     @media (max-width: 768px) {
-        #products-container.grid-view .product-item {
-            flex: 0 0 50%;
-            max-width: 50%;
+        #products-container.compact-view .product-item {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
         }
     }
     
@@ -806,8 +787,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Render products
     function renderProducts(products) {
         const container = $('#products-container');
-        // Get current view from variable, not from class (more reliable)
-        const viewToApply = currentView || 'grid';
+        // Get current view from variable
+        const viewToApply = currentView || 'compact';
         
         container.empty();
         
@@ -821,13 +802,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Ensure view class is maintained after rendering
-        container.removeClass('grid-view list-view').addClass(viewToApply + '-view');
+        container.removeClass('compact-view list-view');
+        if (viewToApply === 'compact') {
+            container.addClass('compact-view');
+        } else if (viewToApply === 'list') {
+            container.addClass('list-view');
+        }
+        // For 'original', no extra class needed
         
         products.forEach(function(product) {
             const isInCart = cart.some(item => item.product_id === product.id);
             const checkIconStyle = isInCart ? '' : 'display: none;';
             const productHtml = `
-                <div class="product-item" data-product-id="${product.id}" data-category-id="${product.category_id}">
+                <div class="col-sm-2 col-md-6 col-lg-3 col-xl-3 pe-2 product-item" data-product-id="${product.id}" data-category-id="${product.category_id}">
                     <div class="product-info default-cover card">
                         <a href="javascript:void(0);" class="img-bg add-to-cart" data-product-id="${product.id}">
                             <img src="${product.image || '<?php echo e(URL::asset('/build/img/products/pos-product-01.png')); ?>'}" alt="${product.name}">
@@ -2311,8 +2298,8 @@ document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
     }
     
-    // View toggle functionality
-    let currentView = localStorage.getItem('pos-view') || 'grid';
+    // View toggle functionality - 3 modes: original, compact, list
+    let currentView = localStorage.getItem('pos-view') || 'compact';
     
     function setView(view) {
         console.log('Setting view to:', view);
@@ -2321,14 +2308,22 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const container = $('#products-container');
         
-        if (view === 'grid') {
-            container.removeClass('list-view').addClass('grid-view');
-            $('#view-grid').addClass('active').css({'background-color': '#0d6efd', 'color': 'white', 'border-color': '#0d6efd'});
-            $('#view-list').removeClass('active').css({'background-color': '', 'color': '', 'border-color': ''});
+        // Remove all view classes
+        container.removeClass('compact-view list-view');
+        
+        // Remove active from all buttons
+        $('#view-original, #view-compact, #view-list').removeClass('active');
+        
+        // Apply the selected view
+        if (view === 'compact') {
+            container.addClass('compact-view');
+            $('#view-compact').addClass('active');
+        } else if (view === 'list') {
+            container.addClass('list-view');
+            $('#view-list').addClass('active');
         } else {
-            container.removeClass('grid-view').addClass('list-view');
-            $('#view-list').addClass('active').css({'background-color': '#0d6efd', 'color': 'white', 'border-color': '#0d6efd'});
-            $('#view-grid').removeClass('active').css({'background-color': '', 'color': '', 'border-color': ''});
+            // Original view - no extra class needed, Bootstrap columns work as-is
+            $('#view-original').addClass('active');
         }
         
         console.log('Container classes:', container.attr('class'));
@@ -2337,16 +2332,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize view from localStorage
     setView(currentView);
     
-    // View toggle click handlers (using document delegation for reliability)
-    $(document).on('click', '#view-grid', function(e) {
+    // View toggle click handlers
+    $(document).on('click', '#view-original', function(e) {
         e.preventDefault();
-        console.log('Grid button clicked');
-        setView('grid');
+        setView('original');
+    });
+    
+    $(document).on('click', '#view-compact', function(e) {
+        e.preventDefault();
+        setView('compact');
     });
     
     $(document).on('click', '#view-list', function(e) {
         e.preventDefault();
-        console.log('List button clicked');
         setView('list');
     });
     

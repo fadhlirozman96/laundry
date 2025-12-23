@@ -163,7 +163,7 @@ $(document).ready(function() {
             { data: 'due' },
             { data: 'payment_status' },
             { data: 'biller' },
-            { data: 'action', orderable: false, searchable: false }
+            { data: 'action', orderable: false, searchable: false, className: 'action-table-data' }
         ],
         order: [[3, 'desc']],
         language: {

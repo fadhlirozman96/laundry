@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LaundryOrder;
 use App\Models\LaundryOrderItem;
 use App\Models\LaundryOrderStatusLog;
-use App\Models\GarmentType;
+use App\Models\Product;
 use App\Models\Customer;
 use App\Models\QualityCheck;
 use Illuminate\Http\Request;
@@ -92,15 +92,27 @@ class LaundryController extends Controller
     {
         $storeId = $this->getStoreId();
         
-        $garmentTypes = GarmentType::where('store_id', $storeId)
+        // Get services for this store
+        $services = Product::where('store_id', $storeId)
             ->where('is_active', true)
+            ->with(['category', 'unit'])
+            ->orderBy('name')
             ->get();
+        
+        // If no services found for this store, get all services as fallback
+        if ($services->isEmpty()) {
+            $services = Product::where('is_active', true)
+                ->with(['category', 'unit'])
+                ->orderBy('name')
+                ->get();
+        }
         
         $customers = Customer::where('store_id', $storeId)
             ->where('is_active', true)
+            ->orderBy('name')
             ->get();
 
-        return view('laundry.create-order', compact('garmentTypes', 'customers'));
+        return view('laundry.create-order', compact('services', 'customers'));
     }
 
     /**
@@ -114,8 +126,8 @@ class LaundryController extends Controller
         $request->validate([
             'customer_name' => 'required|string|max:255',
             'items' => 'required|array|min:1',
-            'items.*.garment_type_id' => 'nullable|exists:garment_types,id',
-            'items.*.garment_name' => 'required|string|max:255',
+            'items.*.service_id' => 'nullable|exists:products,id',
+            'items.*.service_name' => 'required|string|max:255',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
         ]);
@@ -146,19 +158,19 @@ class LaundryController extends Controller
             // Create order items
             $subtotal = 0;
             $totalItems = 0;
-            $totalGarments = 0;
+            $totalServices = 0;
 
             foreach ($request->items as $index => $item) {
                 $itemSubtotal = $item['quantity'] * $item['price'];
                 $subtotal += $itemSubtotal;
                 $totalItems++;
-                $totalGarments += $item['quantity'];
+                $totalServices += $item['quantity'];
 
                 LaundryOrderItem::create([
                     'laundry_order_id' => $order->id,
-                    'garment_type_id' => $item['garment_type_id'] ?? null,
-                    'garment_name' => $item['garment_name'],
-                    'garment_code' => LaundryOrderItem::generateGarmentCode($order->id, $index + 1),
+                    'service_id' => $item['service_id'] ?? null,
+                    'service_name' => $item['service_name'],
+                    'item_code' => LaundryOrderItem::generateItemCode($order->id, $index + 1),
                     'quantity' => $item['quantity'],
                     'color' => $item['color'] ?? null,
                     'brand' => $item['brand'] ?? null,
@@ -169,16 +181,29 @@ class LaundryController extends Controller
             }
 
             // Calculate totals
-            $tax = $subtotal * 0.06; // 6% tax
-            $total = $subtotal + $tax - ($request->discount ?? 0);
+            $taxPercent = $request->order_tax_percent ?? 6;
+            $tax = $subtotal * ($taxPercent / 100);
+            $shipping = $request->shipping ?? 0;
+            $discount = $request->discount ?? 0;
+            $couponDiscount = $request->coupon_discount ?? 0;
+            $total = $subtotal + $tax + $shipping - $discount - $couponDiscount;
+            
+            // Ensure total is not negative
+            if ($total < 0) $total = 0;
 
             $order->update([
                 'subtotal' => $subtotal,
                 'tax' => $tax,
-                'discount' => $request->discount ?? 0,
+                'order_tax_percent' => $taxPercent,
+                'shipping' => $shipping,
+                'discount' => $discount,
+                'coupon_code' => $request->coupon_code,
+                'coupon_discount' => $couponDiscount,
                 'total' => $total,
                 'total_items' => $totalItems,
-                'total_garments' => $totalGarments,
+                'total_services' => $totalServices,
+                'payment_method' => $request->payment_method ?? 'cash',
+                'payment_status' => 'pending',
             ]);
 
             // Create initial status log
@@ -216,7 +241,7 @@ class LaundryController extends Controller
         $storeId = $this->getStoreId();
         
         $order = LaundryOrder::where('store_id', $storeId)
-            ->with(['items.garmentType', 'statusLogs.user', 'qualityChecks.user', 'user', 'machineUsageLogs.machine'])
+            ->with(['items.service', 'statusLogs.user', 'qualityChecks.user', 'user', 'machineUsageLogs.machine'])
             ->findOrFail($id);
 
         return view('laundry.order-details', compact('order'));
@@ -323,53 +348,6 @@ class LaundryController extends Controller
         ]);
     }
 
-    // ========== GARMENT TYPES ==========
-
-    public function garmentTypes()
-    {
-        $storeId = $this->getStoreId();
-        $garmentTypes = GarmentType::where('store_id', $storeId)->get();
-        return view('laundry.garment-types', compact('garmentTypes'));
-    }
-
-    public function storeGarmentType(Request $request)
-    {
-        $storeId = $this->getStoreId();
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'default_price' => 'required|numeric|min:0',
-        ]);
-
-        GarmentType::create([
-            'store_id' => $storeId,
-            'name' => $request->name,
-            'category' => $request->category,
-            'description' => $request->description,
-            'default_price' => $request->default_price,
-            'is_active' => true,
-        ]);
-
-        return response()->json(['success' => true, 'message' => 'Garment type added']);
-    }
-
-    public function updateGarmentType(Request $request, $id)
-    {
-        $storeId = $this->getStoreId();
-        $garmentType = GarmentType::where('store_id', $storeId)->findOrFail($id);
-
-        $garmentType->update($request->only(['name', 'category', 'description', 'default_price', 'is_active']));
-
-        return response()->json(['success' => true, 'message' => 'Garment type updated']);
-    }
-
-    public function deleteGarmentType($id)
-    {
-        $storeId = $this->getStoreId();
-        GarmentType::where('store_id', $storeId)->findOrFail($id)->delete();
-
-        return response()->json(['success' => true, 'message' => 'Garment type deleted']);
-    }
 }
 
 

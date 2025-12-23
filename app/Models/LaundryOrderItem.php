@@ -11,9 +11,9 @@ class LaundryOrderItem extends Model
 
     protected $fillable = [
         'laundry_order_id',
-        'garment_type_id',
-        'garment_name',
-        'garment_code',
+        'service_id',
+        'service_name',
+        'item_code',
         'quantity',
         'color',
         'brand',
@@ -34,15 +34,15 @@ class LaundryOrderItem extends Model
         return $this->belongsTo(LaundryOrder::class);
     }
 
-    public function garmentType()
+    public function service()
     {
-        return $this->belongsTo(GarmentType::class);
+        return $this->belongsTo(Product::class, 'service_id');
     }
 
-    // Generate unique garment code
-    public static function generateGarmentCode($orderId, $index)
+    // Generate unique item code
+    public static function generateItemCode($orderId, $index)
     {
-        return 'G' . $orderId . '-' . str_pad($index, 3, '0', STR_PAD_LEFT);
+        return 'I' . $orderId . '-' . str_pad($index, 3, '0', STR_PAD_LEFT);
     }
 }
 

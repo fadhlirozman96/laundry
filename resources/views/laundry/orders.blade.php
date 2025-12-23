@@ -72,7 +72,7 @@
                                 </td>
                                 <td>{{ $order->customer_name }}</td>
                                 <td>{{ $order->customer_phone ?? '-' }}</td>
-                                <td>{{ $order->total_garments }} pcs</td>
+                                <td>{{ $order->total_services }} pcs</td>
                                 <td>MYR {{ number_format($order->total, 2) }}</td>
                                 <td>{!! $order->getStatusBadge() !!}</td>
                                 <td>

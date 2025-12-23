@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('laundry_order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('laundry_order_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('garment_type_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('garment_name'); // Name/description
-            $table->string('garment_code')->nullable(); // Unique code for tracking
+            $table->foreignId('service_id')->nullable()->constrained('products')->nullOnDelete();
+            $table->string('service_name'); // Name/description
+            $table->string('item_code')->nullable(); // Unique code for tracking
             $table->integer('quantity')->default(1);
             $table->string('color')->nullable();
             $table->string('brand')->nullable();

@@ -876,11 +876,6 @@ Route::middleware('auth')->prefix('laundry')->name('laundry.')->group(function (
     Route::post('/find-order', [App\Http\Controllers\LaundryController::class, 'findByOrderNumber'])->name('find-order');
     Route::get('/orders/{id}/qr', [App\Http\Controllers\LaundryController::class, 'generateQRImage'])->name('qr-image');
     
-    // Garment Types
-    Route::get('/garment-types', [App\Http\Controllers\LaundryController::class, 'garmentTypes'])->name('garment-types');
-    Route::post('/garment-types', [App\Http\Controllers\LaundryController::class, 'storeGarmentType'])->name('garment-types.store');
-    Route::put('/garment-types/{id}', [App\Http\Controllers\LaundryController::class, 'updateGarmentType'])->name('garment-types.update');
-    Route::delete('/garment-types/{id}', [App\Http\Controllers\LaundryController::class, 'deleteGarmentType'])->name('garment-types.delete');
     
     // Machines
     Route::get('/machines', [App\Http\Controllers\MachineController::class, 'index'])->name('machines');
