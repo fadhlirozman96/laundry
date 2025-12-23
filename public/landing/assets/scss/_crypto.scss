@@ -1,0 +1,71 @@
+/*** 
+
+====================================================================
+    crypto-section
+====================================================================
+
+***/
+
+.crypto-section{
+    position: relative;
+    padding: 100px 0 120px;
+    @include media-breakpoint-down(xl){
+        padding-top: 50px;
+    }
+    .outer-box{
+        text-align: center;
+        .sec-title-three{
+            margin-top: 0;
+            margin-bottom: 0;
+            img{
+                margin-bottom: -19px;
+                position: relative;
+                z-index: -1;
+            }
+            .sub-title{
+                display: block;
+                text-transform: uppercase;
+                @include media-breakpoint-down(xl){
+                    margin-bottom: 20px;
+                }
+                &::before{
+                    display: none;
+                }
+            }
+            h2{
+                margin-bottom: 46px;
+                @include media-breakpoint-down(xl){
+                    line-height: 55px;
+                }
+                @include media-breakpoint-down(md){
+                    line-height: 47px;
+                    font-size: 32px;
+                }
+            }
+            .crypto-btn{
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--theme-color-light);
+                height: 52px;
+                line-height: 52px;
+                display: inline-block;
+                border-radius: 30px;
+                padding: 0 45px;
+                background: #F06;
+                box-shadow: 0px 0px 30px 0px rgba(255, 0, 102, 0.30);
+                &:hover{
+                    box-shadow: unset;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width:577px){
+    .crypto-section .outer-box .sec-title-three h2{font-size: 27px;line-height: 40px;}
+}
+
+@media only screen and (max-width:480px){
+    .crypto-section .outer-box .sec-title-three .sub-title{font-size: 16px;line-height: 26px;}
+    .crypto-section .outer-box .sec-title-three h2{font-size: 24px;line-height: 34px;}
+}

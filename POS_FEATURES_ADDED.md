@@ -145,3 +145,4 @@ Currently the `applyCoupon()` function has a placeholder. You need to:
 - Coupon validation needs backend implementation
 - Hold/Void features need additional development
 
+

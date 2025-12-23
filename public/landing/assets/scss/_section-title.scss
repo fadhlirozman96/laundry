@@ -1,0 +1,194 @@
+/*** 
+
+====================================================================
+Section Title
+====================================================================
+
+***/
+
+.sec-title {
+    position: relative;
+    margin-bottom: 57px;
+    margin-top: -16px;
+    @include media-breakpoint-down(sm){
+        margin-bottom: 40px;
+    }
+    .sub-title{
+        position: relative;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        display: block;
+        letter-spacing: 1.6px;
+        color: var(--text-color);
+        margin-bottom: 15px;
+    }
+    h2 {
+        position: relative;
+        font-weight: 700;
+        line-height: 70px;
+        padding-bottom: 37px;
+        margin-bottom: 0;
+        &::before{
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 9.375px;
+            background-image: url(../images//resource/dotes.png);
+        }
+        @include media-breakpoint-down(xl){
+            font-size: 40px;
+        }
+    }
+    .text {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    &.light{
+        .text,
+        h2,
+        h1{
+            color: #fff;
+        }
+        .sub-title {
+            color: #717171;
+            letter-spacing: 1.5px;
+        }
+    }
+}
+
+
+/*** 
+
+====================================================================
+Section Title
+====================================================================
+
+***/
+
+.sec-title-two {
+    position: relative;
+    margin-bottom: 58px;
+    @include media-breakpoint-down(sm){
+        margin-bottom: 40px;
+    }
+    .sub-title{
+        position: relative;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 30px;
+        display: block;
+        color: #000;
+        margin-bottom: 0px;
+    }
+    h2 {
+        position: relative;
+        font-size: 60px;
+        font-weight: 700;
+        line-height: 85px;
+        padding-bottom: 39px;
+        margin-bottom: 0;
+        &::before{
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 207px;
+            height: 10px;
+            background-color: var(--theme-color3);
+            border-radius: 10px;
+        }
+        @include media-breakpoint-down(xl){
+            font-size: 40px;
+        }
+    }
+    .text {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    &.light{
+        .text,
+        h2,
+        h1{
+            color: #fff;
+        }
+        .sub-title {
+            color: #717171;
+            letter-spacing: 1.5px;
+        }
+    }
+}
+
+/*** 
+
+====================================================================
+Section Title three
+====================================================================
+
+***/
+
+.sec-title-three {
+    position: relative;
+    margin-bottom: 58px;
+    margin-top: 79px;
+    @include media-breakpoint-down(sm){
+        margin-bottom: 40px;
+    }
+    .sub-title{
+        position: relative;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 30px;
+        display: block;
+        color: #000;
+        margin-bottom: 4px;
+        letter-spacing: 5.4px;
+        display: inline-block;
+        &::before{
+            content: "";
+            position: absolute;
+            top: -79px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48.848px;
+            height: 48.848px;
+            border-radius: 50%;
+            background-color: #F06;
+            filter: drop-shadow(0px 4px 50px rgba(255, 0, 102, 0.30));
+        }
+    }
+    h2 {
+        position: relative;
+        font-size: 60px;
+        font-weight: 700;
+        line-height: 85px;
+        margin-bottom: 0;
+        @include media-breakpoint-down(xl){
+            font-size: 40px;
+        }
+        span{
+            color: #F06;
+        }
+    }
+    .text {
+        margin-top: 20px;
+        font-size: 16px;
+        line-height: 30px;
+    }
+    &.light{
+        .text,
+        h2,
+        h1{
+            color: #fff;
+        }
+        .sub-title {
+            color: #717171;
+            letter-spacing: 1.5px;
+        }
+    }
+}
+

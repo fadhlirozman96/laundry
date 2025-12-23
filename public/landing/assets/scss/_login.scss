@@ -1,0 +1,188 @@
+/*** 
+
+====================================================================
+    login-section
+====================================================================
+
+***/
+
+.login-section{
+    position: relative;
+    padding: 120px 0;
+    .outer-box{
+        position: relative;
+        padding: 60px 30px 0;
+        &::before{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 472px;
+            border-radius: 50px;
+            background: #E0E4FC;
+            z-index: -1;
+        }
+    }
+    .heading-section{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 55px;
+        @include media-breakpoint-down(lg){
+            flex-direction: column;
+            align-items: baseline;
+        }
+        .title{
+            font-weight: 500;
+            color: var(--theme-color-dark2);
+            margin-bottom: 0;
+            @include media-breakpoint-down(lg){
+                margin-bottom: 20px;
+            }
+        }
+        .list{
+            display: flex;
+            @include media-breakpoint-down(md){
+                flex-direction: column;
+                align-items: baseline;
+            }
+            align-items: center;
+            li{
+                border-radius: 40px;
+                background: #FFF;
+                box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.30);
+                padding: 17px 51px 15px 36px;
+                margin-right: 17px;
+                @include media-breakpoint-down(xl){
+                    padding: 12px 17px;
+                }
+                &:last-child{
+                    margin-right: 0;
+                    @include media-breakpoint-down(md){
+                        margin-top: 20px;
+                    }
+                }
+                a{
+                    font-size: 14px;
+                    font-weight: 500;
+                    img{
+                        margin-right: 13px;
+                    }
+                }
+            }
+        }
+    }
+    .input-column{
+        .inner-column{
+            position: relative;
+            border-radius: 50px;
+            background: var(--theme-color-light);
+            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+            padding: 46px 35px 50px;
+            .icon-box{
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: #E0E4FC;
+                border-radius: 50px;
+                width: 100px;
+                height: 100px;
+                line-height: 100px;
+                text-align: center;
+                i{
+                    font-size: 43px;
+                    color: rgba(33, 3, 120, 1);
+                }
+            }
+            .sec-title-three{
+                margin-top: 0;
+                h4{
+                    font-size: 30px;
+                    font-weight: 700;
+                }
+            }
+            .subscribe-form{
+                .form-group{
+                    input{
+                        height: 62px;
+                        border-radius: 30px;
+                        border: 1px solid #BBC5FF;
+                        background: var(--theme-color-light);
+                        width: 100%;
+                        padding: 0 45px;
+                        font-size: 14px;
+                        color: var(--text-color);
+                        margin-bottom: 21px;
+                        &::placeholder{
+                            color: var(--text-color);
+                        }
+                    }
+                    .theme-btn{
+                        height: 52px;
+                        line-height: 52px;
+                        padding: 0 54px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        border-radius: 50px;
+                    }
+                    .form-btn{
+                        color: var(--text-color);
+                        font-weight: 500;
+                        font-size: 14px;
+                        margin-left: 24px;
+                        &:hover {
+                            color: var(--theme-color1);
+                        }
+                    }
+                }
+            }
+        }
+        .inner-column.two{
+            background: #210378;
+            @include media-breakpoint-down(lg){
+                margin-top: 50px;
+            }
+            .sec-title-three{
+                h4{
+                    color: var(--theme-color-light);
+                }
+            }
+            .subscribe-form{
+                .form-group{
+                    input{
+                        border-radius: 30px;
+                        border: 1px solid #E0E4FC;
+                        background: #210378;
+                        color: #E0E4FC;
+                        &::placeholder{
+                            color: #E0E4FC;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@media only screen and (max-width:577px){
+    .login-section .outer-box{padding: 40px 30px 0;}
+    .login-section .input-column .inner-column .icon-box{display: none;}
+    .login-section .input-column .inner-column .subscribe-form .form-group{display: flex;flex-direction: column;}
+    .login-section .input-column .inner-column .subscribe-form .form-group .form-btn{margin-top: 10px;margin-left: 0;}
+}
+
+@media only screen and (max-width:480px){
+    .login-section .heading-section .title{font-size: 22px;}
+    .login-section .input-column .inner-column .icon-box{display: none;}
+    .login-section .input-column .inner-column .sec-title-three{ margin-bottom: 25px;}
+    .login-section .input-column .inner-column .sec-title-three h4{font-size: 22px;}
+    .login-section .input-column .inner-column{padding: 35px 32px 35px;}
+    .login-section .input-column .subscribe-form .row .col-lg-12 {padding: 0;}
+    .login-section .outer-box{padding: 40px 9px 0;}
+    .login-section .heading-section .list li{margin-right: 0;padding: 12px 13px;}
+    .login-section .input-column .inner-column .subscribe-form .form-group .theme-btn{width: 100%;margin-bottom: 10px;}
+    .login-section .input-column .inner-column .subscribe-form .form-group .form-btn{margin-left: 7px;}
+    .login-section .heading-section .list li a{font-size: 13px;}
+}

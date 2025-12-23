@@ -1,0 +1,101 @@
+/*** 
+
+====================================================================
+    review-section
+====================================================================
+
+***/
+
+.review-section{
+    position: relative;
+    padding: 120px 0 149px;
+    .pagination.v2{
+        margin-top: 19px;
+        .page-item{
+            .page-link{
+                &:hover{
+                    background: #FF7C2A;
+                    border-color: #FF7C2A;
+                    color: var(--theme-color-light);
+                    background-color: #FF7C2A;
+                }
+            }
+            .page-link.current{
+                border-color: #FF7C2A;
+                background-color: #FF7C2A;
+                color: var(--theme-color-light);
+            }
+        }
+    }
+}
+
+// .review-block
+.review-block{
+    margin-bottom: 15px;
+    .inner-box{
+        border-radius: 50px;
+        background: #E0E4FC;
+        padding: 73px 20px 20px;
+        .content-box{
+            padding: 0 36px 40px;
+            @include media-breakpoint-down(xl){
+                padding: 0 25px 40px;
+            }
+            .rating{
+                display: flex;
+                margin-bottom: 49px;
+                li{
+                    font-size: 30px;
+                    color: #FF7C2A;
+                    margin-right: 11px;
+                    &:last-child{
+                        margin-right: 0;
+                    }
+                }
+            }
+            .text{
+                font-size: 22px;
+                line-height: 50px;
+            }
+        }
+        .auther-info{
+            background-color: var(--theme-color-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 80px;
+            padding-left: 37px;
+            .info-box{
+                .name{
+                    font-size: 26px;
+                    font-weight: 700;
+                    text-transform: capitalize;
+                    margin-bottom: 3px;
+                    @include media-breakpoint-down(xl){
+                        font-size: 24px;
+                    }
+                }
+                .designation{
+                    font-weight: 700;
+                    color: #999;
+                }
+            }
+            img{
+                border-radius: 50%;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width:480px){
+    .review-block .inner-box .content-box{padding: 0 0 40px;}
+    .review-block .inner-box .content-box .rating li{font-size: 20px;margin-right: 5px;}
+    .review-block .inner-box .content-box .rating{margin-bottom: 10px;}
+    .review-block .inner-box{padding: 35px 20px 20px;}
+    .review-block .inner-box .content-box .text{ font-size: 16px;line-height: 33px;}
+    .review-block .inner-box .auther-info{flex-direction: column;align-items: baseline;}
+    .review-block .inner-box .auther-info{border-radius: 20px;padding: 20px;}
+    .review-block .inner-box .auther-info .info-box .name{font-size: 20px;}
+    .review-block .inner-box .auther-info .info-box .designation{font-size: 14px;}
+    .review-block .inner-box .auther-info .info-box {margin-bottom: 20px;}
+}

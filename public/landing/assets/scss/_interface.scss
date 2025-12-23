@@ -1,0 +1,125 @@
+/*** 
+
+====================================================================
+    interface-section
+====================================================================
+
+***/
+
+.main-section-four{
+    position: relative;
+    background-image: url(../images//background/Union3-1.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 120px 0 30px;
+    @include media-breakpoint-down(xl){
+        background-image: unset;
+        background: #F0F0F0;
+    }
+    @include for-sm {
+        padding-bottom: 80px;
+    }
+}
+
+.interface-section{
+    position: relative;
+    padding-bottom: 69px;
+    .sec-title-three{
+        margin-bottom: 36px;
+        @include for-lg {
+            margin-bottom: 120px;
+        }
+        @include for-xxs {
+            margin-bottom: 30px;
+        }
+        .sub-title{
+            @include media-breakpoint-down(xl){
+                margin-bottom: 10px;
+            }
+        }
+        h2{
+            @include media-breakpoint-down(xl){
+                line-height: 50px;
+            }
+        }
+    }
+    .outer-box{
+        position: relative;
+        &::before{
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 606.625px;
+            height: 606.625px;
+            background-image: url(../images//resource/interface.png);
+            @include for-xxs {
+                display: none;
+            }
+        }
+        .interface-block {
+            .image {
+                img {
+                    transform: scale(0.8);
+                    transition: all 0.3s ease;
+                }
+            }
+        }
+        .slick-slide.slick-center {
+            .image {
+                img {
+                    transform: scale(1);
+                }
+            }
+        }
+    }
+    .slick-next,
+    .slick-prev {
+        top: 50%;
+        background: transparent;
+        border:0;
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 76px;
+            height: 20px;
+            background-image: url(../images//right-arrow.png);
+            filter: grayscale(1);
+            transition: all 0.3s ease;
+        }
+        &:hover {
+            &:before {
+                filter: grayscale(0);
+            }
+        }
+    }
+    .slick-next {
+        right: -70px;
+        &:before {
+            transform: rotate(0deg);
+        }
+        @include media-breakpoint-down(xxl){
+            right: -50px;
+        }
+    }
+    .slick-prev {
+        left: -10px;
+        &:before {
+            transform: rotate(-180deg);
+        }
+        @include media-breakpoint-down(xxl){
+            left: 5px;
+        }
+    }
+}
+
+@media only screen and (max-width:577px){
+    .interface-section .sec-title-three h2{line-height: 45px;font-size: 32px;}
+}
+@media only screen and (max-width:480px){
+    .interface-section .sec-title-three h2{line-height: 36px;font-size: 25px;z-index: 99;}
+    .sec-title-three .sub-title{font-size: 14px;z-index: 99;}
+}

@@ -45,7 +45,7 @@ class CustomAuthController extends Controller
         }
          
       
-        return redirect("/")->withErrors([
+        return redirect("/login")->withErrors([
             'email' => 'The provided credentials are incorrect.',
             'login' => 'Login failed! Please check your email and password.'
         ])->withInput($request->only('email'));
@@ -76,7 +76,7 @@ class CustomAuthController extends Controller
         $data = $request->all();
         $check = $this->create($data);
          
-        return redirect("/")->withSuccess('You have signed-in');
+        return redirect("/login")->withSuccess('You have signed-in');
     }
 
 
@@ -97,7 +97,7 @@ class CustomAuthController extends Controller
             return view('index');
         }
   
-        return redirect("/")->withSuccess('You are not allowed to access');
+        return redirect("/login")->withSuccess('You are not allowed to access');
     }
     
 
@@ -110,6 +110,6 @@ class CustomAuthController extends Controller
         Session::flush();
         Auth::logout();
   
-        return redirect('/');
+        return redirect('/login');
     }
 }

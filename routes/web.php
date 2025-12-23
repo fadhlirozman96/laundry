@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\StoreFrontController;
+use App\Http\Controllers\LandingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +16,13 @@ use App\Http\Controllers\StoreFrontController;
 |
 */
 
+// Landing Page
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
 // Auth Routes
 // Route::get('index', [CustomAuthController::class, 'dashboard']); 
-Route::get('/', [CustomAuthController::class, 'index'])->name('signin')->middleware('guest');
-Route::get('/login', [CustomAuthController::class, 'index'])->name('login'); // Redirect for auth middleware
+Route::get('/login', [CustomAuthController::class, 'index'])->name('login')->middleware('guest');
+Route::get('/signin', [CustomAuthController::class, 'index'])->name('signin')->middleware('guest');
 Route::post('custom-login', [CustomAuthController::class, 'customSignin'])->name('signin.custom'); 
 Route::get('logout', [CustomAuthController::class, 'signOut'])->name('logout');
 Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
