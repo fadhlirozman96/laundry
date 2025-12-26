@@ -33,128 +33,127 @@
                         <hr>
 
                         <h5 class="mb-3">Plan Limits</h5>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <i data-feather="check-circle" class="text-success"></i>
-                                <strong>Stores:</strong> <?php echo e($plan->max_stores === 'unlimited' || $plan->max_stores == -1 ? 'Unlimited' : $plan->max_stores); ?>
+                        <ul class="list-unstyled plan-limits-list">
+                            <li class="limit-item">
+                                <i data-feather="home" class="limit-icon"></i>
+                                <span class="limit-content">
+                                    <strong>Stores:</strong> <?php echo e($plan->max_stores === 'unlimited' || $plan->max_stores == -1 ? 'Unlimited' : $plan->max_stores); ?>
 
+                                </span>
                             </li>
-                            <li class="mb-2">
-                                <i data-feather="check-circle" class="text-success"></i>
-                                <strong>QC Level:</strong> <?php echo e(ucfirst($plan->qc_level)); ?>
+                            <li class="limit-item">
+                                <i data-feather="shield" class="limit-icon"></i>
+                                <span class="limit-content">
+                                    <strong>QC Level:</strong> <?php echo e(ucfirst($plan->qc_level)); ?>
 
+                                </span>
                             </li>
-                            <li class="mb-2">
-                                <i data-feather="check-circle" class="text-success"></i>
-                                <strong>Audit Trail:</strong> <?php echo e(ucfirst($plan->audit_trail_level)); ?>
+                            <li class="limit-item">
+                                <i data-feather="list" class="limit-icon"></i>
+                                <span class="limit-content">
+                                    <strong>Audit Trail:</strong> <?php echo e(ucfirst($plan->audit_trail_level)); ?>
 
+                                </span>
                             </li>
-                            <li class="mb-2">
-                                <i data-feather="check-circle" class="text-success"></i>
-                                <strong>Trial Days:</strong> <?php echo e($plan->trial_days); ?> days
+                            <li class="limit-item">
+                                <i data-feather="calendar" class="limit-icon"></i>
+                                <span class="limit-content">
+                                    <strong>Trial Days:</strong> <?php echo e($plan->trial_days); ?> days
+                                </span>
                             </li>
                         </ul>
 
                         <hr>
 
                         <h5 class="mb-3">Capacity Limits</h5>
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled capacity-list">
                             <?php
                                 $planFeatures = is_array($plan->features) ? $plan->features : json_decode($plan->features, true) ?? [];
                             ?>
-                            <li class="mb-2">
-                                <i data-feather="users" class="text-info"></i>
-                                <strong>Max Users:</strong> <?php echo e(isset($planFeatures['max_users']) ? ($planFeatures['max_users'] === 'unlimited' || $planFeatures['max_users'] == -1 ? 'Unlimited' : $planFeatures['max_users']) : 'N/A'); ?>
+                            <li class="capacity-item">
+                                <i data-feather="users" class="capacity-icon"></i>
+                                <span class="capacity-content">
+                                    <strong>Max Users:</strong> <?php echo e(isset($planFeatures['max_users']) ? ($planFeatures['max_users'] === 'unlimited' || $planFeatures['max_users'] == -1 ? 'Unlimited' : $planFeatures['max_users']) : 'N/A'); ?>
 
+                                </span>
                             </li>
-                            <li class="mb-2">
-                                <i data-feather="package" class="text-info"></i>
-                                <strong>Max Products:</strong> <?php echo e(isset($planFeatures['max_products']) ? ($planFeatures['max_products'] === 'unlimited' || $planFeatures['max_products'] == -1 ? 'Unlimited' : $planFeatures['max_products']) : 'N/A'); ?>
+                            <li class="capacity-item">
+                                <i data-feather="package" class="capacity-icon"></i>
+                                <span class="capacity-content">
+                                    <strong>Max Products:</strong> <?php echo e(isset($planFeatures['max_products']) ? ($planFeatures['max_products'] === 'unlimited' || $planFeatures['max_products'] == -1 ? 'Unlimited' : $planFeatures['max_products']) : 'N/A'); ?>
 
+                                </span>
                             </li>
-                            <li class="mb-2">
-                                <i data-feather="shopping-cart" class="text-info"></i>
-                                <strong>Max Orders/Month:</strong> <?php echo e(isset($planFeatures['max_orders_per_month']) ? ($planFeatures['max_orders_per_month'] === 'unlimited' || $planFeatures['max_orders_per_month'] == -1 ? 'Unlimited' : $planFeatures['max_orders_per_month']) : 'N/A'); ?>
+                            <li class="capacity-item">
+                                <i data-feather="shopping-cart" class="capacity-icon"></i>
+                                <span class="capacity-content">
+                                    <strong>Max Orders/Month:</strong> <?php echo e(isset($planFeatures['max_orders_per_month']) ? ($planFeatures['max_orders_per_month'] === 'unlimited' || $planFeatures['max_orders_per_month'] == -1 ? 'Unlimited' : $planFeatures['max_orders_per_month']) : 'N/A'); ?>
 
+                                </span>
                             </li>
-                            <li class="mb-2">
-                                <i data-feather="message-circle" class="text-info"></i>
-                                <strong>Support:</strong> <?php echo e(isset($planFeatures['customer_support']) ? ucwords(str_replace('_', ' ', $planFeatures['customer_support'])) : 'N/A'); ?>
+                            <li class="capacity-item">
+                                <i data-feather="headphones" class="capacity-icon"></i>
+                                <span class="capacity-content">
+                                    <strong>Support:</strong> <?php echo e(isset($planFeatures['customer_support']) ? ucwords(str_replace('_', ' ', $planFeatures['customer_support'])) : 'N/A'); ?>
 
+                                </span>
                             </li>
                         </ul>
 
                         <hr>
 
                         <h5 class="mb-3">Features</h5>
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled feature-list">
                             <?php
                                 $planFeatures = is_array($plan->features) ? $plan->features : json_decode($plan->features, true) ?? [];
-                            ?>
-                            
-                            <li class="mb-2">
-                                <?php if($plan->has_sop_module): ?>
-                                    <i data-feather="check-circle" class="text-success"></i>
-                                <?php else: ?>
-                                    <i data-feather="x-circle" class="text-danger"></i>
-                                <?php endif; ?>
-                                SOP Module
-                            </li>
-                            
-                            <li class="mb-2">
-                                <?php if($plan->has_store_switcher): ?>
-                                    <i data-feather="check-circle" class="text-success"></i>
-                                <?php else: ?>
-                                    <i data-feather="x-circle" class="text-danger"></i>
-                                <?php endif; ?>
-                                Store Switcher
-                            </li>
-                            
-                            <li class="mb-2">
-                                <?php if($plan->has_all_stores_view): ?>
-                                    <i data-feather="check-circle" class="text-success"></i>
-                                <?php else: ?>
-                                    <i data-feather="x-circle" class="text-danger"></i>
-                                <?php endif; ?>
-                                All Stores View
-                            </li>
-
-                            <?php
-                                // Define feature labels for better display
-                                $featureLabels = [
-                                    'laundry_qc' => 'Quality Control Module',
-                                    'machine_tracking' => 'Machine Usage Tracking',
-                                    'pos_system' => 'POS System',
-                                    'advanced_reporting' => 'Advanced Reporting',
-                                    'api_access' => 'API Access',
-                                    'landing_page_module' => 'Landing Page Module',
-                                    'theme_customization' => 'Theme & CMS',
-                                    'max_users' => null, // Don't show these as features
-                                    'max_products' => null,
-                                    'max_orders_per_month' => null,
-                                    'customer_support' => null,
-                                    'custom_branding' => null, // Hidden
-                                    'dedicated_account_manager' => null, // Hidden
+                                
+                                // Define ALL possible features with their labels
+                                $allFeatures = [
+                                    // Core Features
+                                    'has_sop_module' => ['label' => 'SOP Module', 'type' => 'property'],
+                                    'has_store_switcher' => ['label' => 'Store Switcher', 'type' => 'property'],
+                                    'has_all_stores_view' => ['label' => 'All Stores View', 'type' => 'property'],
+                                    
+                                    // Laundry Operations
+                                    'laundry_qc' => ['label' => 'Quality Control Module', 'type' => 'feature'],
+                                    'machine_tracking' => ['label' => 'Machine Usage Tracking', 'type' => 'feature'],
+                                    'pos_system' => ['label' => 'POS System', 'type' => 'feature'],
+                                    
+                                    // Advanced Features
+                                    'advanced_reporting' => ['label' => 'Advanced Reporting', 'type' => 'feature'],
+                                    'api_access' => ['label' => 'API Access', 'type' => 'feature'],
+                                    'landing_page_module' => ['label' => 'Landing Page Module', 'type' => 'feature'],
+                                    'theme_customization' => ['label' => 'Theme & CMS', 'type' => 'feature'],
                                 ];
                             ?>
-
-                            <?php if(!empty($planFeatures)): ?>
-                                <?php $__currentLoopData = $planFeatures; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <?php if($value && is_bool($value) && isset($featureLabels[$key]) && $featureLabels[$key] !== null): ?>
-                                        <li class="mb-2">
-                                            <i data-feather="check-circle" class="text-success"></i>
-                                            <?php echo e($featureLabels[$key]); ?>
-
-                                        </li>
-                                    <?php elseif($value && !is_bool($value) && !in_array($key, ['max_users', 'max_products', 'max_orders_per_month', 'customer_support'])): ?>
-                                        <li class="mb-2">
-                                            <i data-feather="check-circle" class="text-success"></i>
-                                            <?php echo e($featureLabels[$key] ?? ucwords(str_replace('_', ' ', $key))); ?>
-
-                                        </li>
+                            
+                            <?php $__currentLoopData = $allFeatures; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $config): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
+                                    $isEnabled = false;
+                                    
+                                    if ($config['type'] === 'property') {
+                                        // Check plan properties (has_sop_module, has_store_switcher, etc.)
+                                        $isEnabled = $plan->{$key} ?? false;
+                                    } else {
+                                        // Check features array
+                                        if ($key === 'laundry_qc') {
+                                            // QC module is enabled if qc_level is not 'none'
+                                            $isEnabled = in_array($plan->qc_level, ['basic', 'full', 'full_sop', 'advanced']);
+                                        } else {
+                                            $isEnabled = isset($planFeatures[$key]) && $planFeatures[$key];
+                                        }
+                                    }
+                                ?>
+                                
+                                <li class="feature-item-display <?php echo e($isEnabled ? 'feature-enabled' : 'feature-disabled'); ?>">
+                                    <?php if($isEnabled): ?>
+                                        <i data-feather="check-circle" class="feature-icon feature-icon-enabled"></i>
+                                    <?php else: ?>
+                                        <i data-feather="x-circle" class="feature-icon feature-icon-disabled"></i>
                                     <?php endif; ?>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            <?php endif; ?>
+                                    <span class="feature-text"><?php echo e($config['label']); ?></span>
+                                </li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
 
                         <div class="mt-4">
@@ -179,6 +178,151 @@
         <?php endif; ?>
     </div>
 </div>
+
+<style>
+/* Feature List Styling */
+.feature-list {
+    margin: 0;
+    padding: 0;
+}
+
+.feature-item-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    margin-bottom: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.feature-icon {
+    flex-shrink: 0;
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 2.5;
+}
+
+.feature-icon-enabled {
+    color: #28a745 !important;
+    stroke: #28a745 !important;
+}
+
+.feature-icon-disabled {
+    color: #dc3545 !important;
+    stroke: #dc3545 !important;
+}
+
+.feature-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.feature-enabled .feature-text {
+    color: #212529;
+    font-weight: 500;
+}
+
+.feature-disabled .feature-text {
+    color: #6c757d;
+}
+
+/* Plan Limits List Styling */
+.plan-limits-list {
+    margin: 0;
+    padding: 0;
+}
+
+.limit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    margin-bottom: 0.25rem;
+}
+
+.limit-icon {
+    flex-shrink: 0;
+    width: 18px !important;
+    height: 18px !important;
+    color: #007bff;
+    stroke: #007bff;
+}
+
+.limit-content {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Capacity List Styling */
+.capacity-list {
+    margin: 0;
+    padding: 0;
+}
+
+.capacity-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    margin-bottom: 0.25rem;
+}
+
+.capacity-icon {
+    flex-shrink: 0;
+    width: 18px !important;
+    height: 18px !important;
+    color: #17a2b8;
+    stroke: #17a2b8;
+}
+
+.capacity-content {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Plan Card Styling */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Heading Styling */
+h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+/* Global Icon sizing */
+[data-feather] {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/* Button Styling */
+.btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary [data-feather] {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* Badge spacing */
+.text-center .badge {
+    margin: 0 0.25rem;
+}
+</style>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.mainlayout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\laundry\resources\views/superadmin/plans.blade.php ENDPATH**/ ?>
