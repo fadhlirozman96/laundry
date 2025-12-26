@@ -12,7 +12,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Process subscription renewals daily at 00:00
+        $schedule->command('subscriptions:process-renewals')->daily();
+        
+        // You can also run it hourly for testing:
+        // $schedule->command('subscriptions:process-renewals')->hourly();
     }
 
     /**

@@ -12,6 +12,27 @@
                                 href="<?php echo e(url('index')); ?>"><i data-feather="grid"></i><span>Dashboard</span></a>
                         </li>
                         </li>
+                        
+                        <!-- Business Owner Only: Subscription & Notifications -->
+                        <?php if(auth()->user()->hasRole('business_owner')): ?>
+                        <li class="<?php echo e(Request::is('business-owner/subscription*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('business-owner.subscription')); ?>">
+                                <i data-feather="credit-card"></i><span>My Subscription</span>
+                            </a>
+                        </li>
+                        <li class="<?php echo e(Request::is('business-owner/notifications*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('business-owner.notifications')); ?>">
+                                <i data-feather="bell"></i><span>Notifications</span>
+                                <?php
+                                    $unreadCount = auth()->user()->unreadNotifications()->count();
+                                ?>
+                                <?php if($unreadCount > 0): ?>
+                                <span class="badge bg-danger ms-2"><?php echo e($unreadCount > 9 ? '9+' : $unreadCount); ?></span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                        
                         <li class="submenu">
                             <a href="javascript:void(0);"
                                 class="<?php echo e(Request::is('chat', 'file-manager', 'file-archived','file-document','file-favourites','file-manager-seleted','file-recent','file-shared','notes', 'todo', 'email', 'calendar', 'call-history', 'audio-call', 'video-call','file-manager-deleted') ? 'active subdrop' : ''); ?> "><i
@@ -65,17 +86,6 @@
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"
-                                class="<?php echo e(Request::is('superadmin/features*') ? 'active subdrop' : ''); ?>"><i
-                                    data-feather="lock"></i><span>Feature Gating</span><span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a href="<?php echo e(route('superadmin.features.index')); ?>"
-                                        class="<?php echo e(Request::is('superadmin/features') ? 'active' : ''); ?>">Feature Matrix</a></li>
-                                <li><a href="<?php echo e(route('superadmin.features.logs')); ?>"
-                                        class="<?php echo e(Request::is('superadmin/features/logs') ? 'active' : ''); ?>">Access Logs</a></li>
-                            </ul>
-                        </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);"
                                 class="<?php echo e(Request::is('superadmin/payments*', 'superadmin/invoices*', 'superadmin/grace-periods*') ? 'active subdrop' : ''); ?>"><i
                                     data-feather="credit-card"></i><span>SaaS Billing</span><span class="menu-arrow"></span></a>
                             <ul>
@@ -89,13 +99,11 @@
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"
-                                class="<?php echo e(Request::is('superadmin/users*', 'superadmin/user-profiles*', 'superadmin/security-settings*') ? 'active subdrop' : ''); ?>"><i
+                                class="<?php echo e(Request::is('superadmin/users*', 'superadmin/security-settings*') ? 'active subdrop' : ''); ?>"><i
                                     data-feather="user-check"></i><span>User & Identity</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a href="<?php echo e(route('superadmin.users.index')); ?>"
                                         class="<?php echo e(Request::is('superadmin/users') ? 'active' : ''); ?>">All Users</a></li>
-                                <li><a href="<?php echo e(route('superadmin.user-profiles')); ?>"
-                                        class="<?php echo e(Request::is('superadmin/user-profiles') ? 'active' : ''); ?>">User Profiles</a></li>
                                 <li><a href="<?php echo e(route('superadmin.security-settings')); ?>"
                                         class="<?php echo e(Request::is('superadmin/security-settings') ? 'active' : ''); ?>">Security Settings</a></li>
                             </ul>

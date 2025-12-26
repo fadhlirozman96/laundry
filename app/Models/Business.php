@@ -120,3 +120,4 @@ class Business extends Model
     }
 }
 
+

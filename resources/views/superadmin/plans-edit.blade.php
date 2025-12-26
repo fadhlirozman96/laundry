@@ -203,21 +203,6 @@
                         <!-- Core Features -->
                         <div class="col-lg-4">
                             <h6 class="feature-category-title">Core Features</h6>
-                            
-                            <div class="feature-item" data-feature="sop_module">
-                                <input type="hidden" name="has_sop_module" value="0">
-                                <input class="feature-checkbox" type="checkbox" name="has_sop_module" value="1" id="sop_module" {{ $plan->has_sop_module ? 'checked' : '' }}>
-                                <label class="feature-label" for="sop_module">
-                                    <span class="feature-icon">
-                                        <i class="icon-check" data-feather="check-circle"></i>
-                                        <i class="icon-x" data-feather="x-circle"></i>
-                                    </span>
-                                    <span class="feature-content">
-                                        <strong class="feature-name">SOP Module</strong>
-                                        <small class="feature-desc">Standard Operating Procedures</small>
-                                    </span>
-                                </label>
-                            </div>
 
                             <div class="feature-item" data-feature="store_switcher">
                                 <input type="hidden" name="has_store_switcher" value="0">
@@ -257,7 +242,7 @@
                             <div class="feature-item" data-feature="laundry_qc">
                                 <input type="hidden" name="features[laundry_qc]" value="0">
                                 <input class="feature-checkbox" type="checkbox" name="features[laundry_qc]" value="1" id="laundry_qc" 
-                                       {{ ((isset($plan->features['laundry_qc']) && $plan->features['laundry_qc']) || in_array($plan->qc_level, ['full', 'full_sop', 'advanced'])) ? 'checked' : '' }}>
+                                       {{ ((isset($plan->features['laundry_qc']) && $plan->features['laundry_qc']) || in_array($plan->qc_level, ['full', 'advanced'])) ? 'checked' : '' }}>
                                 <label class="feature-label" for="laundry_qc">
                                     <span class="feature-icon">
                                         <i class="icon-check" data-feather="check-circle"></i>

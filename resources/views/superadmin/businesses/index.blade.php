@@ -11,70 +11,62 @@
 
         <!-- Stats Cards -->
         <div class="row">
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
+            <div class="col-xl-3 col-sm-6 col-12">
+                <div class="card dashboard-card">
                     <div class="card-body">
                         <div class="dash-widget-header">
                             <span class="dash-widget-icon bg-primary">
                                 <i data-feather="briefcase"></i>
                             </span>
-                            <div class="dash-count">
-                                <h3>{{ $stats['total'] }}</h3>
-                            </div>
                         </div>
                         <div class="dash-widget-info">
                             <h6 class="text-muted">Total Businesses</h6>
+                            <h3>{{ $stats['total'] }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
+            <div class="col-xl-3 col-sm-6 col-12">
+                <div class="card dashboard-card">
                     <div class="card-body">
                         <div class="dash-widget-header">
                             <span class="dash-widget-icon bg-success">
                                 <i data-feather="check-circle"></i>
                             </span>
-                            <div class="dash-count">
-                                <h3>{{ $stats['active'] }}</h3>
-                            </div>
                         </div>
                         <div class="dash-widget-info">
                             <h6 class="text-muted">Active</h6>
+                            <h3>{{ $stats['active'] }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
+            <div class="col-xl-3 col-sm-6 col-12">
+                <div class="card dashboard-card">
                     <div class="card-body">
                         <div class="dash-widget-header">
                             <span class="dash-widget-icon bg-warning">
                                 <i data-feather="clock"></i>
                             </span>
-                            <div class="dash-count">
-                                <h3>{{ $stats['trial'] }}</h3>
-                            </div>
                         </div>
                         <div class="dash-widget-info">
                             <h6 class="text-muted">On Trial</h6>
+                            <h3>{{ $stats['trial'] }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card">
+            <div class="col-xl-3 col-sm-6 col-12">
+                <div class="card dashboard-card">
                     <div class="card-body">
                         <div class="dash-widget-header">
                             <span class="dash-widget-icon bg-danger">
                                 <i data-feather="x-circle"></i>
                             </span>
-                            <div class="dash-count">
-                                <h3>{{ $stats['suspended'] }}</h3>
-                            </div>
                         </div>
                         <div class="dash-widget-info">
                             <h6 class="text-muted">Suspended</h6>
+                            <h3>{{ $stats['suspended'] }}</h3>
                         </div>
                     </div>
                 </div>
@@ -168,4 +160,5 @@
     </div>
 </div>
 @endsection
+
 

@@ -59,11 +59,57 @@ class Subscription extends Model
     }
 
     /**
+     * 6️⃣ Calculate status based on dates (AUTOMATIC)
+     * Status should be derived from dates, not manually set
+     */
+    public function calculateStatus()
+    {
+        $now = now();
+        $metadata = is_string($this->metadata) ? json_decode($this->metadata, true) : $this->metadata;
+        $graceEndDate = isset($metadata['grace_end_date']) ? \Carbon\Carbon::parse($metadata['grace_end_date']) : null;
+        
+        // Trial
+        if ($this->trial_ends_at && $now->lte($this->trial_ends_at)) {
+            return 'trial';
+        }
+        
+        // Active (today <= end_date)
+        if ($now->lte($this->ends_at)) {
+            return 'active';
+        }
+        
+        // Grace Period (today > end_date AND today <= grace_end)
+        if ($graceEndDate && $now->gt($this->ends_at) && $now->lte($graceEndDate)) {
+            return 'grace';
+        }
+        
+        // Expired/Suspended (today > grace_end)
+        if ($graceEndDate && $now->gt($graceEndDate)) {
+            return 'expired';
+        }
+        
+        // If no grace period defined, expired after end_date
+        if ($now->gt($this->ends_at)) {
+            return 'expired';
+        }
+        
+        return $this->status;
+    }
+    
+    /**
+     * Get current status (auto-calculated)
+     */
+    public function getCurrentStatus()
+    {
+        return $this->calculateStatus();
+    }
+
+    /**
      * Check if subscription is active
      */
     public function isActive()
     {
-        return $this->status === 'active' && (!$this->ends_at || $this->ends_at->isFuture());
+        return $this->calculateStatus() === 'active';
     }
 
     /**
@@ -71,7 +117,15 @@ class Subscription extends Model
      */
     public function onTrial()
     {
-        return $this->status === 'trial' && $this->trial_ends_at && $this->trial_ends_at->isFuture();
+        return $this->calculateStatus() === 'trial';
+    }
+    
+    /**
+     * Check if subscription is in grace period
+     */
+    public function inGracePeriod()
+    {
+        return $this->calculateStatus() === 'grace';
     }
 
     /**
@@ -79,7 +133,44 @@ class Subscription extends Model
      */
     public function isExpired()
     {
-        return $this->status === 'expired' || ($this->ends_at && $this->ends_at->isPast());
+        return $this->calculateStatus() === 'expired';
+    }
+    
+    /**
+     * Get days remaining in current period
+     */
+    public function daysRemaining()
+    {
+        if (!$this->ends_at) {
+            return 0;
+        }
+        
+        $now = now();
+        if ($now->gt($this->ends_at)) {
+            return 0;
+        }
+        
+        return $now->diffInDays($this->ends_at);
+    }
+    
+    /**
+     * Get grace period days remaining
+     */
+    public function graceDaysRemaining()
+    {
+        $metadata = is_string($this->metadata) ? json_decode($this->metadata, true) : $this->metadata;
+        $graceEndDate = isset($metadata['grace_end_date']) ? \Carbon\Carbon::parse($metadata['grace_end_date']) : null;
+        
+        if (!$graceEndDate) {
+            return 0;
+        }
+        
+        $now = now();
+        if ($now->gt($graceEndDate)) {
+            return 0;
+        }
+        
+        return $now->diffInDays($graceEndDate);
     }
 
     /**
@@ -120,4 +211,5 @@ class Subscription extends Model
         return $badges[$this->status] ?? '<span class="badge bg-secondary">Unknown</span>';
     }
 }
+
 

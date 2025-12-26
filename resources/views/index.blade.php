@@ -3,6 +3,15 @@
 @section('content')
     <div class="page-wrapper">
         <div class="content">
+            @if(isset($viewAllStores) && $viewAllStores)
+            <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                <i data-feather="grid" class="me-2"></i>
+                <div>
+                    <strong>All Stores View Active</strong> - You are viewing aggregated data from all your stores.
+                </div>
+            </div>
+            @endif
+            
             <div class="row">
                 <div class="col-xl-3 col-sm-6 col-12 d-flex">
                     <div class="dash-widget w-100">
@@ -211,6 +220,9 @@
                                 <tr>
                                     <td>
                                         <a href="javascript:void(0);">{{ $order->order_number }}</a>
+                                        @if(isset($viewAllStores) && $viewAllStores && $order->store)
+                                            <br><small class="text-muted"><i data-feather="map-pin" style="width: 12px; height: 12px;"></i> {{ $order->store->name }}</small>
+                                        @endif
                                     </td>
                                     <td>
                                         <div class="productimgname">

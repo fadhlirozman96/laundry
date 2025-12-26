@@ -110,6 +110,36 @@ class User extends Authenticatable
     {
         return $this->hasMany(Subscription::class);
     }
+    
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+    
+    public function unreadNotifications()
+    {
+        return $this->hasMany(Notification::class)->where('is_read', false);
+    }
+    
+    /**
+     * Check if user has a specific role
+     */
+    public function hasRole($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->exists();
+    }
+    
+    /**
+     * Check if user has any of the given roles
+     */
+    public function hasAnyRole($roles)
+    {
+        if (is_string($roles)) {
+            $roles = [$roles];
+        }
+        
+        return $this->roles()->whereIn('name', $roles)->exists();
+    }
 
     public function activeSubscription()
     {

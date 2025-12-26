@@ -23,15 +23,29 @@ class DashboardController extends Controller
         // Get accessible store IDs
         $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
         
+        // Check if user has "All Stores View" feature
+        $hasAllStoresView = $user->hasAllStoresView() && count($accessibleStoreIds) > 1;
+        
+        // Check if user wants to view all stores
+        $viewAllStores = $hasAllStoresView && session('view_all_stores', false);
+        
         // Get selected store from session, or use first accessible store
         $selectedStoreId = session('selected_store_id');
         
-        // If no store selected or selected store is not accessible, use first accessible store
-        if (!$selectedStoreId || !in_array($selectedStoreId, $accessibleStoreIds)) {
-            if (!empty($accessibleStoreIds)) {
-                $selectedStoreId = $accessibleStoreIds[0];
-                session(['selected_store_id' => $selectedStoreId]);
+        // If viewing all stores, use all accessible store IDs
+        if ($viewAllStores) {
+            $storeIdsToQuery = $accessibleStoreIds;
+            $selectedStoreId = 'all'; // Indicator for UI
+        } else {
+            // Single store mode
+            // If no store selected or selected store is not accessible, use first accessible store
+            if (!$selectedStoreId || !in_array($selectedStoreId, $accessibleStoreIds)) {
+                if (!empty($accessibleStoreIds)) {
+                    $selectedStoreId = $accessibleStoreIds[0];
+                    session(['selected_store_id' => $selectedStoreId]);
+                }
             }
+            $storeIdsToQuery = [$selectedStoreId];
         }
         
         // Get selected year for chart (default to current year)
@@ -56,53 +70,56 @@ class DashboardController extends Controller
         $topServices = collect([]);
         $monthlySalesData = collect([]);
         
-        if ($selectedStoreId) {
+        if (!empty($storeIdsToQuery)) {
             $today = Carbon::today();
             $startOfYear = Carbon::now()->startOfYear();
             
             // Total Sales Today
-            $totalSalesToday = Order::where('store_id', $selectedStoreId)
+            $totalSalesToday = Order::whereIn('store_id', $storeIdsToQuery)
                 ->whereDate('created_at', $today)
                 ->sum('total');
             
             // Total Order Today
-            $totalOrderToday = Order::where('store_id', $selectedStoreId)
+            $totalOrderToday = Order::whereIn('store_id', $storeIdsToQuery)
                 ->whereDate('created_at', $today)
                 ->count();
             
             // Total Sales This Year
-            $totalSalesThisYear = Order::where('store_id', $selectedStoreId)
+            $totalSalesThisYear = Order::whereIn('store_id', $storeIdsToQuery)
                 ->where('created_at', '>=', $startOfYear)
                 ->sum('total');
             
             // Total Sales Overall
-            $totalSalesOverall = Order::where('store_id', $selectedStoreId)
+            $totalSalesOverall = Order::whereIn('store_id', $storeIdsToQuery)
                 ->sum('total');
             
             // Customer Count (unique customers)
-            $customerCount = Order::where('store_id', $selectedStoreId)
+            $customerCount = Order::whereIn('store_id', $storeIdsToQuery)
                 ->whereNotNull('customer_email')
                 ->distinct('customer_email')
                 ->count('customer_email');
             
             // If no emails, count by customer_name
             if ($customerCount == 0) {
-                $customerCount = Order::where('store_id', $selectedStoreId)
+                $customerCount = Order::whereIn('store_id', $storeIdsToQuery)
                     ->whereNotNull('customer_name')
                     ->distinct('customer_name')
                     ->count('customer_name');
             }
             
             // Purchase Invoice Count (total orders)
-            $purchaseInvoiceCount = Order::where('store_id', $selectedStoreId)
+            $purchaseInvoiceCount = Order::whereIn('store_id', $storeIdsToQuery)
                 ->count();
             
             // Sales Invoice Count (total orders - same as purchase for now)
-            $salesInvoiceCount = Order::where('store_id', $selectedStoreId)
+            $salesInvoiceCount = Order::whereIn('store_id', $storeIdsToQuery)
                 ->count();
             
             // Top 4 Most Popular Services (based on order items quantity)
-            // Use a single query with subquery for order count
+            // Build dynamic query based on number of stores
+            $storeIdPlaceholders = implode(',', array_fill(0, count($storeIdsToQuery), '?'));
+            $queryParams = array_merge($storeIdsToQuery, $storeIdsToQuery);
+            
             $topServices = DB::select("
                 SELECT 
                     oi.product_name,
@@ -112,16 +129,16 @@ class DashboardController extends Controller
                         SELECT COUNT(DISTINCT o.id)
                         FROM orders o
                         INNER JOIN order_items oi2 ON o.id = oi2.order_id
-                        WHERE o.store_id = ?
+                        WHERE o.store_id IN ($storeIdPlaceholders)
                         AND oi2.product_name = oi.product_name
                     ) as order_count
                 FROM order_items oi
                 INNER JOIN orders o ON oi.order_id = o.id
-                WHERE o.store_id = ?
+                WHERE o.store_id IN ($storeIdPlaceholders)
                 GROUP BY oi.product_name
                 ORDER BY total_quantity DESC
                 LIMIT 4
-            ", [$selectedStoreId, $selectedStoreId]);
+            ", $queryParams);
             
             // Convert to collection of objects
             $topServices = collect($topServices)->map(function($item) {
@@ -137,7 +154,7 @@ class DashboardController extends Controller
             $startOfSelectedYear = Carbon::create($selectedYear, 1, 1)->startOfYear();
             $endOfSelectedYear = Carbon::create($selectedYear, 12, 31)->endOfYear();
             
-            $monthlySalesData = Order::where('store_id', $selectedStoreId)
+            $monthlySalesData = Order::whereIn('store_id', $storeIdsToQuery)
                 ->whereBetween('created_at', [$startOfSelectedYear, $endOfSelectedYear])
                 ->where('total', '>', 0) // Only positive sales values
                 ->select(
@@ -150,9 +167,9 @@ class DashboardController extends Controller
                 ->orderBy('month', 'asc')
                 ->get();
             
-            // Get latest orders for the selected store
-            $latestOrders = Order::where('store_id', $selectedStoreId)
-                ->with(['items'])
+            // Get latest orders for the selected store(s)
+            $latestOrders = Order::whereIn('store_id', $storeIdsToQuery)
+                ->with(['items', 'store'])
                 ->orderBy('created_at', 'desc')
                 ->limit(10)
                 ->get();
@@ -192,7 +209,9 @@ class DashboardController extends Controller
             'topServices',
             'chartData',
             'selectedYear',
-            'availableYears'
+            'availableYears',
+            'hasAllStoresView',
+            'viewAllStores'
         ));
     }
     

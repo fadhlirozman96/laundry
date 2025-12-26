@@ -12,6 +12,27 @@
                                 href="{{ url('index') }}"><i data-feather="grid"></i><span>Dashboard</span></a>
                         </li>
                         </li>
+                        
+                        <!-- Business Owner Only: Subscription & Notifications -->
+                        @if(auth()->user()->hasRole('business_owner'))
+                        <li class="{{ Request::is('business-owner/subscription*') ? 'active' : '' }}">
+                            <a href="{{ route('business-owner.subscription') }}">
+                                <i data-feather="credit-card"></i><span>My Subscription</span>
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('business-owner/notifications*') ? 'active' : '' }}">
+                            <a href="{{ route('business-owner.notifications') }}">
+                                <i data-feather="bell"></i><span>Notifications</span>
+                                @php
+                                    $unreadCount = auth()->user()->unreadNotifications()->count();
+                                @endphp
+                                @if($unreadCount > 0)
+                                <span class="badge bg-danger ms-2">{{ $unreadCount > 9 ? '9+' : $unreadCount }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        @endif
+                        
                         <li class="submenu">
                             <a href="javascript:void(0);"
                                 class="{{ Request::is('chat', 'file-manager', 'file-archived','file-document','file-favourites','file-manager-seleted','file-recent','file-shared','notes', 'todo', 'email', 'calendar', 'call-history', 'audio-call', 'video-call','file-manager-deleted') ? 'active subdrop' : '' }} "><i
@@ -65,17 +86,6 @@
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"
-                                class="{{ Request::is('superadmin/features*') ? 'active subdrop' : '' }}"><i
-                                    data-feather="lock"></i><span>Feature Gating</span><span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a href="{{ route('superadmin.features.index') }}"
-                                        class="{{ Request::is('superadmin/features') ? 'active' : '' }}">Feature Matrix</a></li>
-                                <li><a href="{{ route('superadmin.features.logs') }}"
-                                        class="{{ Request::is('superadmin/features/logs') ? 'active' : '' }}">Access Logs</a></li>
-                            </ul>
-                        </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);"
                                 class="{{ Request::is('superadmin/payments*', 'superadmin/invoices*', 'superadmin/grace-periods*') ? 'active subdrop' : '' }}"><i
                                     data-feather="credit-card"></i><span>SaaS Billing</span><span class="menu-arrow"></span></a>
                             <ul>
@@ -89,13 +99,11 @@
                         </li>
                         <li class="submenu">
                             <a href="javascript:void(0);"
-                                class="{{ Request::is('superadmin/users*', 'superadmin/user-profiles*', 'superadmin/security-settings*') ? 'active subdrop' : '' }}"><i
+                                class="{{ Request::is('superadmin/users*', 'superadmin/security-settings*') ? 'active subdrop' : '' }}"><i
                                     data-feather="user-check"></i><span>User & Identity</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a href="{{ route('superadmin.users.index') }}"
                                         class="{{ Request::is('superadmin/users') ? 'active' : '' }}">All Users</a></li>
-                                <li><a href="{{ route('superadmin.user-profiles') }}"
-                                        class="{{ Request::is('superadmin/user-profiles') ? 'active' : '' }}">User Profiles</a></li>
                                 <li><a href="{{ route('superadmin.security-settings') }}"
                                         class="{{ Request::is('superadmin/security-settings') ? 'active' : '' }}">Security Settings</a></li>
                             </ul>

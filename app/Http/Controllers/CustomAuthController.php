@@ -56,27 +56,90 @@ class CustomAuthController extends Controller
     }
       
 
+    public function showRegister()
+    {
+        $plans = \App\Models\Plan::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+        
+        return view('auth.register', compact('plans'));
+    }
+
     public function customRegister(Request $request)
     {  
         $request->validate([
-            'name' => 'required|min:5',
+            'name' => 'required|min:3',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'confirmpassword' => 'required|min:6',
-        ],
-         [
-            'name.required' => 'Userame is required',
-            'email.required' => 'Email is required',
-            'password.required' => 'Password is required',
-            'confirmpassword.required' => 'Confirm Password is required',
+            'password' => 'required|min:6|confirmed',
+            'company_name' => 'required|min:3',
+            'plan_id' => 'required|exists:plans,id',
+            'phone' => 'nullable|string|max:20',
+        ]);
 
-        ]
-    );
-           
-        $data = $request->all();
-        $check = $this->create($data);
-         
-        return redirect("/login")->withSuccess('You have signed-in');
+        \DB::beginTransaction();
+        try {
+            // Get the selected plan
+            $plan = \App\Models\Plan::findOrFail($request->plan_id);
+            
+            // Get business owner role
+            $businessOwnerRole = \App\Models\Role::where('name', 'business_owner')->first();
+            if (!$businessOwnerRole) {
+                throw new \Exception('Business Owner role not found. Please run database seeders.');
+            }
+            
+            // Create the business owner user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone' => $request->phone,
+                'current_plan_id' => $plan->id,
+                'company_name' => $request->company_name,
+            ]);
+
+            // Assign business owner role
+            $user->roles()->attach($businessOwnerRole->id);
+
+            // Create active subscription
+            $billingCycle = 'monthly';
+            $endsAt = now()->addDays($plan->trial_days > 0 ? $plan->trial_days : 365);
+            $nextBillingDate = $billingCycle === 'annual' ? now()->addYear() : now()->addMonth();
+            
+            $subscription = \App\Models\Subscription::create([
+                'user_id' => $user->id,
+                'plan_id' => $plan->id,
+                'status' => $plan->price == 0 ? 'active' : 'trial', // Free plan = active, paid = trial
+                'starts_at' => now(),
+                'ends_at' => $endsAt,
+                'trial_ends_at' => $plan->trial_days > 0 ? now()->addDays($plan->trial_days) : null,
+                'amount' => $plan->price,
+                'billing_cycle' => $billingCycle,
+                'next_billing_date' => $nextBillingDate,
+            ]);
+
+            // Create first store automatically
+            $store = \App\Models\Store::create([
+                'name' => $request->company_name,
+                'slug' => \Illuminate\Support\Str::slug($request->company_name),
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'created_by' => $user->id,
+                'is_active' => true,
+            ]);
+
+            // Assign user to their own store
+            $store->users()->attach($user->id);
+
+            \DB::commit();
+
+            // Auto-login the user
+            \Auth::login($user);
+            
+            return redirect()->route('index')->with('success', 'Account created successfully! Welcome to RAPY.');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return back()->withInput()->with('error', 'Registration failed: ' . $e->getMessage());
+        }
     }
 
 

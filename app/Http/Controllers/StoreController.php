@@ -228,11 +228,37 @@ class StoreController extends Controller
             return redirect()->back()->with('error', 'You do not have access to this store.');
         }
 
+        // Disable "All Stores View" when selecting a specific store
+        session(['view_all_stores' => false]);
+        
         // Set selected store in session
         session(['selected_store_id' => $store->id]);
         session(['selected_store_name' => $store->name]);
 
         return redirect()->back()->with('success', 'Store switched to: ' . $store->name);
+    }
+    
+    // Toggle All Stores View
+    public function viewAllStores()
+    {
+        $user = auth()->user();
+        
+        // Check if user has permission to view all stores
+        if (!$user->hasAllStoresView()) {
+            return redirect()->back()->with('error', 'Your plan does not include All Stores View feature.');
+        }
+        
+        // Check if user has multiple stores
+        $accessibleStores = $user->getAccessibleStores();
+        if ($accessibleStores->count() < 2) {
+            return redirect()->back()->with('error', 'You need at least 2 stores to use All Stores View.');
+        }
+        
+        // Enable "All Stores View" mode
+        session(['view_all_stores' => true]);
+        session()->forget('selected_store_id'); // Clear single store selection
+        
+        return redirect()->back()->with('success', 'Now viewing data from all stores.');
     }
 
     // Toggle store active status

@@ -222,11 +222,139 @@ class SuperAdminController extends Controller
      */
     public function subscriptions()
     {
-        $subscriptions = Subscription::with(['user', 'plan'])
+        // Get all business owners with their current subscriptions and plans
+        $businessOwners = User::with(['roles', 'currentPlan', 'ownedStores', 'subscriptions.plan'])
+            ->whereHas('roles', fn($q) => $q->where('name', 'business_owner'))
             ->latest()
             ->paginate(20);
         
-        return view('superadmin.subscriptions', compact('subscriptions'));
+        // Get all plans for the assignment dropdown
+        $plans = Plan::where('is_active', true)->orderBy('sort_order')->get();
+        
+        $stats = [
+            'total' => User::whereHas('roles', fn($q) => $q->where('name', 'business_owner'))->count(),
+            'active' => Subscription::where('status', 'active')->count(),
+            'trial' => Subscription::where('status', 'trial')->count(),
+            'expired' => Subscription::where('status', 'expired')->count(),
+        ];
+        
+        return view('superadmin.subscriptions', compact('businessOwners', 'plans', 'stats'));
+    }
+    
+    public function assignPlan(Request $request, $userId)
+    {
+        $validated = $request->validate([
+            'plan_id' => 'required|exists:plans,id',
+            'billing_cycle' => 'required|in:monthly,annual',
+        ], [
+            'plan_id.required' => 'Please select a plan',
+            'billing_cycle.required' => 'Billing cycle is required',
+        ]);
+        
+        \DB::beginTransaction();
+        try {
+            $user = User::findOrFail($userId);
+            $plan = Plan::findOrFail($request->plan_id);
+            
+            // 1️⃣ START DATE = Now (when admin assigns/activates)
+            $startDate = now();
+            
+            // 2️⃣ END DATE = Start Date + Billing Cycle - 1 day
+            $billingCycle = $request->billing_cycle;
+            if ($billingCycle === 'annual') {
+                $endDate = $startDate->copy()->addYear()->subDay()->endOfDay();
+            } else {
+                $endDate = $startDate->copy()->addMonth()->subDay()->endOfDay();
+            }
+            
+            // 3️⃣ NEXT RENEWAL DATE = End Date + 1 day
+            $nextRenewalDate = $endDate->copy()->addDay()->startOfDay();
+            
+            // Calculate grace period end (7 days after next renewal)
+            $graceEndDate = $nextRenewalDate->copy()->addDays(7)->endOfDay();
+            
+            // Update user's current plan
+            $user->current_plan_id = $plan->id;
+            $user->save();
+            
+            // Expire old active subscriptions
+            Subscription::where('user_id', $userId)
+                ->whereIn('status', ['active', 'trial', 'grace'])
+                ->update([
+                    'status' => 'expired',
+                    'canceled_at' => now()
+                ]);
+            
+            // Determine amount based on billing cycle
+            $amount = $billingCycle === 'annual' ? $plan->annual_price : $plan->price;
+            
+            // 6️⃣ STATUS = active (for paid plans assigned by admin)
+            $status = $plan->price == 0 ? 'active' : 'active'; // Free or Paid
+            
+            // Create new subscription
+            $subscription = Subscription::create([
+                'user_id' => $userId,
+                'plan_id' => $plan->id,
+                'status' => $status,
+                'starts_at' => $startDate,
+                'ends_at' => $endDate,
+                'amount' => $amount,
+                'billing_cycle' => $billingCycle,
+                'next_billing_date' => $nextRenewalDate,
+                'metadata' => json_encode([
+                    'grace_end_date' => $graceEndDate->format('Y-m-d H:i:s'),
+                    'assigned_by' => 'admin',
+                    'assigned_at' => now()->format('Y-m-d H:i:s'),
+                ]),
+            ]);
+            
+            // Create initial payment record
+            \App\Models\SubscriptionPayment::create([
+                'subscription_id' => $subscription->id,
+                'user_id' => $userId,
+                'transaction_id' => 'ADMIN-' . strtoupper(uniqid()),
+                'amount' => $amount,
+                'currency' => 'MYR',
+                'payment_method' => 'admin_assigned',
+                'status' => 'completed',
+                'paid_at' => now(),
+            ]);
+            
+            \DB::commit();
+            
+            return back()->with('success', "Plan '{$plan->name}' successfully assigned to {$user->name}! Subscription active until " . $endDate->format('d M Y'));
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Failed to assign plan: ' . $e->getMessage());
+            return back()->with('error', 'Failed to assign plan: ' . $e->getMessage());
+        }
+    }
+    
+    public function markPaymentPaid($paymentId)
+    {
+        try {
+            $payment = \App\Models\SubscriptionPayment::findOrFail($paymentId);
+            $payment->markAsCompleted();
+            
+            return back()->with('success', 'Payment marked as paid successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to mark payment as paid: ' . $e->getMessage());
+        }
+    }
+    
+    public function retryPayment($paymentId)
+    {
+        try {
+            $payment = \App\Models\SubscriptionPayment::findOrFail($paymentId);
+            
+            // Here you would integrate with your payment gateway
+            // For now, we'll just update the status
+            $payment->update(['status' => 'pending']);
+            
+            return back()->with('success', 'Payment retry initiated!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to retry payment: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -270,7 +398,7 @@ class SuperAdminController extends Controller
             'annual_price' => 'nullable|numeric|min:0',
             'max_stores' => 'nullable|integer',
             'unlimited_stores' => 'nullable|boolean',
-            'qc_level' => 'required|in:basic,standard,advanced,full,full_sop',
+            'qc_level' => 'required|in:basic,standard,advanced,full',
             'audit_trail_level' => 'required|in:none,basic,full,advanced',
             'trial_days' => 'required|integer|min:0',
             'sort_order' => 'required|integer|min:0',
@@ -456,7 +584,7 @@ class SuperAdminController extends Controller
     
     public function features()
     {
-        $plans = Plan::with('features')->get();
+        $plans = Plan::get();
         $allFeatures = [
             'laundry_qc' => 'Quality Control Module',
             'pos_system' => 'POS System',
@@ -522,9 +650,212 @@ class SuperAdminController extends Controller
 
     // ========== USER & IDENTITY ==========
     
+    public function businessOwnerProfile($id)
+    {
+        $owner = User::with([
+            'roles', 
+            'currentPlan', 
+            'ownedStores.users',
+            'subscriptions.plan',
+            'stores'
+        ])
+        ->whereHas('roles', fn($q) => $q->where('name', 'business_owner'))
+        ->findOrFail($id);
+        
+        // Get current subscription
+        $currentSubscription = $owner->subscriptions()
+            ->whereIn('status', ['active', 'trial'])
+            ->latest()
+            ->first();
+        
+        // Get all subscriptions history
+        $subscriptionHistory = $owner->subscriptions()
+            ->with('plan')
+            ->latest()
+            ->get();
+        
+        // Get payment history
+        $paymentHistory = \App\Models\SubscriptionPayment::with(['subscription.plan'])
+            ->where('user_id', $id)
+            ->latest()
+            ->limit(10)
+            ->get();
+        
+        // Calculate billing health
+        $billingHealth = [
+            'last_payment' => \App\Models\SubscriptionPayment::where('user_id', $id)
+                ->where('status', 'completed')
+                ->latest('paid_at')
+                ->first(),
+            'failed_attempts' => \App\Models\SubscriptionPayment::where('user_id', $id)
+                ->where('status', 'failed')
+                ->whereDate('created_at', '>=', now()->subDays(30))
+                ->count(),
+            'total_paid' => \App\Models\SubscriptionPayment::where('user_id', $id)
+                ->where('status', 'completed')
+                ->sum('amount'),
+            'pending_amount' => \App\Models\SubscriptionPayment::where('user_id', $id)
+                ->where('status', 'pending')
+                ->sum('amount'),
+        ];
+        
+        // Check if past due
+        if ($currentSubscription && $currentSubscription->ends_at) {
+            $billingHealth['days_past_due'] = $currentSubscription->ends_at->isPast() ? 
+                now()->diffInDays($currentSubscription->ends_at) : 0;
+        } else {
+            $billingHealth['days_past_due'] = 0;
+        }
+        
+        // Calculate usage statistics
+        $planFeatures = $owner->currentPlan ? json_decode($owner->currentPlan->features, true) : [];
+        
+        $usage = [
+            'stores' => [
+                'used' => $owner->ownedStores->count(),
+                'allowed' => (int)($owner->currentPlan->max_stores ?? 0),
+            ],
+            'users' => [
+                'used' => $owner->stores->sum(fn($store) => $store->users->count()),
+                'allowed' => (int)($planFeatures['max_users'] ?? 0),
+            ],
+            'orders_this_month' => \App\Models\Order::whereIn('store_id', $owner->ownedStores->pluck('id'))
+                ->whereMonth('created_at', now()->month)
+                ->count(),
+            'orders_allowed' => (int)($planFeatures['max_orders_per_month'] ?? 0),
+        ];
+        
+        // Store performance
+        $storeStats = $owner->ownedStores->map(function($store) {
+            return [
+                'id' => $store->id,
+                'name' => $store->name,
+                'is_active' => $store->is_active,
+                'orders_30d' => \App\Models\Order::where('store_id', $store->id)
+                    ->where('created_at', '>=', now()->subDays(30))
+                    ->count(),
+                'revenue_30d' => \App\Models\Order::where('store_id', $store->id)
+                    ->where('created_at', '>=', now()->subDays(30))
+                    ->sum('total'),
+                'qc_pending' => \App\Models\QualityCheck::where('store_id', $store->id)
+                    ->where('final_approval', false)
+                    ->count(),
+                'users_count' => $store->users->count(),
+            ];
+        });
+        
+        // Account health metrics
+        $lastLogin = $owner->last_login_at ?? $owner->updated_at;
+        $daysSinceLogin = now()->diffInDays($lastLogin);
+        
+        $accountHealth = [
+            'score' => $this->calculateHealthScore($owner, $usage, $daysSinceLogin),
+            'last_login' => $lastLogin,
+            'days_since_login' => $daysSinceLogin,
+            'total_orders' => \App\Models\Order::whereIn('store_id', $owner->ownedStores->pluck('id'))->count(),
+            'active_stores' => $owner->ownedStores->where('is_active', true)->count(),
+        ];
+        
+        // Alerts
+        $alerts = $this->getAccountAlerts($owner, $currentSubscription, $daysSinceLogin, $usage);
+        
+        // User & Role Summary
+        $userSummary = [];
+        foreach ($owner->ownedStores as $store) {
+            foreach ($store->users as $user) {
+                $userId = $user->id;
+                if (!isset($userSummary[$userId])) {
+                    $userSummary[$userId] = [
+                        'user' => $user,
+                        'stores' => [],
+                        'roles' => $user->roles->pluck('name')->toArray(),
+                        'last_login' => $user->last_login_at ?? $user->updated_at,
+                        'is_active' => $user->last_login_at && $user->last_login_at->gt(now()->subDays(7)),
+                    ];
+                }
+                $userSummary[$userId]['stores'][] = $store->name;
+            }
+        }
+        
+        $userMetrics = [
+            'total_users' => count($userSummary),
+            'active_users' => collect($userSummary)->filter(fn($u) => $u['is_active'])->count(),
+            'inactive_users' => collect($userSummary)->filter(fn($u) => !$u['is_active'])->count(),
+        ];
+        
+        return view('superadmin.business-owners.profile', compact(
+            'owner', 
+            'currentSubscription', 
+            'subscriptionHistory',
+            'usage',
+            'storeStats',
+            'accountHealth',
+            'alerts',
+            'paymentHistory',
+            'billingHealth',
+            'userSummary',
+            'userMetrics'
+        ));
+    }
+    
+    private function calculateHealthScore($owner, $usage, $daysSinceLogin)
+    {
+        $score = 100;
+        
+        // Deduct for inactivity
+        if ($daysSinceLogin > 30) $score -= 40;
+        elseif ($daysSinceLogin > 14) $score -= 25;
+        elseif ($daysSinceLogin > 7) $score -= 10;
+        
+        // Deduct for low usage
+        if ($usage['orders_this_month'] == 0) $score -= 20;
+        elseif ($usage['orders_this_month'] < 5) $score -= 10;
+        
+        // Deduct for inactive stores
+        $inactiveStores = $owner->ownedStores->where('is_active', false)->count();
+        $score -= ($inactiveStores * 5);
+        
+        return max(0, min(100, $score));
+    }
+    
+    private function getAccountAlerts($owner, $currentSubscription, $daysSinceLogin, $usage)
+    {
+        $alerts = [];
+        
+        // Inactivity alerts
+        if ($daysSinceLogin > 30) {
+            $alerts[] = ['type' => 'danger', 'icon' => 'alert-circle', 'message' => 'No activity for 30+ days'];
+        } elseif ($daysSinceLogin > 14) {
+            $alerts[] = ['type' => 'warning', 'icon' => 'alert-triangle', 'message' => 'No activity for 14+ days'];
+        } elseif ($daysSinceLogin > 7) {
+            $alerts[] = ['type' => 'info', 'icon' => 'info', 'message' => 'No activity for 7+ days'];
+        }
+        
+        // Subscription expiring
+        if ($currentSubscription && $currentSubscription->ends_at) {
+            $daysUntilExpiry = now()->diffInDays($currentSubscription->ends_at, false);
+            if ($daysUntilExpiry <= 7 && $daysUntilExpiry > 0) {
+                $alerts[] = ['type' => 'warning', 'icon' => 'clock', 'message' => "Subscription expires in {$daysUntilExpiry} days"];
+            } elseif ($daysUntilExpiry <= 0) {
+                $alerts[] = ['type' => 'danger', 'icon' => 'x-circle', 'message' => 'Subscription has expired'];
+            }
+        }
+        
+        // Usage limits
+        if ($usage['stores']['allowed'] > 0 && $usage['stores']['used'] >= $usage['stores']['allowed']) {
+            $alerts[] = ['type' => 'warning', 'icon' => 'trending-up', 'message' => 'Store limit reached - upsell opportunity'];
+        }
+        
+        if ($usage['orders_allowed'] > 0 && $usage['orders_this_month'] >= $usage['orders_allowed'] * 0.8) {
+            $alerts[] = ['type' => 'info', 'icon' => 'trending-up', 'message' => 'Approaching monthly order limit'];
+        }
+        
+        return $alerts;
+    }
+    
     public function users()
     {
-        $users = User::with(['business', 'roles'])
+        $users = User::with(['roles', 'currentPlan', 'ownedStores', 'accountOwner'])
             ->latest()
             ->paginate(20);
         
@@ -532,7 +863,7 @@ class SuperAdminController extends Controller
             'total' => User::count(),
             'superadmins' => User::whereHas('roles', fn($q) => $q->where('name', 'super_admin'))->count(),
             'owners' => User::whereHas('roles', fn($q) => $q->where('name', 'business_owner'))->count(),
-            'active' => User::where('is_active', 1)->count(),
+            'with_plan' => User::whereNotNull('current_plan_id')->count(),
         ];
         
         return view('superadmin.users.index', compact('users', 'stats'));
@@ -540,14 +871,14 @@ class SuperAdminController extends Controller
 
     public function userDetails($id)
     {
-        $user = User::with(['business', 'roles', 'stores'])->findOrFail($id);
+        $user = User::with(['roles', 'stores', 'currentPlan', 'ownedStores', 'accountOwner'])->findOrFail($id);
         
         return view('superadmin.users.show', compact('user'));
     }
 
     public function userProfiles()
     {
-        $profiles = User::with(['business', 'roles'])
+        $profiles = User::with(['roles', 'currentPlan', 'ownedStores'])
             ->whereHas('roles', fn($q) => $q->where('name', 'business_owner'))
             ->latest()
             ->paginate(20);
@@ -588,14 +919,14 @@ class SuperAdminController extends Controller
     
     public function storeContainers()
     {
-        $stores = \App\Models\Store::with(['business'])
+        $stores = \App\Models\Store::with(['owner', 'users'])
             ->latest()
             ->paginate(20);
         
         $stats = [
             'total' => \App\Models\Store::count(),
-            'active' => \App\Models\Store::where('status', 'active')->count(),
-            'paused' => \App\Models\Store::where('status', 'paused')->count(),
+            'active' => \App\Models\Store::where('is_active', true)->count(),
+            'inactive' => \App\Models\Store::where('is_active', false)->count(),
         ];
         
         return view('superadmin.store-containers.index', compact('stores', 'stats'));
@@ -603,7 +934,7 @@ class SuperAdminController extends Controller
 
     public function storeContainerDetails($id)
     {
-        $store = \App\Models\Store::with(['business', 'users'])->findOrFail($id);
+        $store = \App\Models\Store::with(['owner', 'users.roles'])->findOrFail($id);
         
         return view('superadmin.store-containers.show', compact('store'));
     }

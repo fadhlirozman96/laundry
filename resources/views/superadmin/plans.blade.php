@@ -103,7 +103,6 @@
                                 // Define ALL possible features with their labels
                                 $allFeatures = [
                                     // Core Features
-                                    'has_sop_module' => ['label' => 'SOP Module', 'type' => 'property'],
                                     'has_store_switcher' => ['label' => 'Store Switcher', 'type' => 'property'],
                                     'has_all_stores_view' => ['label' => 'All Stores View', 'type' => 'property'],
                                     
@@ -125,13 +124,13 @@
                                     $isEnabled = false;
                                     
                                     if ($config['type'] === 'property') {
-                                        // Check plan properties (has_sop_module, has_store_switcher, etc.)
+                                        // Check plan properties (has_store_switcher, has_all_stores_view, etc.)
                                         $isEnabled = $plan->{$key} ?? false;
                                     } else {
                                         // Check features array
                                         if ($key === 'laundry_qc') {
                                             // QC module is enabled if qc_level is not 'none'
-                                            $isEnabled = in_array($plan->qc_level, ['basic', 'full', 'full_sop', 'advanced']);
+                                            $isEnabled = in_array($plan->qc_level, ['basic', 'full', 'advanced']);
                                         } else {
                                             $isEnabled = isset($planFeatures[$key]) && $planFeatures[$key];
                                         }

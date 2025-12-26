@@ -523,7 +523,15 @@ html, body {
         @if(!auth()->user()->isSuperAdmin())
         @php
             $userStores = auth()->user()->getAccessibleStores();
+            $hasAllStoresView = auth()->user()->hasAllStoresView() && $userStores->count() > 1;
+            $viewAllStores = session('view_all_stores', false);
             $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : ($userStores->first() ?? null);
+            
+            if ($viewAllStores) {
+                $displayName = 'All Stores (' . $userStores->count() . ')';
+            } else {
+                $displayName = $selectedStore ? $selectedStore->name : 'Select Store';
+            }
         @endphp
         <li class="nav-item dropdown has-arrow main-drop select-store-dropdown me-2">
             <a href="javascript:void(0);" class="dropdown-toggle nav-link select-store" data-bs-toggle="dropdown">
@@ -532,13 +540,28 @@ html, body {
                         <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" class="img-fluid">
                     </span>
                     <span class="user-detail">
-                        <span class="user-name">{{ $selectedStore ? $selectedStore->name : 'Select Store' }}</span>
+                        <span class="user-name">{{ $displayName }}</span>
                     </span>
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
+                @if($hasAllStoresView)
+                    @if($viewAllStores)
+                    <span class="dropdown-item active">
+                        <i data-feather="grid"></i>
+                        All Stores ({{ $userStores->count() }})
+                    </span>
+                    @else
+                    <a href="{{ route('view-all-stores') }}" class="dropdown-item">
+                        <i data-feather="grid"></i>
+                        All Stores ({{ $userStores->count() }})
+                    </a>
+                    @endif
+                    <div class="dropdown-divider"></div>
+                @endif
+                
                 @forelse($userStores as $store)
-                @if($selectedStore && $selectedStore->id == $store->id)
+                @if(!$viewAllStores && $selectedStore && $selectedStore->id == $store->id)
                 <span class="dropdown-item active">
                     <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" class="img-fluid">
                     {{ $store->name }}
@@ -558,6 +581,62 @@ html, body {
         @endauth
         <!-- /Select Store -->
 
+        <!-- Notifications (Business Owners Only) -->
+        @if(auth()->check() && auth()->user()->hasRole('business_owner'))
+        @php
+            $unreadCount = auth()->user()->unreadNotifications()->count();
+        @endphp
+        <li class="nav-item dropdown nav-item-box me-2">
+            <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" aria-expanded="false" style="position: relative;">
+                <i data-feather="bell"></i>
+                @if($unreadCount > 0)
+                <span class="badge badge-pill bg-danger" style="position: absolute; top: -5px; right: -5px; font-size: 10px; padding: 2px 5px;">
+                    {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                </span>
+                @endif
+            </a>
+            <div class="dropdown-menu dropdown-menu-end notifications-menu" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                    <h6 class="mb-0">Notifications</h6>
+                    @if($unreadCount > 0)
+                    <form action="{{ route('business-owner.notifications.read-all') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-link p-0 text-decoration-none">Mark all read</button>
+                    </form>
+                    @endif
+                </div>
+                @php
+                    $recentNotifications = auth()->user()->notifications()->latest()->limit(5)->get();
+                @endphp
+                @forelse($recentNotifications as $notification)
+                <a href="{{ $notification->action_url ?? '#' }}" class="dropdown-item {{ !$notification->is_read ? 'bg-light' : '' }}" style="white-space: normal; padding: 10px 15px;">
+                    <div class="d-flex">
+                        <div class="me-2">
+                            <i data-feather="{{ $notification->getIcon() }}" class="text-{{ $notification->getColor() }}" style="width: 20px; height: 20px;"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <strong class="d-block">{{ $notification->title }}</strong>
+                            <small class="text-muted d-block text-truncate">{{ Str::limit($notification->message, 60) }}</small>
+                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                        </div>
+                    </div>
+                </a>
+                @empty
+                <div class="dropdown-item text-center py-3">
+                    <i data-feather="bell-off" class="text-muted mb-2" style="width: 30px; height: 30px;"></i>
+                    <p class="text-muted mb-0 small">No notifications yet</p>
+                </div>
+                @endforelse
+                @if($recentNotifications->count() > 0)
+                <div class="dropdown-item text-center border-top">
+                    <a href="{{ route('business-owner.notifications') }}" class="btn btn-sm btn-link">View All Notifications</a>
+                </div>
+                @endif
+            </div>
+        </li>
+        @endif
+        <!-- /Notifications -->
+        
         <li class="nav-item nav-item-box me-2">
             <a href="{{ url('general-settings') }}"><i data-feather="settings"></i></a>
         </li>
@@ -606,19 +685,39 @@ html, body {
             @if(!auth()->user()->isSuperAdmin())
             @php
                 $userStores = auth()->user()->getAccessibleStores();
+                $hasAllStoresView = auth()->user()->hasAllStoresView() && $userStores->count() > 1;
+                $viewAllStores = session('view_all_stores', false);
                 $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : ($userStores->first() ?? null);
+                
+                if ($viewAllStores) {
+                    $displayName = 'All Stores (' . $userStores->count() . ')';
+                } else {
+                    $displayName = $selectedStore ? $selectedStore->name : 'Select Store';
+                }
             @endphp
             @if($userStores->isNotEmpty())
-            <div class="dropdown-header"><strong>Current Store</strong></div>
+            <div class="dropdown-header"><strong>Current View</strong></div>
             <div class="dropdown-item active">
-                <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" style="width: 20px; height: 20px; margin-right: 8px;">
-                {{ $selectedStore ? $selectedStore->name : 'Select Store' }}
+                @if($viewAllStores)
+                    <i data-feather="grid" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                @else
+                    <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" style="width: 20px; height: 20px; margin-right: 8px;">
+                @endif
+                {{ $displayName }}
             </div>
             @if($userStores->count() > 1)
             <div class="dropdown-divider"></div>
-            <div class="dropdown-header"><strong>Switch Store</strong></div>
+            <div class="dropdown-header"><strong>Switch View</strong></div>
+            
+            @if($hasAllStoresView && !$viewAllStores)
+                <a href="{{ route('view-all-stores') }}" class="dropdown-item">
+                    <i data-feather="grid" style="width: 16px; height: 16px; margin-right: 8px;"></i>
+                    All Stores ({{ $userStores->count() }})
+                </a>
+            @endif
+            
             @foreach($userStores as $store)
-                @if(!$selectedStore || $selectedStore->id != $store->id)
+                @if($viewAllStores || !$selectedStore || $selectedStore->id != $store->id)
                 <a href="javascript:void(0);" onclick="confirmStoreChange({{ $store->id }}, '{{ $store->name }}')" class="dropdown-item">
                     <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" style="width: 20px; height: 20px; margin-right: 8px;">
                     {{ $store->name }}

@@ -73,3 +73,4 @@ class ProductQcModeSeeder extends Seeder
     }
 }
 
+

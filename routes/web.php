@@ -30,8 +30,20 @@ Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout')
 // Session management routes
 Route::get('/session/check', [App\Http\Controllers\SessionController::class, 'check'])->name('session.check');
 Route::post('/session/ping', [App\Http\Controllers\SessionController::class, 'ping'])->name('session.ping');
-// Route::get('register', [CustomAuthController::class, 'registration'])->name('register');
-// Route::post('custom-register', [CustomAuthController::class, 'customRegister'])->name('register.custom');
+
+// Public Registration Routes
+Route::get('register', [CustomAuthController::class, 'showRegister'])->name('register')->middleware('guest');
+Route::post('register', [CustomAuthController::class, 'customRegister'])->name('register.submit')->middleware('guest');
+
+// Business Owner Routes (authenticated)
+Route::prefix('business-owner')->name('business-owner.')->middleware('auth')->group(function() {
+    Route::get('/subscription', [App\Http\Controllers\BusinessOwnerController::class, 'subscription'])->name('subscription');
+    Route::get('/checkout', [App\Http\Controllers\BusinessOwnerController::class, 'checkout'])->name('checkout');
+    Route::post('/process-payment', [App\Http\Controllers\BusinessOwnerController::class, 'processPayment'])->name('process-payment');
+    Route::get('/notifications', [App\Http\Controllers\BusinessOwnerController::class, 'notifications'])->name('notifications');
+    Route::post('/notifications/{id}/read', [App\Http\Controllers\BusinessOwnerController::class, 'markNotificationRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [App\Http\Controllers\BusinessOwnerController::class, 'markAllNotificationsRead'])->name('notifications.read-all');
+});
 
 Route::get('/index', [App\Http\Controllers\DashboardController::class, 'index'])->name('index')->middleware('auth');
 
@@ -360,6 +372,7 @@ Route::delete('/stores/{storeId}/remove-user/{userId}', [App\Http\Controllers\St
 Route::post('/stores/{id}/create-user', [App\Http\Controllers\StoreController::class, 'createStoreUser'])->name('stores.create-user')->middleware('auth');
 Route::post('/stores/{id}/toggle-status', [App\Http\Controllers\StoreController::class, 'toggleStatus'])->name('stores.toggle-status')->middleware('auth');
 Route::get('/select-store/{id}', [App\Http\Controllers\StoreController::class, 'selectStore'])->name('select-store')->middleware('auth');
+Route::get('/view-all-stores', [App\Http\Controllers\StoreController::class, 'viewAllStores'])->name('view-all-stores')->middleware('auth');
 
 // Storefront CMS Routes (must be before storefront routes)
 Route::get('/storefront-cms', [App\Http\Controllers\StoreThemeController::class, 'index'])->name('storefront-cms')->middleware('auth');
@@ -877,6 +890,7 @@ Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmi
     
     // Subscriptions & Plans
     Route::get('/subscriptions', [App\Http\Controllers\SuperAdminController::class, 'subscriptions'])->name('subscriptions');
+    Route::post('/subscriptions/{user}/assign-plan', [App\Http\Controllers\SuperAdminController::class, 'assignPlan'])->name('subscriptions.assign-plan');
     Route::get('/plans', [App\Http\Controllers\SuperAdminController::class, 'plans'])->name('plans');
     Route::get('/plans/create', [App\Http\Controllers\SuperAdminController::class, 'createPlan'])->name('plans.create');
     Route::post('/plans', [App\Http\Controllers\SuperAdminController::class, 'storePlan'])->name('plans.store');
@@ -894,6 +908,9 @@ Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmi
     Route::get('/payments', [App\Http\Controllers\SuperAdminController::class, 'payments'])->name('payments');
     
     // User & Identity
+    Route::get('/business-owners/{id}/profile', [App\Http\Controllers\SuperAdminController::class, 'businessOwnerProfile'])->name('business-owners.profile');
+    Route::post('/payments/{id}/mark-paid', [App\Http\Controllers\SuperAdminController::class, 'markPaymentPaid'])->name('payments.mark-paid');
+    Route::post('/payments/{id}/retry', [App\Http\Controllers\SuperAdminController::class, 'retryPayment'])->name('payments.retry');
     Route::get('/users', [App\Http\Controllers\SuperAdminController::class, 'users'])->name('users.index');
     Route::get('/users/{id}', [App\Http\Controllers\SuperAdminController::class, 'userDetails'])->name('users.show');
     Route::get('/user-profiles', [App\Http\Controllers\SuperAdminController::class, 'userProfiles'])->name('user-profiles');

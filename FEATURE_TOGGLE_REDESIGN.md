@@ -156,20 +156,19 @@ Cursor:         not-allowed
 ## 📦 **Features Included**
 
 ### **Core Features:**
-1. ✓/✗ **SOP Module** - Standard Operating Procedures
-2. ✓/✗ **Store Switcher** - Switch between multiple stores
-3. ✓/✗ **All Stores View** - View data from all stores
+1. ✓/✗ **Store Switcher** - Switch between multiple stores
+2. ✓/✗ **All Stores View** - View data from all stores
 
 ### **Laundry Operations:**
-4. ✓/✗ **Quality Control Module** - Advanced QC workflows
-5. ✓/✗ **Machine Usage Tracking** - Track machine usage and maintenance
-6. ✓ **POS System** - Always enabled (locked)
+3. ✓/✗ **Quality Control Module** - Advanced QC workflows
+4. ✓/✗ **Machine Usage Tracking** - Track machine usage and maintenance
+5. ✓ **POS System** - Always enabled (locked)
 
 ### **Advanced Features:**
-7. ✓/✗ **Advanced Reporting** - Detailed analytics and insights
-8. ✓/✗ **API Access** - RESTful API for integrations
-9. ✓/✗ **Landing Page Module** - Custom storefront landing pages
-10. ✓/✗ **Theme & CMS** - Customize store theme and content
+6. ✓/✗ **Advanced Reporting** - Detailed analytics and insights
+7. ✓/✗ **API Access** - RESTful API for integrations
+8. ✓/✗ **Landing Page Module** - Custom storefront landing pages
+9. ✓/✗ **Theme & CMS** - Customize store theme and content
 
 ---
 

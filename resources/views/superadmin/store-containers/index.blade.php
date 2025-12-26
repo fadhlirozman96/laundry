@@ -11,53 +11,47 @@
 
         <!-- Stats -->
         <div class="row">
-            <div class="col-lg-4 col-sm-6">
-                <div class="card">
+            <div class="col-xl-4 col-sm-6 col-12">
+                <div class="card dashboard-card">
                     <div class="card-body">
                         <div class="dash-widget-header">
                             <span class="dash-widget-icon bg-primary">
                                 <i data-feather="box"></i>
                             </span>
-                            <div class="dash-count">
-                                <h3>{{ $stats['total'] }}</h3>
-                            </div>
                         </div>
                         <div class="dash-widget-info">
                             <h6 class="text-muted">Total Stores</h6>
+                            <h3>{{ $stats['total'] }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card">
+            <div class="col-xl-4 col-sm-6 col-12">
+                <div class="card dashboard-card">
                     <div class="card-body">
                         <div class="dash-widget-header">
                             <span class="dash-widget-icon bg-success">
                                 <i data-feather="check-circle"></i>
                             </span>
-                            <div class="dash-count">
-                                <h3>{{ $stats['active'] }}</h3>
-                            </div>
                         </div>
                         <div class="dash-widget-info">
                             <h6 class="text-muted">Active</h6>
+                            <h3>{{ $stats['active'] }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card">
+            <div class="col-xl-4 col-sm-6 col-12">
+                <div class="card dashboard-card">
                     <div class="card-body">
                         <div class="dash-widget-header">
                             <span class="dash-widget-icon bg-warning">
-                                <i data-feather="pause-circle"></i>
+                                <i data-feather="x-circle"></i>
                             </span>
-                            <div class="dash-count">
-                                <h3>{{ $stats['paused'] }}</h3>
-                            </div>
                         </div>
                         <div class="dash-widget-info">
-                            <h6 class="text-muted">Paused</h6>
+                            <h6 class="text-muted">Inactive</h6>
+                            <h3>{{ $stats['inactive'] }}</h3>
                         </div>
                     </div>
                 </div>
@@ -81,15 +75,13 @@
                         <tbody>
                             @forelse($stores as $store)
                             <tr>
-                                <td><strong>{{ $store->store_name }}</strong></td>
-                                <td>{{ $store->business->name ?? 'N/A' }}</td>
+                                <td><strong>{{ $store->name }}</strong></td>
+                                <td>{{ $store->owner->name ?? 'N/A' }}</td>
                                 <td>
-                                    @if($store->status === 'active')
+                                    @if($store->is_active)
                                         <span class="badge bg-success">Active</span>
-                                    @elseif($store->status === 'paused')
-                                        <span class="badge bg-warning">Paused</span>
                                     @else
-                                        <span class="badge bg-secondary">{{ $store->status }}</span>
+                                        <span class="badge bg-warning">Inactive</span>
                                     @endif
                                 </td>
                                 <td>{{ $store->created_at->format('d M Y') }}</td>
@@ -116,4 +108,5 @@
     </div>
 </div>
 @endsection
+
 

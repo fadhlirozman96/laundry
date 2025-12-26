@@ -36,3 +36,4 @@ class LeaveType extends Model
 
 
 
+

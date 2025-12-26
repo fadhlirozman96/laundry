@@ -5,7 +5,7 @@
         <div class="page-header">
             <div class="page-title">
                 <h4>Store Details</h4>
-                <h6>{{ $store->store_name }}</h6>
+                <h6>{{ $store->name }}</h6>
             </div>
             <div class="page-btn">
                 <a href="{{ route('superadmin.store-containers.index') }}" class="btn btn-secondary">
@@ -18,13 +18,13 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-6">
-                        <p><strong>Store Name:</strong> {{ $store->store_name }}</p>
-                        <p><strong>Business:</strong> {{ $store->business->name ?? 'N/A' }}</p>
+                        <p><strong>Store Name:</strong> {{ $store->name }}</p>
+                        <p><strong>Business:</strong> {{ $store->owner->name ?? 'N/A' }}</p>
                         <p><strong>Status:</strong> 
-                            @if($store->status === 'active')
+                            @if($store->is_active)
                                 <span class="badge bg-success">Active</span>
                             @else
-                                <span class="badge bg-secondary">{{ $store->status }}</span>
+                                <span class="badge bg-warning">Inactive</span>
                             @endif
                         </p>
                     </div>
@@ -70,4 +70,5 @@
     </div>
 </div>
 @endsection
+
 
