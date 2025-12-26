@@ -229,7 +229,8 @@ class POSController extends Controller
                         'email' => $customerEmail,
                         'phone' => $customerPhone,
                         'store_id' => $storeId,
-                        'status' => 'active',
+                        'is_active' => true,
+                        'created_by' => Auth::id(),
                     ]);
                 } else {
                     // Update existing customer info if provided
@@ -251,6 +252,9 @@ class POSController extends Controller
                 $customerId = $customer->id;
             }
             
+            // Log payment method for debugging
+            \Log::info('POS payment method received: ' . ($request->payment_method ?? 'not set'));
+            
             // Create order
             $order = Order::create([
                 'order_number' => $orderNumber,
@@ -265,7 +269,7 @@ class POSController extends Controller
                 'discount' => $discount,
                 'shipping' => $shipping,
                 'total' => $total,
-                'payment_method' => $request->payment_method,
+                'payment_method' => $request->payment_method ?? 'cash',
                 'payment_status' => 'paid',
                 'order_status' => 'completed',
                 'notes' => $request->notes,
@@ -316,6 +320,20 @@ class POSController extends Controller
                 // Update product quantity (round up for kg-based products)
                 $decrementQty = ceil($item['quantity']);
                 $product->decrement('quantity', $decrementQty);
+            }
+
+            // Generate receipts for paid orders
+            if ($order->payment_status === 'paid') {
+                try {
+                    $receiptController = new \App\Http\Controllers\ReceiptController();
+                    // Generate regular receipt
+                    $receiptController->generate($order->id);
+                    // Generate thermal receipt
+                    $receiptController->generateThermal($order->id);
+                } catch (\Exception $e) {
+                    // Log error but don't fail the order creation
+                    \Log::error('Failed to generate receipts for order ' . $order->order_number . ': ' . $e->getMessage());
+                }
             }
 
             DB::commit();

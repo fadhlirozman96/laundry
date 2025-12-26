@@ -3,21 +3,11 @@
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Main</h6>
                     <ul>
                         <li class="submenu">
-                            <!-- <a href="javascript:void(0);"
-                                class="<?php echo e(Request::is('index', '/', 'sales-dashboard') ? 'active subdrop' : ''); ?>"><i
-                                    data-feather="grid"></i><span>Dashboard</span><span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a href="<?php echo e(url('index')); ?>"
-                                        class="<?php echo e(Request::is('index', '/') ? 'active' : ''); ?>">Admin Dashboard</a></li>
-                                <li><a href="<?php echo e(url('sales-dashboard')); ?>"
-                                        class="<?php echo e(Request::is('sales-dashboard') ? 'active' : ''); ?>">Sales Dashboard</a>
-                                </li>
-                            </ul> -->
-
                             <li class="<?php echo e(Request::is('index', '/', 'sales-dashboard') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('index')); ?>"><i data-feather="grid"></i><span>Dashboard</span></a>
                         </li>
@@ -56,6 +46,111 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && auth()->user()->isSuperAdmin()): ?>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">RAPY SaaS Platform</h6>
+                    <ul>
+                        <li class="<?php echo e(Request::is('superadmin/dashboard') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('superadmin.dashboard')); ?>"><i data-feather="activity"></i><span>SaaS Dashboard</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('superadmin/businesses*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('superadmin.businesses.index')); ?>"><i data-feather="briefcase"></i><span>Business Management</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('superadmin/subscriptions*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('superadmin.subscriptions')); ?>"><i data-feather="repeat"></i><span>Subscriptions</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('superadmin/plans*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('superadmin.plans')); ?>"><i data-feather="package"></i><span>Plan Management</span></a>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="<?php echo e(Request::is('superadmin/features*') ? 'active subdrop' : ''); ?>"><i
+                                    data-feather="lock"></i><span>Feature Gating</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="<?php echo e(route('superadmin.features.index')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/features') ? 'active' : ''); ?>">Feature Matrix</a></li>
+                                <li><a href="<?php echo e(route('superadmin.features.logs')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/features/logs') ? 'active' : ''); ?>">Access Logs</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="<?php echo e(Request::is('superadmin/payments*', 'superadmin/invoices*', 'superadmin/grace-periods*') ? 'active subdrop' : ''); ?>"><i
+                                    data-feather="credit-card"></i><span>SaaS Billing</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="<?php echo e(route('superadmin.invoices')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/invoices*') ? 'active' : ''); ?>">Invoices</a></li>
+                                <li><a href="<?php echo e(route('superadmin.payments')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/payments') ? 'active' : ''); ?>">Payment History</a></li>
+                                <li><a href="<?php echo e(route('superadmin.grace-periods')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/grace-periods') ? 'active' : ''); ?>">Grace Periods</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="<?php echo e(Request::is('superadmin/users*', 'superadmin/user-profiles*', 'superadmin/security-settings*') ? 'active subdrop' : ''); ?>"><i
+                                    data-feather="user-check"></i><span>User & Identity</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="<?php echo e(route('superadmin.users.index')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/users') ? 'active' : ''); ?>">All Users</a></li>
+                                <li><a href="<?php echo e(route('superadmin.user-profiles')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/user-profiles') ? 'active' : ''); ?>">User Profiles</a></li>
+                                <li><a href="<?php echo e(route('superadmin.security-settings')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/security-settings') ? 'active' : ''); ?>">Security Settings</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="<?php echo e(Request::is('superadmin/roles-permissions*', 'superadmin/store-role-mapping*') ? 'active subdrop' : ''); ?>"><i
+                                    data-feather="shield"></i><span>Roles & Permissions</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="<?php echo e(route('superadmin.roles-permissions')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/roles-permissions') ? 'active' : ''); ?>">SaaS Roles</a></li>
+                                <li><a href="<?php echo e(route('superadmin.store-role-mapping')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/store-role-mapping') ? 'active' : ''); ?>">Store Role Mapping</a></li>
+                            </ul>
+                        </li>
+                        <li class="<?php echo e(Request::is('superadmin/store-containers*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('superadmin.store-containers.index')); ?>"><i data-feather="box"></i><span>Store Containers</span></a>
+                        </li>
+                        <li class="<?php echo e(Request::is('superadmin/usage-limits*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('superadmin.usage-limits.index')); ?>"><i data-feather="bar-chart-2"></i><span>Usage & Limits</span></a>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="<?php echo e(Request::is('superadmin/settings*') ? 'active subdrop' : ''); ?>"><i
+                                    data-feather="settings"></i><span>SaaS Configuration</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="<?php echo e(route('superadmin.settings.branding')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/settings/branding') ? 'active' : ''); ?>">Global Branding</a></li>
+                                <li><a href="<?php echo e(route('superadmin.settings.currency')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/settings/currency') ? 'active' : ''); ?>">Default Currency</a></li>
+                                <li><a href="<?php echo e(route('superadmin.settings.tax')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/settings/tax') ? 'active' : ''); ?>">Default Tax</a></li>
+                                <li><a href="<?php echo e(route('superadmin.settings.timezone')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/settings/timezone') ? 'active' : ''); ?>">Timezone Settings</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"
+                                class="<?php echo e(Request::is('superadmin/logs*', 'superadmin/support*', 'superadmin/impersonation-history*') ? 'active subdrop' : ''); ?>"><i
+                                    data-feather="life-buoy"></i><span>Support & Logs</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="<?php echo e(route('superadmin.logs.system')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/logs/system') ? 'active' : ''); ?>">System Logs</a></li>
+                                <li><a href="<?php echo e(route('superadmin.logs.error')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/logs/error') ? 'active' : ''); ?>">Error Logs</a></li>
+                                <li><a href="<?php echo e(route('superadmin.support.tickets')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/support/tickets') ? 'active' : ''); ?>">Support Tickets</a></li>
+                                <li><a href="<?php echo e(route('superadmin.impersonation-history')); ?>"
+                                        class="<?php echo e(Request::is('superadmin/impersonation-history') ? 'active' : ''); ?>">Impersonation History</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                  <li class="submenu-open">
                     <h6 class="submenu-hdr">Laundry Operations</h6>
                     <ul>
@@ -89,7 +184,8 @@
                                     data-feather="layers"></i><span>Units</span></a></li>
                     </ul>
                 </li>
-                <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
+                <?php endif; ?>
+                <?php if(auth()->check() && auth()->user()->isBusinessOwner()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Stores</h6>
                     <ul>
@@ -113,6 +209,7 @@
                                     Transfer</span></a></li>
                     </ul>
                 </li> -->
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Sales</h6>
                     <ul>
@@ -174,6 +271,8 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Peoples</h6>
                     <ul>
@@ -183,15 +282,14 @@
                         <!-- <li class="<?php echo e(Request::is('suppliers') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('suppliers')); ?>"><i data-feather="users"></i><span>Suppliers</span></a>
                         </li> -->
-                        <li class="<?php echo e(Request::is('store-list') ? 'active' : ''); ?>"><a
-                                href="<?php echo e(url('store-list')); ?>"><i data-feather="home"></i><span>Stores</span></a>
-                        </li>
                         <!-- <li class="<?php echo e(Request::is('warehouse') ? 'active' : ''); ?>"><a
                                 href="<?php echo e(url('warehouse')); ?>"><i
                                     data-feather="archive"></i><span>Warehouses</span></a>
                         </li> -->
                     </ul>
                 </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Website</h6>
                     <ul>
@@ -225,6 +323,8 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">HRM</h6>
                     <ul>
@@ -323,6 +423,7 @@
                                     Loss</span></a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
                 <?php if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isBusinessOwner())): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">User Management</h6>
@@ -352,6 +453,7 @@
                     </ul>
                 </li>
                 <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Pages</h6>
                     <ul>
@@ -447,6 +549,8 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Settings</h6>
                     <ul>
@@ -578,6 +682,8 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">UI Interface</h6>
                     <ul>
@@ -817,6 +923,8 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+                <?php if(auth()->check() && !auth()->user()->isSuperAdmin()): ?>
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Help</h6>
                     <ul>
@@ -847,6 +955,7 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

@@ -36,6 +36,8 @@ class Order extends Model
         'notes',
         'expected_completion',
         'special_instructions',
+        'receipt_path',
+        'thermal_receipt_path',
     ];
 
     protected $casts = [
@@ -70,5 +72,72 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function qualityCheck()
+    {
+        return $this->hasOne(QualityCheck::class);
+    }
+
+    /**
+     * Get status badge HTML
+     */
+    public function getStatusBadge()
+    {
+        $statusColors = [
+            'pending' => 'bg-warning',
+            'processing' => 'bg-info',
+            'completed' => 'bg-success',
+            'cancelled' => 'bg-danger',
+        ];
+
+        $color = $statusColors[$this->order_status] ?? 'bg-secondary';
+        $label = ucfirst($this->order_status);
+
+        return '<span class="badge ' . $color . '">' . $label . '</span>';
+    }
+
+    /**
+     * Get payment status badge HTML
+     */
+    public function getPaymentStatusBadge()
+    {
+        $statusColors = [
+            'pending' => 'bg-warning',
+            'paid' => 'bg-success',
+            'partial' => 'bg-info',
+            'failed' => 'bg-danger',
+        ];
+
+        $color = $statusColors[$this->payment_status] ?? 'bg-secondary';
+        $label = ucfirst($this->payment_status);
+
+        return '<span class="badge ' . $color . '">' . $label . '</span>';
+    }
+
+    /**
+     * Get QC status badge HTML
+     */
+    public function getQcStatusBadge()
+    {
+        if ($this->qualityCheck) {
+            if ($this->qualityCheck->passed) {
+                return '<span class="badge bg-success">Passed</span>';
+            } else {
+                return '<span class="badge bg-danger">Failed</span>';
+            }
+        } else {
+            // No QC record exists
+            switch ($this->order_status) {
+                case 'pending':
+                    return '<span class="badge bg-info">Pending Order Processing</span>';
+                case 'processing':
+                    return '<span class="badge bg-warning">Pending QC</span>';
+                case 'completed':
+                    return '<span class="badge bg-secondary">No QC</span>';
+                default:
+                    return '<span class="badge bg-secondary">-</span>';
+            }
+        }
     }
 }

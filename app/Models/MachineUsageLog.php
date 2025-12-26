@@ -11,7 +11,7 @@ class MachineUsageLog extends Model
 
     protected $fillable = [
         'machine_id',
-        'laundry_order_id',
+        'order_id',
         'user_id',
         'store_id',
         'load_weight_kg',
@@ -41,9 +41,9 @@ class MachineUsageLog extends Model
         return $this->belongsTo(Machine::class);
     }
 
-    public function laundryOrder()
+    public function order()
     {
-        return $this->belongsTo(LaundryOrder::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function user()
@@ -74,5 +74,6 @@ class MachineUsageLog extends Model
         return null;
     }
 }
+
 
 

@@ -15,6 +15,11 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         
+        // Redirect superadmin to their own dashboard
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('superadmin.dashboard');
+        }
+        
         // Get accessible store IDs
         $accessibleStoreIds = $user->getAccessibleStores()->pluck('id')->toArray();
         

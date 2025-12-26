@@ -339,6 +339,48 @@
 </script>
 <?php endif; ?>
 
+<!-- Store Change Confirmation -->
+<script>
+function confirmStoreChange(storeId, storeName) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Change Store?',
+            html: `Are you sure you want to switch to <strong>${storeName}</strong>?<br><br>This will change your current store context.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#0067e2',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Switch Store',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Switching Store...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                // Redirect to store selection route
+                var baseUrl = '<?php echo e(url("/")); ?>';
+                window.location.href = baseUrl + '/select-store/' + storeId;
+            }
+        });
+    } else {
+        // Fallback if SweetAlert is not loaded
+        if (confirm('Are you sure you want to switch to ' + storeName + '?')) {
+            var baseUrl = '<?php echo e(url("/")); ?>';
+            window.location.href = baseUrl + '/select-store/' + storeId;
+        }
+    }
+}
+</script>
+
 <!-- Page Specific Scripts -->
 <?php echo $__env->yieldPushContent('scripts'); ?>
 <?php /**PATH C:\laragon\www\laundry\resources\views/layout/partials/footer-scripts.blade.php ENDPATH**/ ?>

@@ -35,6 +35,29 @@
 @endif
 @component('components.loader')
 @endcomponent
+
+<!-- Impersonation Banner -->
+@if(session('impersonate_from'))
+<div class="impersonation-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 20px; text-align: center; position: fixed; top: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+            <span>
+                <i data-feather="eye" style="width: 18px; height: 18px; margin-right: 8px;"></i>
+                <strong>Viewing as: {{ auth()->user()->name }}</strong>
+                <span class="ms-2 opacity-75">({{ auth()->user()->email }})</span>
+            </span>
+            <a href="{{ route('superadmin.stop-impersonate') }}" 
+               class="btn btn-sm btn-light" 
+               style="padding: 4px 16px;">
+                <i data-feather="log-out" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+                Back to Superadmin
+            </a>
+        </div>
+    </div>
+</div>
+<div style="height: 46px;"></div>
+@endif
+
 <!-- Main Wrapper -->
 @if (!Route::is(['lock-screen']))
     <div class="main-wrapper">

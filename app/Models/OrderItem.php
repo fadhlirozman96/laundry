@@ -19,6 +19,8 @@ class OrderItem extends Model
         'discount',
         'tax',
         'subtotal',
+        'qc_completed',
+        'qc_data',
     ];
 
     protected $casts = [
@@ -26,6 +28,8 @@ class OrderItem extends Model
         'discount' => 'decimal:2',
         'tax' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'qc_completed' => 'boolean',
+        'qc_data' => 'array',
     ];
 
     public function order()

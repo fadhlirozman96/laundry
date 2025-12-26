@@ -23,19 +23,19 @@
                         <span><i data-feather="activity" class="text-primary"></i></span>
                     </div>
                     <div class="dash-widgetcontent">
-                        <h5>{{ $todayCount }}</h5>
-                        <h6>Today's Activities</h6>
+                        <h5>{{ $totalActivities }}</h5>
+                        <h6>Total Activities</h6>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
                 <div class="dash-widget dash2">
                     <div class="dash-widgetimg">
-                        <span><i data-feather="calendar" class="text-info"></i></span>
+                        <span><i data-feather="file-text" class="text-info"></i></span>
                     </div>
                     <div class="dash-widgetcontent">
-                        <h5>{{ $weekCount }}</h5>
-                        <h6>This Week</h6>
+                        <h5>{{ $totalLogs }}</h5>
+                        <h6>Total Logs</h6>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                         <span><i data-feather="users" class="text-success"></i></span>
                     </div>
                     <div class="dash-widgetcontent">
-                        <h5>{{ count($users) }}</h5>
+                        <h5>{{ $activeUsers }}</h5>
                         <h6>Active Users</h6>
                     </div>
                 </div>
@@ -53,11 +53,11 @@
             <div class="col-lg-3 col-sm-6">
                 <div class="dash-widget">
                     <div class="dash-widgetimg">
-                        <span><i data-feather="home" class="text-warning"></i></span>
+                        <span><i data-feather="user-check" class="text-warning"></i></span>
                     </div>
                     <div class="dash-widgetcontent">
-                        <h5>{{ count($stores) }}</h5>
-                        <h6>Stores Monitored</h6>
+                        <h5>{{ $onlineUsers }}</h5>
+                        <h6>Online Users</h6>
                     </div>
                 </div>
             </div>
@@ -188,7 +188,9 @@
                 </div>
 
                 <div class="mt-3">
-                    {{ $logs->appends(request()->query())->links() }}
+                    <div class="d-flex justify-content-end">
+                        {{ $logs->appends(request()->query())->links() }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -367,5 +369,6 @@
     });
 </script>
 @endpush
+
 
 

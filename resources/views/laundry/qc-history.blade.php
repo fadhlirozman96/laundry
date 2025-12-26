@@ -61,11 +61,11 @@
                             @forelse($qcRecords as $qc)
                             <tr>
                                 <td>
-                                    <a href="{{ route('laundry.show', $qc->laundry_order_id) }}">
-                                        {{ $qc->laundryOrder->order_number ?? 'N/A' }}
+                                    <a href="{{ route('laundry.show', $qc->order_id) }}">
+                                        {{ $qc->order->order_number ?? 'N/A' }}
                                     </a>
                                 </td>
-                                <td>{{ $qc->laundryOrder->customer_name ?? 'N/A' }}</td>
+                                <td>{{ $qc->order->customer_name ?? 'N/A' }}</td>
                                 <td>{{ $qc->user->name ?? 'N/A' }}</td>
                                 <td>
                                     <div class="progress" style="width: 60px; height: 20px;">
@@ -137,5 +137,6 @@
     });
 </script>
 @endpush
+
 
 

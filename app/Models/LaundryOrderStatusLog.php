@@ -29,3 +29,4 @@ class LaundryOrderStatusLog extends Model
 }
 
 
+

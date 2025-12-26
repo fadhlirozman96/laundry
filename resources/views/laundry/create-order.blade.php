@@ -607,7 +607,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Order Created!',
-                        text: 'Order Number: ' + response.order.order_number,
+                        text: 'Order Number: ' + response.order_number,
                         showCancelButton: true,
                         confirmButtonText: 'View Order',
                         cancelButtonText: 'Create Another'
@@ -652,5 +652,6 @@
     });
 </script>
 @endpush
+
 
 

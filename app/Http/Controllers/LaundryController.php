@@ -2,20 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LaundryOrder;
-use App\Models\LaundryOrderItem;
-use App\Models\LaundryOrderStatusLog;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Customer;
-use App\Models\QualityCheck;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class LaundryController extends Controller
 {
     protected function getStoreId()
     {
-        return session('store_id');
+        // Check for selected_store_id first (from POS store selector)
+        $storeId = session('selected_store_id');
+        
+        if (!$storeId) {
+            // Fallback to user's first accessible store
+            $user = auth()->user();
+            if ($user) {
+                $userStores = $user->getAccessibleStores();
+                if ($userStores->count() > 0) {
+                    $storeId = $userStores->first()->id;
+                    // Set it in session for future use
+                    session(['selected_store_id' => $storeId]);
+                }
+            }
+        }
+        
+        return $storeId;
     }
 
     /**
@@ -25,38 +40,66 @@ class LaundryController extends Controller
     {
         $storeId = $this->getStoreId();
         
-        // Get order counts by status
-        $statusCounts = LaundryOrder::where('store_id', $storeId)
-            ->selectRaw('status, COUNT(*) as count')
-            ->groupBy('status')
-            ->pluck('count', 'status')
-            ->toArray();
-
-        // Today's orders
-        $todayOrders = LaundryOrder::where('store_id', $storeId)
-            ->whereDate('created_at', today())
+        // Get order counts by actual status
+        $pendingCount = Order::where('store_id', $storeId)
+            ->where('order_status', 'pending')
+            ->count();
+            
+        $processingCount = Order::where('store_id', $storeId)
+            ->where('order_status', 'processing')
+            ->count();
+            
+        $completedCount = Order::where('store_id', $storeId)
+            ->where('order_status', 'completed')
+            ->count();
+            
+        $cancelledCount = Order::where('store_id', $storeId)
+            ->where('order_status', 'cancelled')
             ->count();
 
-        // Pending QC
-        $pendingQC = LaundryOrder::where('store_id', $storeId)
-            ->where('status', 'folding')
-            ->where('qc_passed', false)
+        // Today's metrics
+        $todayOrders = Order::where('store_id', $storeId)
+            ->whereDate('created_at', today())
+            ->count();
+            
+        $todayRevenue = Order::where('store_id', $storeId)
+            ->whereDate('created_at', today())
+            ->where('payment_status', 'paid')
+            ->sum('total');
+
+        // Pending QC (orders in 'processing' status without a quality check)
+        $pendingQC = Order::where('store_id', $storeId)
+            ->where('order_status', 'processing')
+            ->doesntHave('qualityCheck')
+            ->count();
+            
+        // Orders with QC passed (ready for collection)
+        $qcPassed = Order::where('store_id', $storeId)
+            ->whereHas('qualityCheck', function($q) {
+                $q->where('passed', true);
+            })
+            ->where('order_status', 'completed')
             ->count();
 
         // Recent orders
-        $recentOrders = LaundryOrder::where('store_id', $storeId)
-            ->with('items')
+        $recentOrders = Order::where('store_id', $storeId)
+            ->with(['items.product', 'qualityCheck'])
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
 
-        // Orders ready for collection
-        $readyOrders = LaundryOrder::where('store_id', $storeId)
-            ->where('status', 'ready')
-            ->count();
+        // Total orders
+        $totalOrders = Order::where('store_id', $storeId)->count();
+        
+        // Total revenue (paid orders)
+        $totalRevenue = Order::where('store_id', $storeId)
+            ->where('payment_status', 'paid')
+            ->sum('total');
 
         return view('laundry.dashboard', compact(
-            'statusCounts', 'todayOrders', 'pendingQC', 'recentOrders', 'readyOrders'
+            'pendingCount', 'processingCount', 'completedCount', 'cancelledCount',
+            'todayOrders', 'todayRevenue', 'pendingQC', 'qcPassed',
+            'recentOrders', 'totalOrders', 'totalRevenue'
         ));
     }
 
@@ -67,12 +110,12 @@ class LaundryController extends Controller
     {
         $storeId = $this->getStoreId();
         
-        $query = LaundryOrder::where('store_id', $storeId)
-            ->with(['items', 'user']);
+        $query = Order::where('store_id', $storeId)
+            ->with(['items.product', 'user', 'customer', 'qualityCheck']);
 
         // Filter by status
         if ($request->has('status') && $request->status) {
-            $query->where('status', $request->status);
+            $query->where('order_status', $request->status);
         }
 
         // Filter by date
@@ -128,100 +171,166 @@ class LaundryController extends Controller
             'items' => 'required|array|min:1',
             'items.*.service_id' => 'nullable|exists:products,id',
             'items.*.service_name' => 'required|string|max:255',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
         try {
             DB::beginTransaction();
+            
+            // Verify store ID
+            if (!$storeId) {
+                throw new \Exception('No store selected. Please select a store from the POS System page first.');
+            }
 
-            // Create order
-            $orderNumber = LaundryOrder::generateOrderNumber($storeId);
-            $qrCode = LaundryOrder::generateQRCode();
+            // Handle customer - create or find existing customer if not walk-in
+            $customerId = $request->customer_id;
+            $customerName = $request->customer_name;
+            $customerEmail = $request->customer_email;
+            $customerPhone = $request->customer_phone;
+            
+            // Only create/link customer if name is provided and is not "Walk-in Customer"
+            if ($customerName && trim(strtolower($customerName)) !== 'walk-in customer') {
+                // Try to find existing customer by phone or email in the same store
+                $customer = null;
+                
+                if ($customerPhone) {
+                    $customer = Customer::where('store_id', $storeId)
+                                      ->where('phone', $customerPhone)
+                                      ->first();
+                }
+                
+                if (!$customer && $customerEmail) {
+                    $customer = Customer::where('store_id', $storeId)
+                                      ->where('email', $customerEmail)
+                                      ->first();
+                }
+                
+                // If customer not found, create new one
+                if (!$customer) {
+                    $customer = Customer::create([
+                        'name' => $customerName,
+                        'email' => $customerEmail,
+                        'phone' => $customerPhone,
+                        'store_id' => $storeId,
+                        'is_active' => true,
+                        'created_by' => $userId,
+                    ]);
+                } else {
+                    // Update existing customer info if provided
+                    $updateData = [];
+                    if ($customerName && $customer->name !== $customerName) {
+                        $updateData['name'] = $customerName;
+                    }
+                    if ($customerEmail && $customer->email !== $customerEmail) {
+                        $updateData['email'] = $customerEmail;
+                    }
+                    if ($customerPhone && $customer->phone !== $customerPhone) {
+                        $updateData['phone'] = $customerPhone;
+                    }
+                    if (!empty($updateData)) {
+                        $customer->update($updateData);
+                    }
+                }
+                
+                $customerId = $customer->id;
+            }
 
-            $order = LaundryOrder::create([
+            // Calculate totals first
+            $subtotal = 0;
+            foreach ($request->items as $item) {
+                $subtotal += $item['quantity'] * $item['price'];
+            }
+            
+            $taxPercent = $request->order_tax_percent ?? 6;
+            $tax = $subtotal * ($taxPercent / 100);
+            $shipping = $request->shipping ?? 0;
+            $discount = $request->discount ?? 0;
+            $total = $subtotal + $tax + $shipping - $discount;
+            
+            // Ensure total is not negative
+            if ($total < 0) $total = 0;
+
+            // Generate order number
+            $orderNumber = 'ORD-' . date('Ymd') . '-' . str_pad(Order::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
+
+            // Determine payment status based on payment method
+            $paymentMethod = $request->payment_method ?? 'cash';
+            $paymentStatus = 'pending';
+            
+            // Log payment method for debugging
+            \Log::info('Order payment method received: ' . $paymentMethod);
+            
+            // If cash or QR payment is selected, mark as paid immediately
+            if (in_array($paymentMethod, ['cash', 'qr', 'card', 'debit_card'])) {
+                $paymentStatus = 'paid';
+            }
+
+            $order = Order::create([
+                'order_number' => $orderNumber,
                 'store_id' => $storeId,
                 'user_id' => $userId,
-                'customer_id' => $request->customer_id,
-                'order_number' => $orderNumber,
-                'qr_code' => $qrCode,
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'customer_email' => $request->customer_email,
-                'status' => LaundryOrder::STATUS_RECEIVED,
-                'received_at' => now(),
+                'customer_id' => $customerId,
+                'customer_name' => $customerName,
+                'customer_phone' => $customerPhone,
+                'customer_email' => $customerEmail,
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'discount' => $discount,
+                'shipping' => $shipping,
+                'total' => $total,
+                'order_status' => 'pending',
+                'payment_status' => $paymentStatus,
+                'payment_method' => $paymentMethod,
                 'expected_completion' => $request->expected_completion,
                 'notes' => $request->notes,
                 'special_instructions' => $request->special_instructions,
             ]);
 
             // Create order items
-            $subtotal = 0;
-            $totalItems = 0;
-            $totalServices = 0;
-
             foreach ($request->items as $index => $item) {
                 $itemSubtotal = $item['quantity'] * $item['price'];
-                $subtotal += $itemSubtotal;
-                $totalItems++;
-                $totalServices += $item['quantity'];
 
-                LaundryOrderItem::create([
-                    'laundry_order_id' => $order->id,
-                    'service_id' => $item['service_id'] ?? null,
-                    'service_name' => $item['service_name'],
-                    'item_code' => LaundryOrderItem::generateItemCode($order->id, $index + 1),
+                // Get product details
+                $product = null;
+                if (!empty($item['service_id'])) {
+                    $product = Product::find($item['service_id']);
+                }
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['service_id'] ?? null,
+                    'product_name' => $item['service_name'],
+                    'product_sku' => $product ? $product->sku : 'N/A',
                     'quantity' => $item['quantity'],
-                    'color' => $item['color'] ?? null,
-                    'brand' => $item['brand'] ?? null,
-                    'condition_notes' => $item['condition_notes'] ?? null,
                     'price' => $item['price'],
+                    'discount' => 0,
+                    'tax' => 0,
                     'subtotal' => $itemSubtotal,
                 ]);
             }
 
-            // Calculate totals
-            $taxPercent = $request->order_tax_percent ?? 6;
-            $tax = $subtotal * ($taxPercent / 100);
-            $shipping = $request->shipping ?? 0;
-            $discount = $request->discount ?? 0;
-            $couponDiscount = $request->coupon_discount ?? 0;
-            $total = $subtotal + $tax + $shipping - $discount - $couponDiscount;
-            
-            // Ensure total is not negative
-            if ($total < 0) $total = 0;
-
-            $order->update([
-                'subtotal' => $subtotal,
-                'tax' => $tax,
-                'order_tax_percent' => $taxPercent,
-                'shipping' => $shipping,
-                'discount' => $discount,
-                'coupon_code' => $request->coupon_code,
-                'coupon_discount' => $couponDiscount,
-                'total' => $total,
-                'total_items' => $totalItems,
-                'total_services' => $totalServices,
-                'payment_method' => $request->payment_method ?? 'cash',
-                'payment_status' => 'pending',
-            ]);
-
-            // Create initial status log
-            LaundryOrderStatusLog::create([
-                'laundry_order_id' => $order->id,
-                'user_id' => $userId,
-                'from_status' => null,
-                'to_status' => LaundryOrder::STATUS_RECEIVED,
-                'notes' => 'Order created',
-            ]);
+            // Generate receipts if payment is paid
+            if ($paymentStatus === 'paid') {
+                try {
+                    $receiptController = new \App\Http\Controllers\ReceiptController();
+                    // Generate regular receipt
+                    $receiptController->generate($order->id);
+                    // Generate thermal receipt
+                    $receiptController->generateThermal($order->id);
+                } catch (\Exception $e) {
+                    // Log error but don't fail the order creation
+                    \Log::error('Failed to generate receipts for order ' . $order->order_number . ': ' . $e->getMessage());
+                }
+            }
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Order created successfully',
-                'order' => $order,
-                'redirect' => route('laundry.show', $order->id)
+                'order_number' => $orderNumber,
+                'redirect' => route('laundry.orders')
             ]);
 
         } catch (\Exception $e) {
@@ -240,8 +349,8 @@ class LaundryController extends Controller
     {
         $storeId = $this->getStoreId();
         
-        $order = LaundryOrder::where('store_id', $storeId)
-            ->with(['items.service', 'statusLogs.user', 'qualityChecks.user', 'user', 'machineUsageLogs.machine'])
+        $order = Order::where('store_id', $storeId)
+            ->with(['items.product', 'user', 'customer'])
             ->findOrFail($id);
 
         return view('laundry.order-details', compact('order'));
@@ -255,29 +364,19 @@ class LaundryController extends Controller
         $storeId = $this->getStoreId();
         $userId = auth()->id();
         
-        $order = LaundryOrder::where('store_id', $storeId)->findOrFail($id);
+        $order = Order::where('store_id', $storeId)->findOrFail($id);
 
         $request->validate([
-            'status' => 'required|in:received,washing,drying,folding,ready,collected',
+            'status' => 'required|in:pending,processing,completed,cancelled',
         ]);
 
-        $newStatus = $request->status;
-
-        // Check if can update to this status
-        if (!$order->canUpdateStatusTo($newStatus)) {
-            return response()->json([
-                'success' => false,
-                'message' => $newStatus === 'ready' && !$order->qc_passed 
-                    ? 'Order must pass Quality Check before marking as Ready'
-                    : 'Cannot update status'
-            ], 400);
-        }
-
-        $order->updateStatus($newStatus, $userId, $request->notes);
+        $order->update([
+            'order_status' => $request->status
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Status updated to ' . LaundryOrder::STATUSES[$newStatus],
+            'message' => 'Status updated to ' . $request->status,
             'order' => $order->fresh()
         ]);
     }
@@ -289,8 +388,8 @@ class LaundryController extends Controller
     {
         $storeId = $this->getStoreId();
         
-        $order = LaundryOrder::where('store_id', $storeId)
-            ->where('qr_code', $request->qr_code)
+        $order = Order::where('store_id', $storeId)
+            ->where('order_number', $request->order_number)
             ->with('items')
             ->first();
 
@@ -314,7 +413,7 @@ class LaundryController extends Controller
     {
         $storeId = $this->getStoreId();
         
-        $order = LaundryOrder::where('store_id', $storeId)
+        $order = Order::where('store_id', $storeId)
             ->where('order_number', $request->order_number)
             ->with('items')
             ->first();
@@ -337,7 +436,7 @@ class LaundryController extends Controller
      */
     public function generateQRImage($id)
     {
-        $order = LaundryOrder::findOrFail($id);
+        $order = Order::findOrFail($id);
         
         // Using simple QR code library or generate URL
         $qrData = route('laundry.show', $order->id);
@@ -349,5 +448,6 @@ class LaundryController extends Controller
     }
 
 }
+
 
 

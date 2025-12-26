@@ -252,7 +252,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Order (optional)</label>
-                        <select class="form-control select2" name="laundry_order_id" id="start_order_id">
+                        <select class="form-control select2" name="order_id" id="start_order_id">
                             <option value="">-- Select Order --</option>
                         </select>
                     </div>
@@ -375,7 +375,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/laundry/machines/usage/' + usageLogId + '/end',
+                    url: '/laundry-machines/usage/' + usageLogId + '/end',
                     type: 'PUT',
                     data: { 
                         issues: result.value,
@@ -456,5 +456,6 @@
     });
 </script>
 @endpush
+
 
 

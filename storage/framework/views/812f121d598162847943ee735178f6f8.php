@@ -518,8 +518,9 @@ html, body {
         </li>
         <!-- /POS Button -->
 
-        <!-- Select Store -->
+        <!-- Select Store (Hidden for Superadmin) -->
         <?php if(auth()->guard()->check()): ?>
+        <?php if(!auth()->user()->isSuperAdmin()): ?>
         <?php
             $userStores = auth()->user()->getAccessibleStores();
             $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : ($userStores->first() ?? null);
@@ -537,16 +538,25 @@ html, body {
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <?php $__empty_1 = true; $__currentLoopData = $userStores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                <a href="<?php echo e(route('select-store', $store->id)); ?>" class="dropdown-item <?php echo e($selectedStore && $selectedStore->id == $store->id ? 'active' : ''); ?>">
+                <?php if($selectedStore && $selectedStore->id == $store->id): ?>
+                <span class="dropdown-item active">
+                    <img src="<?php echo e(URL::asset('/build/img/store/store-01.png')); ?>" alt="Store Logo" class="img-fluid">
+                    <?php echo e($store->name); ?>
+
+                </span>
+                <?php else: ?>
+                <a href="javascript:void(0);" onclick="confirmStoreChange(<?php echo e($store->id); ?>, '<?php echo e($store->name); ?>')" class="dropdown-item">
                     <img src="<?php echo e(URL::asset('/build/img/store/store-01.png')); ?>" alt="Store Logo" class="img-fluid">
                     <?php echo e($store->name); ?>
 
                 </a>
+                <?php endif; ?>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <span class="dropdown-item text-muted">No stores available</span>
                 <?php endif; ?>
             </div>
         </li>
+        <?php endif; ?>
         <?php endif; ?>
         <!-- /Select Store -->
 
@@ -595,13 +605,14 @@ html, body {
             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
             <?php if(auth()->guard()->check()): ?>
+            <?php if(!auth()->user()->isSuperAdmin()): ?>
             <?php
                 $userStores = auth()->user()->getAccessibleStores();
                 $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : ($userStores->first() ?? null);
             ?>
             <?php if($userStores->isNotEmpty()): ?>
             <div class="dropdown-header"><strong>Current Store</strong></div>
-            <div class="dropdown-item active disabled">
+            <div class="dropdown-item active">
                 <img src="<?php echo e(URL::asset('/build/img/store/store-01.png')); ?>" alt="Store Logo" style="width: 20px; height: 20px; margin-right: 8px;">
                 <?php echo e($selectedStore ? $selectedStore->name : 'Select Store'); ?>
 
@@ -611,7 +622,7 @@ html, body {
             <div class="dropdown-header"><strong>Switch Store</strong></div>
             <?php $__currentLoopData = $userStores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $store): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php if(!$selectedStore || $selectedStore->id != $store->id): ?>
-                <a href="<?php echo e(route('select-store', $store->id)); ?>" class="dropdown-item">
+                <a href="javascript:void(0);" onclick="confirmStoreChange(<?php echo e($store->id); ?>, '<?php echo e($store->name); ?>')" class="dropdown-item">
                     <img src="<?php echo e(URL::asset('/build/img/store/store-01.png')); ?>" alt="Store Logo" style="width: 20px; height: 20px; margin-right: 8px;">
                     <?php echo e($store->name); ?>
 
@@ -620,6 +631,7 @@ html, body {
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             <?php endif; ?>
             <div class="dropdown-divider"></div>
+            <?php endif; ?>
             <?php endif; ?>
             <?php endif; ?>
             <a class="dropdown-item" href="<?php echo e(url('profile')); ?>">My Profile</a>

@@ -10,6 +10,7 @@ class Store extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_id',
         'name',
         'slug',
         'email',
@@ -22,6 +23,11 @@ class Store extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 
     public function products()
     {

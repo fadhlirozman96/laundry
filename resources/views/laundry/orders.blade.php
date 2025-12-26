@@ -23,12 +23,10 @@
                         <label class="form-label">Status</label>
                         <select class="form-control" name="status">
                             <option value="">All Status</option>
-                            <option value="received" {{ request('status') == 'received' ? 'selected' : '' }}>Received</option>
-                            <option value="washing" {{ request('status') == 'washing' ? 'selected' : '' }}>Washing</option>
-                            <option value="drying" {{ request('status') == 'drying' ? 'selected' : '' }}>Drying</option>
-                            <option value="folding" {{ request('status') == 'folding' ? 'selected' : '' }}>Folding</option>
-                            <option value="ready" {{ request('status') == 'ready' ? 'selected' : '' }}>Ready</option>
-                            <option value="collected" {{ request('status') == 'collected' ? 'selected' : '' }}>Collected</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -72,15 +70,36 @@
                                 </td>
                                 <td>{{ $order->customer_name }}</td>
                                 <td>{{ $order->customer_phone ?? '-' }}</td>
-                                <td>{{ $order->total_services }} pcs</td>
+                                <td>
+                                    @php
+                                        $itemSummary = [];
+                                        foreach($order->items as $item) {
+                                            $product = $item->product;
+                                            $unitType = $product ? ($product->unit_type ?? 'piece') : 'piece';
+                                            if (!isset($itemSummary[$unitType])) {
+                                                $itemSummary[$unitType] = 0;
+                                            }
+                                            $itemSummary[$unitType] += $item->quantity;
+                                        }
+                                        $displayParts = [];
+                                        foreach($itemSummary as $type => $qty) {
+                                            $label = '';
+                                            switch($type) {
+                                                case 'piece': $label = 'pcs'; break;
+                                                case 'set': $label = 'set'; break;
+                                                case 'kg': $label = 'kg'; break;
+                                                case 'sqft': $label = 'sqft'; break;
+                                                default: $label = 'pcs';
+                                            }
+                                            $displayParts[] = $qty . ' ' . $label;
+                                        }
+                                        echo !empty($displayParts) ? implode(', ', $displayParts) : '0 pcs';
+                                    @endphp
+                                </td>
                                 <td>MYR {{ number_format($order->total, 2) }}</td>
                                 <td>{!! $order->getStatusBadge() !!}</td>
                                 <td>
-                                    @if($order->qc_passed)
-                                        <span class="badge bg-success">✓</span>
-                                    @else
-                                        <span class="badge bg-secondary">-</span>
-                                    @endif
+                                    {!! $order->getQcStatusBadge() !!}
                                 </td>
                                 <td>
                                     @if($order->payment_status == 'paid')
@@ -97,9 +116,12 @@
                                         <a class="me-2 p-2" href="{{ route('laundry.show', $order->id) }}" title="View">
                                             <i data-feather="eye" class="action-eye"></i>
                                         </a>
-                                        @if($order->status !== 'collected')
-                                        <a class="me-2 p-2" href="javascript:void(0);" onclick="updateOrderStatus({{ $order->id }}, '{{ $order->getNextStatus() }}')" title="Next Status">
-                                            <i data-feather="arrow-right" class="text-primary"></i>
+                                        @if($order->payment_status == 'paid')
+                                        <a class="me-2 p-2" href="{{ route('receipts.download', $order->id) }}" title="Download Regular Receipt">
+                                            <i data-feather="file-text" class="action-eye"></i>
+                                        </a>
+                                        <a class="me-2 p-2" href="{{ route('receipts.thermal.download', $order->id) }}" title="Download Thermal Receipt">
+                                            <i data-feather="printer" class="action-eye"></i>
                                         </a>
                                         @endif
                                     </div>
@@ -140,7 +162,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/laundry/orders/' + orderId + '/status',
+                    url: '/laundry-orders/' + orderId + '/status',
                     type: 'PUT',
                     data: { status: newStatus, _token: '{{ csrf_token() }}' },
                     success: function(response) {

@@ -518,8 +518,9 @@ html, body {
         </li>
         <!-- /POS Button -->
 
-        <!-- Select Store -->
+        <!-- Select Store (Hidden for Superadmin) -->
         @auth
+        @if(!auth()->user()->isSuperAdmin())
         @php
             $userStores = auth()->user()->getAccessibleStores();
             $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : ($userStores->first() ?? null);
@@ -537,15 +538,23 @@ html, body {
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 @forelse($userStores as $store)
-                <a href="{{ route('select-store', $store->id) }}" class="dropdown-item {{ $selectedStore && $selectedStore->id == $store->id ? 'active' : '' }}">
+                @if($selectedStore && $selectedStore->id == $store->id)
+                <span class="dropdown-item active">
+                    <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" class="img-fluid">
+                    {{ $store->name }}
+                </span>
+                @else
+                <a href="javascript:void(0);" onclick="confirmStoreChange({{ $store->id }}, '{{ $store->name }}')" class="dropdown-item">
                     <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" class="img-fluid">
                     {{ $store->name }}
                 </a>
+                @endif
                 @empty
                 <span class="dropdown-item text-muted">No stores available</span>
                 @endforelse
             </div>
         </li>
+        @endif
         @endauth
         <!-- /Select Store -->
 
@@ -594,13 +603,14 @@ html, body {
             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
             @auth
+            @if(!auth()->user()->isSuperAdmin())
             @php
                 $userStores = auth()->user()->getAccessibleStores();
                 $selectedStore = session('selected_store_id') ? \App\Models\Store::find(session('selected_store_id')) : ($userStores->first() ?? null);
             @endphp
             @if($userStores->isNotEmpty())
             <div class="dropdown-header"><strong>Current Store</strong></div>
-            <div class="dropdown-item active disabled">
+            <div class="dropdown-item active">
                 <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" style="width: 20px; height: 20px; margin-right: 8px;">
                 {{ $selectedStore ? $selectedStore->name : 'Select Store' }}
             </div>
@@ -609,7 +619,7 @@ html, body {
             <div class="dropdown-header"><strong>Switch Store</strong></div>
             @foreach($userStores as $store)
                 @if(!$selectedStore || $selectedStore->id != $store->id)
-                <a href="{{ route('select-store', $store->id) }}" class="dropdown-item">
+                <a href="javascript:void(0);" onclick="confirmStoreChange({{ $store->id }}, '{{ $store->name }}')" class="dropdown-item">
                     <img src="{{ URL::asset('/build/img/store/store-01.png') }}" alt="Store Logo" style="width: 20px; height: 20px; margin-right: 8px;">
                     {{ $store->name }}
                 </a>
@@ -617,6 +627,7 @@ html, body {
             @endforeach
             @endif
             <div class="dropdown-divider"></div>
+            @endif
             @endif
             @endauth
             <a class="dropdown-item" href="{{ url('profile') }}">My Profile</a>

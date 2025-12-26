@@ -124,7 +124,7 @@ class MachineController extends Controller
             // Create usage log
             $usageLog = MachineUsageLog::create([
                 'machine_id' => $machine->id,
-                'laundry_order_id' => $request->laundry_order_id,
+                'order_id' => $request->order_id,
                 'user_id' => $userId,
                 'store_id' => $storeId,
                 'load_weight_kg' => $request->load_weight_kg,
@@ -250,5 +250,6 @@ class MachineController extends Controller
         ]);
     }
 }
+
 
 

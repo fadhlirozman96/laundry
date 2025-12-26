@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'company_name',
+        'company_address',
+        'company_phone',
+        'current_plan_id',
+        'plan_expires_at',
         'account_owner_id',
         'department_id',
         'designation_id',
@@ -50,6 +55,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'plan_expires_at' => 'datetime',
     ];
 
     // Relationships
@@ -94,6 +100,27 @@ class User extends Authenticatable
         return $this->hasMany(Store::class, 'created_by');
     }
 
+    // SaaS Relationships
+    public function currentPlan()
+    {
+        return $this->belongsTo(Plan::class, 'current_plan_id');
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(Subscription::class)->where('status', 'active')->latest();
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(SubscriptionPayment::class);
+    }
+
     // HRM Relationships
     public function department()
     {
@@ -128,26 +155,103 @@ class User extends Authenticatable
     // Helper methods
     public function isSuperAdmin()
     {
-        $role = $this->role();
-        return $role && $role->name === 'super_admin';
+        $roleObj = $this->role();
+        return $roleObj && ($roleObj->name === 'super_admin' || $roleObj->name === 'superadmin');
     }
 
     public function isBusinessOwner()
     {
-        $role = $this->role();
-        return $role && $role->name === 'business_owner';
+        $roleObj = $this->role();
+        return $roleObj && $roleObj->name === 'business_owner';
     }
 
     public function isAdmin()
     {
-        $role = $this->role();
-        return $role && $role->name === 'admin';
+        $roleObj = $this->role();
+        return $roleObj && ($roleObj->name === 'admin' || $roleObj->name === 'store_manager');
     }
 
     public function isStaff()
     {
-        $role = $this->role();
-        return $role && $role->name === 'staff';
+        $roleObj = $this->role();
+        return $roleObj && $roleObj->name === 'staff';
+    }
+
+    // SaaS Helper Methods
+    public function hasPlan()
+    {
+        return !is_null($this->current_plan_id);
+    }
+
+    public function onPlan($planSlug)
+    {
+        if (!$this->currentPlan) {
+            return false;
+        }
+        return $this->currentPlan->slug === $planSlug;
+    }
+
+    public function canAddStore()
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        
+        if (!$this->currentPlan) {
+            return false;
+        }
+        
+        $storeCount = $this->ownedStores()->count();
+        $maxStores = $this->currentPlan->max_stores;
+        
+        return $maxStores === -1 || $storeCount < $maxStores;
+    }
+
+    public function hasFeatureAccess($feature)
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        
+        if (!$this->currentPlan) {
+            return false;
+        }
+        
+        return $this->currentPlan->hasFeature($feature);
+    }
+
+    public function getQcLevel()
+    {
+        if (!$this->currentPlan) {
+            return 'basic';
+        }
+        return $this->currentPlan->qc_level;
+    }
+
+    public function hasStoreSwitcher()
+    {
+        if ($this->isSuperAdmin()) {
+            return false; // Superadmin doesn't need store switcher
+        }
+        
+        if (!$this->currentPlan) {
+            return false;
+        }
+        
+        return $this->currentPlan->has_store_switcher;
+    }
+
+    public function hasAllStoresView()
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        
+        if (!$this->currentPlan) {
+            return false;
+        }
+        
+        return $this->currentPlan->has_all_stores_view;
     }
 
     public function getAccessibleStoresQuery()

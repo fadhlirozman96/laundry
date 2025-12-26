@@ -39,7 +39,7 @@
                                 </div>
                                 
                                 <p class="mb-1"><strong>Customer:</strong> {{ $order->customer_name }}</p>
-                                <p class="mb-1"><strong>Items:</strong> {{ $order->total_services }} pcs</p>
+                                <p class="mb-1"><strong>Items:</strong> {{ $order->items->sum('quantity') }} pcs</p>
                                 <p class="mb-3"><strong>Total:</strong> MYR {{ number_format($order->total, 2) }}</p>
                                 
                                 <div class="d-grid">
@@ -86,8 +86,8 @@
                             @forelse($recentQC as $qc)
                             <tr>
                                 <td>
-                                    <a href="{{ route('laundry.show', $qc->laundry_order_id) }}">
-                                        {{ $qc->laundryOrder->order_number ?? 'N/A' }}
+                                    <a href="{{ route('laundry.show', $qc->order_id) }}">
+                                        {{ $qc->order->order_number ?? 'N/A' }}
                                     </a>
                                 </td>
                                 <td>{{ $qc->user->name ?? 'N/A' }}</td>
@@ -159,5 +159,6 @@
     });
 </script>
 @endpush
+
 
 

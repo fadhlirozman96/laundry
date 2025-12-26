@@ -22,6 +22,9 @@ class Product extends Model
         'slug',
         'category_id',
         'unit_id',
+        'unit_type',
+        'qc_mode',
+        'set_components',
         'description',
         'price',
         'cost',
@@ -44,6 +47,7 @@ class Product extends Model
         'is_active' => 'boolean',
         'track_quantity' => 'boolean',
         'images' => 'array',
+        'set_components' => 'array',
     ];
 
     public function store()
@@ -69,5 +73,56 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+    
+    /**
+     * Get QC display label
+     */
+    public function getQcLabel()
+    {
+        switch ($this->unit_type) {
+            case 'piece':
+                return 'pieces';
+            case 'set':
+                return 'set(s)';
+            case 'kg':
+                return 'kg';
+            case 'sqft':
+                return 'sqft';
+            default:
+                return 'items';
+        }
+    }
+    
+    /**
+     * Check if item needs count-based QC
+     */
+    public function needsCountQc()
+    {
+        return $this->qc_mode === 'count';
+    }
+    
+    /**
+     * Check if item needs completeness QC (set-based)
+     */
+    public function needsCompletenessQc()
+    {
+        return $this->qc_mode === 'completeness';
+    }
+    
+    /**
+     * Check if item needs integrity QC (kg-based)
+     */
+    public function needsIntegrityQc()
+    {
+        return $this->qc_mode === 'integrity';
+    }
+    
+    /**
+     * Check if item needs identity QC (sqft-based)
+     */
+    public function needsIdentityQc()
+    {
+        return $this->qc_mode === 'identity';
     }
 }

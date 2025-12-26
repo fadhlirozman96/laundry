@@ -150,11 +150,17 @@ class ActivityLogController extends Controller
         }
 
         // Stats
-        $todayCount = ActivityLog::today()->count();
-        $weekCount = ActivityLog::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        $totalActivities = ActivityLog::count();
+        $totalLogs = ActivityLog::count(); // Same as total activities
+        $activeUsers = ActivityLog::distinct('user_id')->whereNotNull('user_id')->count('user_id');
+        // Online users: users with activity in last 5 minutes
+        $onlineUsers = ActivityLog::where('created_at', '>=', now()->subMinutes(5))
+            ->distinct('user_id')
+            ->whereNotNull('user_id')
+            ->count('user_id');
 
         return view('audit-trail.index', compact(
-            'logs', 'actions', 'modules', 'users', 'stores', 'todayCount', 'weekCount'
+            'logs', 'actions', 'modules', 'users', 'stores', 'totalActivities', 'totalLogs', 'activeUsers', 'onlineUsers'
         ));
     }
 
@@ -411,5 +417,6 @@ class ActivityLogController extends Controller
         ]);
     }
 }
+
 
 

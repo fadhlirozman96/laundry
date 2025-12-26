@@ -17,71 +17,61 @@
 
         <!-- Status Cards -->
         <div class="row">
-            <div class="col-lg-2 col-sm-4 col-6">
-                <div class="dash-widget dash1">
-                    <div class="dash-widgetimg">
-                        <span><i data-feather="inbox" class="text-secondary"></i></span>
+            <div class="col-lg-3 col-sm-6 col-6 mb-3">
+                <a href="{{ route('laundry.orders') }}?status=pending" class="text-decoration-none">
+                    <div class="dash-widget dash1" style="cursor: pointer; transition: transform 0.2s;">
+                        <div class="dash-widgetimg">
+                            <span><i data-feather="clock" class="text-warning"></i></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5>{{ $pendingCount }}</h5>
+                            <h6>Pending</h6>
+                            <p class="text-muted mb-0">New orders</p>
+                        </div>
                     </div>
-                    <div class="dash-widgetcontent">
-                        <h5>{{ $statusCounts['received'] ?? 0 }}</h5>
-                        <h6>Received</h6>
-                    </div>
-                </div>
+                </a>
             </div>
-            <div class="col-lg-2 col-sm-4 col-6">
-                <div class="dash-widget dash2">
-                    <div class="dash-widgetimg">
-                        <span><i data-feather="droplet" class="text-info"></i></span>
+            <div class="col-lg-3 col-sm-6 col-6 mb-3">
+                <a href="{{ route('laundry.orders') }}?status=processing" class="text-decoration-none">
+                    <div class="dash-widget dash2" style="cursor: pointer; transition: transform 0.2s;">
+                        <div class="dash-widgetimg">
+                            <span><i data-feather="refresh-cw" class="text-info"></i></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5>{{ $processingCount }}</h5>
+                            <h6>Processing</h6>
+                            <p class="text-muted mb-0">In progress</p>
+                        </div>
                     </div>
-                    <div class="dash-widgetcontent">
-                        <h5>{{ $statusCounts['washing'] ?? 0 }}</h5>
-                        <h6>Washing</h6>
-                    </div>
-                </div>
+                </a>
             </div>
-            <div class="col-lg-2 col-sm-4 col-6">
-                <div class="dash-widget dash3">
-                    <div class="dash-widgetimg">
-                        <span><i data-feather="wind" class="text-warning"></i></span>
+            <div class="col-lg-3 col-sm-6 col-6 mb-3">
+                <a href="{{ route('laundry.orders') }}?status=completed" class="text-decoration-none">
+                    <div class="dash-widget dash1" style="cursor: pointer; transition: transform 0.2s;">
+                        <div class="dash-widgetimg">
+                            <span><i data-feather="check-circle" class="text-success"></i></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5>{{ $completedCount }}</h5>
+                            <h6>Completed</h6>
+                            <p class="text-muted mb-0">Ready for collection</p>
+                        </div>
                     </div>
-                    <div class="dash-widgetcontent">
-                        <h5>{{ $statusCounts['drying'] ?? 0 }}</h5>
-                        <h6>Drying</h6>
-                    </div>
-                </div>
+                </a>
             </div>
-            <div class="col-lg-2 col-sm-4 col-6">
-                <div class="dash-widget">
-                    <div class="dash-widgetimg">
-                        <span><i data-feather="layers" class="text-primary"></i></span>
+            <div class="col-lg-3 col-sm-6 col-6 mb-3">
+                <a href="{{ route('laundry.qc.index') }}" class="text-decoration-none">
+                    <div class="dash-widget dash2" style="cursor: pointer; transition: transform 0.2s;">
+                        <div class="dash-widgetimg">
+                            <span><i data-feather="check-square" class="text-danger"></i></span>
+                        </div>
+                        <div class="dash-widgetcontent">
+                            <h5>{{ $pendingQC }}</h5>
+                            <h6>Pending QC</h6>
+                            <p class="text-muted mb-0">Needs inspection</p>
+                        </div>
                     </div>
-                    <div class="dash-widgetcontent">
-                        <h5>{{ $statusCounts['folding'] ?? 0 }}</h5>
-                        <h6>Folding</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-sm-4 col-6">
-                <div class="dash-widget dash1">
-                    <div class="dash-widgetimg">
-                        <span><i data-feather="check-circle" class="text-success"></i></span>
-                    </div>
-                    <div class="dash-widgetcontent">
-                        <h5>{{ $statusCounts['ready'] ?? 0 }}</h5>
-                        <h6>Ready</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-sm-4 col-6">
-                <div class="dash-widget dash2">
-                    <div class="dash-widgetimg">
-                        <span><i data-feather="package" class="text-dark"></i></span>
-                    </div>
-                    <div class="dash-widgetcontent">
-                        <h5>{{ $statusCounts['collected'] ?? 0 }}</h5>
-                        <h6>Collected</h6>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
 
@@ -118,16 +108,32 @@
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Orders Received
-                                <span class="badge bg-primary rounded-pill">{{ $todayOrders }}</span>
+                                <div>
+                                    <strong>Orders Received</strong>
+                                    <br><small class="text-muted">New orders today</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill fs-6">{{ $todayOrders }}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Ready for Collection
-                                <span class="badge bg-success rounded-pill">{{ $readyOrders }}</span>
+                                <div>
+                                    <strong>Today's Revenue</strong>
+                                    <br><small class="text-muted">Paid orders</small>
+                                </div>
+                                <span class="badge bg-success rounded-pill fs-6">MYR {{ number_format($todayRevenue, 2) }}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                Pending QC
-                                <span class="badge bg-warning rounded-pill">{{ $pendingQC }}</span>
+                                <div>
+                                    <strong>Pending QC</strong>
+                                    <br><small class="text-muted">Awaiting inspection</small>
+                                </div>
+                                <span class="badge bg-warning rounded-pill fs-6">{{ $pendingQC }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>QC Passed</strong>
+                                    <br><small class="text-muted">Ready to collect</small>
+                                </div>
+                                <span class="badge bg-success rounded-pill fs-6">{{ $qcPassed }}</span>
                             </li>
                         </ul>
                     </div>
@@ -136,13 +142,39 @@
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Find Order</h5>
+                        <h5 class="card-title mb-0">Statistics</h5>
                     </div>
                     <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Total Orders</strong>
+                                    <br><small class="text-muted">All time</small>
+                                </div>
+                                <span class="badge bg-info rounded-pill fs-6">{{ $totalOrders }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Total Revenue</strong>
+                                    <br><small class="text-muted">Paid orders</small>
+                                </div>
+                                <span class="badge bg-success rounded-pill fs-6">MYR {{ number_format($totalRevenue, 2) }}</span>
+                            </li>
+                            @if($cancelledCount > 0)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Cancelled</strong>
+                                    <br><small class="text-muted">Cancelled orders</small>
+                                </div>
+                                <span class="badge bg-danger rounded-pill fs-6">{{ $cancelledCount }}</span>
+                            </li>
+                            @endif
+                        </ul>
+                        <hr>
                         <form id="search-order-form">
                             <div class="mb-3">
-                                <label class="form-label">Order Number</label>
-                                <input type="text" class="form-control" id="search_order_number" placeholder="e.g. LO20251219-0001">
+                                <label class="form-label">Find Order</label>
+                                <input type="text" class="form-control" id="search_order_number" placeholder="e.g. ORD-20251226-0004">
                             </div>
                             <button type="submit" class="btn btn-primary w-100">
                                 <i data-feather="search" class="me-2"></i>Search
@@ -182,14 +214,35 @@
                                     </a>
                                 </td>
                                 <td>{{ $order->customer_name }}</td>
-                                <td>{{ $order->total_services }} pcs</td>
+                                <td>
+                                    @php
+                                        $itemSummary = [];
+                                        foreach($order->items as $item) {
+                                            $product = $item->product;
+                                            $unitType = $product ? ($product->unit_type ?? 'piece') : 'piece';
+                                            if (!isset($itemSummary[$unitType])) {
+                                                $itemSummary[$unitType] = 0;
+                                            }
+                                            $itemSummary[$unitType] += $item->quantity;
+                                        }
+                                        $displayParts = [];
+                                        foreach($itemSummary as $type => $qty) {
+                                            $label = '';
+                                            switch($type) {
+                                                case 'piece': $label = 'pcs'; break;
+                                                case 'set': $label = 'set'; break;
+                                                case 'kg': $label = 'kg'; break;
+                                                case 'sqft': $label = 'sqft'; break;
+                                                default: $label = 'pcs';
+                                            }
+                                            $displayParts[] = $qty . ' ' . $label;
+                                        }
+                                        echo !empty($displayParts) ? implode(', ', $displayParts) : '0 pcs';
+                                    @endphp
+                                </td>
                                 <td>{!! $order->getStatusBadge() !!}</td>
                                 <td>
-                                    @if($order->qc_passed)
-                                        <span class="badge bg-success">Passed</span>
-                                    @else
-                                        <span class="badge bg-secondary">Pending</span>
-                                    @endif
+                                    {!! $order->getQcStatusBadge() !!}
                                 </td>
                                 <td>{{ $order->created_at->format('d M H:i') }}</td>
                                 <td>
@@ -249,7 +302,7 @@
             data: { qr_code: qrCode, _token: '{{ csrf_token() }}' },
             success: function(response) {
                 if (response.success) {
-                    window.location.href = '/laundry/orders/' + response.order.id;
+                    window.location.href = '/laundry-orders/' + response.order.id;
                 } else {
                     Swal.fire('Not Found', response.message, 'error');
                 }
@@ -274,7 +327,7 @@
             data: { order_number: orderNumber, _token: '{{ csrf_token() }}' },
             success: function(response) {
                 if (response.success) {
-                    window.location.href = '/laundry/orders/' + response.order.id;
+                    window.location.href = '/laundry-orders/' + response.order.id;
                 } else {
                     Swal.fire('Not Found', response.message, 'error');
                 }
@@ -292,5 +345,35 @@
     });
 </script>
 @endpush
+
+@push('styles')
+<style>
+    .dash-widget {
+        transition: all 0.3s ease;
+    }
+    
+    a:hover .dash-widget {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+    }
+    
+    .dash-widgetcontent h5 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    
+    .dash-widgetcontent h6 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+    
+    .dash-widgetcontent p {
+        font-size: 12px;
+    }
+</style>
+@endpush
+
 
 

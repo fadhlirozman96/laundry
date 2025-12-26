@@ -70,9 +70,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    @if($log->laundryOrder)
-                                        <a href="{{ route('laundry.show', $log->laundry_order_id) }}">
-                                            {{ $log->laundryOrder->order_number }}
+                                    @if($log->order)
+                                        <a href="{{ route('laundry.show', $log->order_id) }}">
+                                            {{ $log->order->order_number }}
                                         </a>
                                     @else
                                         -
@@ -144,5 +144,6 @@
     });
 </script>
 @endpush
+
 
 

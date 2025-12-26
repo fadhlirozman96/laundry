@@ -30,8 +30,9 @@
                         <div class="order-status-tracker">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 @php
-                                    $statuses = ['received', 'washing', 'drying', 'folding', 'ready', 'collected'];
-                                    $currentIndex = array_search($order->status, $statuses);
+                                    $statuses = ['pending', 'processing', 'completed'];
+                                    $statusMap = ['pending' => 0, 'processing' => 1, 'completed' => 2, 'cancelled' => 3];
+                                    $currentIndex = $statusMap[$order->order_status] ?? 0;
                                 @endphp
                                 @foreach($statuses as $index => $status)
                                     <div class="text-center flex-fill">
@@ -45,14 +46,6 @@
                                         <small class="d-block mt-1 {{ $index == $currentIndex ? 'fw-bold' : '' }}">
                                             {{ ucfirst($status) }}
                                         </small>
-                                        @php
-                                            $timeField = $status . '_at';
-                                        @endphp
-                                        @if($order->$timeField)
-                                            <small class="text-muted d-block">
-                                                {{ $order->$timeField->format('H:i') }}
-                                            </small>
-                                        @endif
                                     </div>
                                     @if($index < count($statuses) - 1)
                                         <div class="status-line {{ $index < $currentIndex ? 'active' : '' }}"></div>
@@ -61,20 +54,19 @@
                             </div>
                         </div>
 
-                        @if($order->status !== 'collected')
+                        @if($order->order_status !== 'completed' && $order->order_status !== 'cancelled')
                             <div class="text-center mt-4">
-                                @php $nextStatus = $order->getNextStatus(); @endphp
-                                @if($nextStatus)
-                                    @if($nextStatus === 'ready' && !$order->qc_passed)
-                                        <a href="{{ route('laundry.qc.create', $order->id) }}" class="btn btn-warning btn-lg">
-                                            <i data-feather="check-square" class="me-2"></i>Complete Quality Check First
-                                        </a>
-                                    @else
-                                        <button class="btn btn-primary btn-lg" onclick="updateStatus('{{ $nextStatus }}')">
-                                            <i data-feather="arrow-right" class="me-2"></i>Move to {{ ucfirst($nextStatus) }}
-                                        </button>
+                                <button class="btn btn-primary btn-lg me-2" onclick="updateStatusNext()">
+                                    <i data-feather="arrow-right" class="me-2"></i>
+                                    @if($order->order_status == 'pending')
+                                        Move to Processing
+                                    @elseif($order->order_status == 'processing')
+                                        Mark as Completed
                                     @endif
-                                @endif
+                                </button>
+                                <button class="btn btn-danger btn-lg" onclick="cancelOrder()">
+                                    <i data-feather="x-circle" class="me-2"></i>Cancel Order
+                                </button>
                             </div>
                         @endif
                     </div>
@@ -83,66 +75,55 @@
                 <!-- Items List -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Order Items ({{ $order->total_services }} items)</h5>
+                        <h5 class="card-title mb-0">Order Items ({{ $order->items->sum('quantity') }} items)</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Code</th>
                                         <th>Item</th>
-                                        <th>Color</th>
+                                        <th>SKU</th>
                                         <th>Qty</th>
                                         <th>Price</th>
                                         <th>Subtotal</th>
-                                        <th>Condition</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($order->items as $item)
                                     <tr>
-                                        <td><code>{{ $item->item_code }}</code></td>
-                                        <td>
-                                            <strong>{{ $item->service_name }}</strong>
-                                            @if($item->service)
-                                                <br><small class="text-muted">{{ $item->service->name }}</small>
-                                            @endif
-                                        </td>
-                                        <td>{{ $item->color ?? '-' }}</td>
+                                        <td>{{ $item->product_name }}</td>
+                                        <td>{{ $item->product_sku }}</td>
                                         <td>{{ $item->quantity }}</td>
                                         <td>MYR {{ number_format($item->price, 2) }}</td>
                                         <td>MYR {{ number_format($item->subtotal, 2) }}</td>
-                                        <td>
-                                            @if($item->condition_notes)
-                                                <span class="badge bg-info" data-bs-toggle="tooltip" title="{{ $item->condition_notes }}">
-                                                    Note
-                                                </span>
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="5" class="text-end"><strong>Subtotal:</strong></td>
-                                        <td colspan="2">MYR {{ number_format($order->subtotal, 2) }}</td>
+                                        <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                        <td>MYR {{ number_format($order->subtotal, 2) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="5" class="text-end"><strong>Tax (6%):</strong></td>
-                                        <td colspan="2">MYR {{ number_format($order->tax, 2) }}</td>
+                                        <td colspan="4" class="text-end"><strong>Tax:</strong></td>
+                                        <td>MYR {{ number_format($order->tax, 2) }}</td>
                                     </tr>
+                                    @if($order->shipping > 0)
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>Shipping:</strong></td>
+                                        <td>MYR {{ number_format($order->shipping, 2) }}</td>
+                                    </tr>
+                                    @endif
                                     @if($order->discount > 0)
                                     <tr>
-                                        <td colspan="5" class="text-end"><strong>Discount:</strong></td>
-                                        <td colspan="2">- MYR {{ number_format($order->discount, 2) }}</td>
+                                        <td colspan="4" class="text-end"><strong>Discount:</strong></td>
+                                        <td>- MYR {{ number_format($order->discount, 2) }}</td>
                                     </tr>
                                     @endif
                                     <tr class="table-primary">
-                                        <td colspan="5" class="text-end"><strong>TOTAL:</strong></td>
-                                        <td colspan="2"><strong>MYR {{ number_format($order->total, 2) }}</strong></td>
+                                        <td colspan="4" class="text-end"><strong>TOTAL:</strong></td>
+                                        <td><strong>MYR {{ number_format($order->total, 2) }}</strong></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -153,27 +134,34 @@
                 <!-- Status History -->
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Status History</h5>
+                        <h5 class="card-title mb-0">Order Information</h5>
                     </div>
                     <div class="card-body">
-                        <ul class="timeline">
-                            @foreach($order->statusLogs as $log)
-                            <li class="timeline-item">
-                                <span class="timeline-point"></span>
-                                <div class="timeline-content">
-                                    <div class="d-flex justify-content-between">
-                                        <strong>{{ ucfirst($log->to_status) }}</strong>
-                                        <small class="text-muted">{{ $log->created_at->format('d M Y H:i') }}</small>
-                                    </div>
-                                    <p class="mb-0">
-                                        By: {{ $log->user->name }}
-                                        @if($log->notes)
-                                            <br><small class="text-muted">{{ $log->notes }}</small>
-                                        @endif
-                                    </p>
-                                </div>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <strong>Created:</strong> {{ $order->created_at->format('d M Y H:i') }}
                             </li>
-                            @endforeach
+                            <li class="mb-2">
+                                <strong>Created By:</strong> {{ $order->user->name }}
+                            </li>
+                            <li class="mb-2">
+                                <strong>Current Status:</strong> {!! $order->getStatusBadge() !!}
+                            </li>
+                            @if($order->expected_completion)
+                            <li class="mb-2">
+                                <strong>Expected Completion:</strong> {{ $order->expected_completion->format('d M Y H:i') }}
+                            </li>
+                            @endif
+                            @if($order->notes)
+                            <li class="mb-2">
+                                <strong>Notes:</strong><br>{{ $order->notes }}
+                            </li>
+                            @endif
+                            @if($order->special_instructions)
+                            <li class="mb-2">
+                                <strong>Special Instructions:</strong><br>{{ $order->special_instructions }}
+                            </li>
+                            @endif
                         </ul>
                     </div>
                 </div>
@@ -181,53 +169,38 @@
 
             <!-- Sidebar Info -->
             <div class="col-lg-4">
-                <!-- QR Code -->
-                <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <div id="qrcode" class="mb-3"></div>
-                        <p class="mb-0"><code>{{ $order->qr_code }}</code></p>
-                    </div>
-                </div>
-
                 <!-- Customer Info -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Customer</h5>
                     </div>
                     <div class="card-body">
-                        <p class="mb-1"><strong>{{ $order->customer_name }}</strong></p>
+                        <div class="mb-3">
+                            <strong>{{ $order->customer_name }}</strong>
+                        </div>
                         @if($order->customer_phone)
-                            <p class="mb-1"><i data-feather="phone" class="me-2"></i>{{ $order->customer_phone }}</p>
+                        <div class="mb-2">
+                            <i data-feather="phone" class="feather-sm me-2"></i>
+                            <span>{{ $order->customer_phone }}</span>
+                        </div>
                         @endif
                         @if($order->customer_email)
-                            <p class="mb-1"><i data-feather="mail" class="me-2"></i>{{ $order->customer_email }}</p>
+                        <div class="mb-2">
+                            <i data-feather="mail" class="feather-sm me-2"></i>
+                            <span>{{ $order->customer_email }}</span>
+                        </div>
                         @endif
-                    </div>
-                </div>
-
-                <!-- QC Status -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Quality Check</h5>
-                    </div>
-                    <div class="card-body">
-                        @if($order->qc_passed)
-                            <div class="alert alert-success mb-0">
-                                <i data-feather="check-circle" class="me-2"></i>
-                                <strong>QC Passed</strong><br>
-                                <small>By {{ $order->qcInspector->name ?? 'N/A' }} at {{ $order->qc_at ? $order->qc_at->format('d M H:i') : '-' }}</small>
-                            </div>
-                        @else
-                            <div class="alert alert-warning mb-0">
-                                <i data-feather="alert-circle" class="me-2"></i>
-                                <strong>QC Pending</strong><br>
-                                <small>Order must pass QC before marking as Ready</small>
-                            </div>
-                            @if(in_array($order->status, ['folding', 'drying']))
-                                <a href="{{ route('laundry.qc.create', $order->id) }}" class="btn btn-warning w-100 mt-2">
-                                    Start QC
-                                </a>
-                            @endif
+                        @if($order->customer && $order->customer->address)
+                        <div class="mb-2">
+                            <i data-feather="map-pin" class="feather-sm me-2"></i>
+                            <span>{{ $order->customer->address }}</span>
+                        </div>
+                        @endif
+                        @if($order->customer && $order->customer->city)
+                        <div class="mb-2">
+                            <i data-feather="map" class="feather-sm me-2"></i>
+                            <span>{{ $order->customer->city }}@if($order->customer->country), {{ $order->customer->country }}@endif</span>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -360,41 +333,73 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-    function updateStatus(newStatus) {
+    function updateStatusNext() {
+        const currentStatus = '{{ $order->order_status }}';
+        let nextStatus = '';
+        let statusLabel = '';
+        
+        if (currentStatus === 'pending') {
+            nextStatus = 'processing';
+            statusLabel = 'Processing';
+        } else if (currentStatus === 'processing') {
+            nextStatus = 'completed';
+            statusLabel = 'Completed';
+        }
+        
+        if (!nextStatus) {
+            Swal.fire('Error', 'Cannot determine next status', 'error');
+            return;
+        }
+        
         Swal.fire({
             title: 'Update Status',
-            text: 'Move order to ' + newStatus.charAt(0).toUpperCase() + newStatus.slice(1) + '?',
+            text: 'Move order to ' + statusLabel + '?',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Yes, update',
-            input: 'textarea',
-            inputLabel: 'Notes (optional)',
-            inputPlaceholder: 'Any notes about this status change...'
+            confirmButtonText: 'Yes, update'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: '{{ route("laundry.update-status", $order->id) }}',
-                    type: 'PUT',
-                    data: { 
-                        status: newStatus, 
-                        notes: result.value,
-                        _token: '{{ csrf_token() }}' 
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire('Success', response.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire('Error', response.message, 'error');
-                        }
-                    },
-                    error: function(xhr) {
-                        Swal.fire('Error', xhr.responseJSON?.message || 'Failed to update status', 'error');
-                    }
-                });
+                updateStatus(nextStatus, statusLabel);
+            }
+        });
+    }
+    
+    function cancelOrder() {
+        Swal.fire({
+            title: 'Cancel Order',
+            text: 'Are you sure you want to cancel this order?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, cancel order',
+            confirmButtonColor: '#dc3545'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                updateStatus('cancelled', 'Cancelled');
+            }
+        });
+    }
+
+    function updateStatus(newStatus, statusLabel) {
+        $.ajax({
+            url: '{{ route("laundry.update-status", $order->id) }}',
+            type: 'POST',
+            data: { 
+                status: newStatus,
+                _token: '{{ csrf_token() }}',
+                _method: 'PUT'
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Success', 'Order status updated to ' + statusLabel, 'success').then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'Failed to update status', 'error');
             }
         });
     }
@@ -404,13 +409,6 @@
     }
 
     $(document).ready(function() {
-        // Generate QR code
-        new QRCode(document.getElementById("qrcode"), {
-            text: "{{ $order->qr_code }}",
-            width: 150,
-            height: 150
-        });
-
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
@@ -419,5 +417,6 @@
     });
 </script>
 @endpush
+
 
 

@@ -45,7 +45,7 @@ License: copyright commercial
   --theme-color1: #F06;
   --theme-color2: #210378;
   --theme-color3: #FF7C2B;
-  --theme-color4: #5224B5;
+  --theme-color4: #111229;
   --bg-theme-color1: var(--theme-color1);
   --bg-theme-color2: var(--theme-color2);
   --bg-theme-color3: var(--theme-color3);
@@ -2830,7 +2830,7 @@ Sticky Header
   width: 100%;
   padding: 10px 0;
   z-index: 99999;
-  background: #210279;
+  background: #111229;
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
@@ -3743,7 +3743,7 @@ Section Title three
 }
 @media (max-width: 1199.98px) {
   .banner-section-two {
-    background: #5224B5;
+    background: #111229;
     padding-bottom: 120px;
   }
 }
@@ -6475,7 +6475,7 @@ Section Title three
   bottom: -50px;
 }
 .testimonial-section .testi-box .testimonial-slider .slick-dots li button {
-  background: #5224B5;
+  background: #111229;
   width: 15px;
   height: 15px;
   border-radius: 50%;
@@ -8875,7 +8875,7 @@ Section Title three
   padding: 84px 173px 84px;
   text-align: center;
   border-radius: 80px 206px;
-  background: #5224B5;
+  background: #111229;
   margin-bottom: 111px;
   z-index: 99;
 }

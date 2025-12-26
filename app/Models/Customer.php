@@ -17,7 +17,6 @@ class Customer extends Model
         'address',
         'city',
         'country',
-        'status',
         'is_active',
         'created_by',
     ];

@@ -45,6 +45,19 @@ Route::post('/products/{id}/status', [App\Http\Controllers\ProductController::cl
 
 Route::get('/add-product', [App\Http\Controllers\ProductController::class, 'create'])->name('add-product')->middleware('auth');
 
+// Receipt Routes (MUST be early to avoid conflicts)
+Route::middleware('auth')->group(function () {
+    // Regular Receipt
+    Route::get('/receipts/{id}/download', [App\Http\Controllers\ReceiptController::class, 'download'])->name('receipts.download');
+    Route::get('/receipts/{id}/view', [App\Http\Controllers\ReceiptController::class, 'view'])->name('receipts.view');
+    Route::post('/receipts/{id}/generate', [App\Http\Controllers\ReceiptController::class, 'generate'])->name('receipts.generate');
+    
+    // Thermal Receipt
+    Route::get('/receipts/{id}/thermal/download', [App\Http\Controllers\ReceiptController::class, 'downloadThermal'])->name('receipts.thermal.download');
+    Route::get('/receipts/{id}/thermal/view', [App\Http\Controllers\ReceiptController::class, 'viewThermal'])->name('receipts.thermal.view');
+    Route::post('/receipts/{id}/thermal/generate', [App\Http\Controllers\ReceiptController::class, 'generateThermal'])->name('receipts.thermal.generate');
+});
+
 Route::get('/expired-products', function () {
     return view('expired-products');
 })->name('expired-products');
@@ -355,7 +368,7 @@ Route::get('/storefront-preview/{storeId}', [App\Http\Controllers\StoreThemeCont
 
 // Store Frontend Routes (must be after CMS routes to avoid conflicts)
 // Exclude common admin routes from being matched as store slugs
-Route::prefix('{slug}')->where(['slug' => '^(?!index|product-list|add-product|store-list|pos|login|logout|signin|signout|register|api|admin|storefront-cms|storefront-theme|storefront-preview|laundry|audit-trail|users|roles-permissions|delete-account|session|expense|payroll|attendance|leave|holiday|shift|designation|department|employee|quotation|invoice|sales|coupon|customer|customers|supplier|warehouse|report|inventory|purchase|tax|profit|income|profile|category-list|categories|units|service|brand|sub-categories|general-settings|security-settings|notification|connected-apps|system-settings|company-settings|localization-settings|prefixes|preference|appearance|social-authentication|language-settings|language-settings-web|invoice-settings|printer-settings|pos-settings|custom-fields|email-settings|sms-gateway|otp-settings|gdpr-settings|payment-gateway-settings|bank-settings-grid|bank-settings-list|tax-rates|currency-settings|storage-settings|ban-ip-address).*$'])->group(function () {
+Route::prefix('{slug}')->where(['slug' => '^(?!index|product-list|add-product|store-list|pos|login|logout|signin|signout|register|api|admin|superadmin|storefront-cms|storefront-theme|storefront-preview|laundry|laundry-orders|laundry-qc|laundry-machines|audit-trail|users|roles-permissions|delete-account|session|expense|payroll|attendance|leave|holiday|shift|designation|department|employee|quotation|invoice|sales|coupon|customer|customers|supplier|warehouse|report|inventory|purchase|tax|profit|income|profile|category-list|categories|units|service|brand|sub-categories|general-settings|security-settings|notification|connected-apps|system-settings|company-settings|localization-settings|prefixes|preference|appearance|social-authentication|language-settings|language-settings-web|invoice-settings|printer-settings|pos-settings|custom-fields|email-settings|sms-gateway|otp-settings|gdpr-settings|payment-gateway-settings|bank-settings-grid|bank-settings-list|tax-rates|currency-settings|storage-settings|ban-ip-address|receipts).*$'])->group(function () {
     Route::get('/', [StoreFrontController::class, 'index'])->name('storefront.index');
     Route::get('/products', [StoreFrontController::class, 'products'])->name('storefront.products');
     Route::get('/product/{productSlug}', [StoreFrontController::class, 'product'])->name('storefront.product');
@@ -852,6 +865,76 @@ Route::middleware('auth')->group(function () {
     Route::get('/employees-list', function () { return view('employees-list'); })->name('employees-list');
 });
 
+// ========== SUPERADMIN MODULE ==========
+Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\SuperAdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Business Management
+    Route::get('/businesses', [App\Http\Controllers\SuperAdminController::class, 'businesses'])->name('businesses.index');
+    Route::get('/businesses/{id}', [App\Http\Controllers\SuperAdminController::class, 'businessDetails'])->name('businesses.show');
+    Route::post('/businesses/{id}/suspend', [App\Http\Controllers\SuperAdminController::class, 'suspendBusiness'])->name('businesses.suspend');
+    Route::post('/businesses/{id}/activate', [App\Http\Controllers\SuperAdminController::class, 'activateBusiness'])->name('businesses.activate');
+    
+    // Subscriptions & Plans
+    Route::get('/subscriptions', [App\Http\Controllers\SuperAdminController::class, 'subscriptions'])->name('subscriptions');
+    Route::get('/plans', [App\Http\Controllers\SuperAdminController::class, 'plans'])->name('plans');
+    Route::get('/plans/create', [App\Http\Controllers\SuperAdminController::class, 'createPlan'])->name('plans.create');
+    Route::post('/plans', [App\Http\Controllers\SuperAdminController::class, 'storePlan'])->name('plans.store');
+    Route::get('/plans/{id}/edit', [App\Http\Controllers\SuperAdminController::class, 'editPlan'])->name('plans.edit');
+    Route::put('/plans/{id}', [App\Http\Controllers\SuperAdminController::class, 'updatePlan'])->name('plans.update');
+    
+    // Feature Gating
+    Route::get('/features', [App\Http\Controllers\SuperAdminController::class, 'features'])->name('features.index');
+    Route::get('/features/logs', [App\Http\Controllers\SuperAdminController::class, 'featureLogs'])->name('features.logs');
+    
+    // SaaS Billing
+    Route::get('/invoices', [App\Http\Controllers\SuperAdminController::class, 'invoices'])->name('invoices');
+    Route::get('/invoices/{id}', [App\Http\Controllers\SuperAdminController::class, 'invoiceDetails'])->name('invoices.show');
+    Route::get('/grace-periods', [App\Http\Controllers\SuperAdminController::class, 'gracePeriods'])->name('grace-periods');
+    Route::get('/payments', [App\Http\Controllers\SuperAdminController::class, 'payments'])->name('payments');
+    
+    // User & Identity
+    Route::get('/users', [App\Http\Controllers\SuperAdminController::class, 'users'])->name('users.index');
+    Route::get('/users/{id}', [App\Http\Controllers\SuperAdminController::class, 'userDetails'])->name('users.show');
+    Route::get('/user-profiles', [App\Http\Controllers\SuperAdminController::class, 'userProfiles'])->name('user-profiles');
+    Route::get('/security-settings', [App\Http\Controllers\SuperAdminController::class, 'securitySettings'])->name('security-settings');
+    
+    // Roles & Permissions
+    Route::get('/roles-permissions', [App\Http\Controllers\SuperAdminController::class, 'rolesPermissions'])->name('roles-permissions');
+    Route::get('/store-role-mapping', [App\Http\Controllers\SuperAdminController::class, 'storeRoleMapping'])->name('store-role-mapping');
+    
+    // Store Containers
+    Route::get('/store-containers', [App\Http\Controllers\SuperAdminController::class, 'storeContainers'])->name('store-containers.index');
+    Route::get('/store-containers/{id}', [App\Http\Controllers\SuperAdminController::class, 'storeContainerDetails'])->name('store-containers.show');
+    
+    // Usage & Limits
+    Route::get('/usage-limits', [App\Http\Controllers\SuperAdminController::class, 'usageLimits'])->name('usage-limits.index');
+    Route::get('/usage-limits/{businessId}', [App\Http\Controllers\SuperAdminController::class, 'businessUsage'])->name('usage-limits.business');
+    
+    // SaaS Configuration
+    Route::get('/settings/branding', [App\Http\Controllers\SuperAdminController::class, 'brandingSettings'])->name('settings.branding');
+    Route::post('/settings/branding', [App\Http\Controllers\SuperAdminController::class, 'updateBranding'])->name('settings.branding.update');
+    Route::get('/settings/currency', [App\Http\Controllers\SuperAdminController::class, 'currencySettings'])->name('settings.currency');
+    Route::post('/settings/currency', [App\Http\Controllers\SuperAdminController::class, 'updateCurrency'])->name('settings.currency.update');
+    Route::get('/settings/tax', [App\Http\Controllers\SuperAdminController::class, 'taxSettings'])->name('settings.tax');
+    Route::post('/settings/tax', [App\Http\Controllers\SuperAdminController::class, 'updateTax'])->name('settings.tax.update');
+    Route::get('/settings/timezone', [App\Http\Controllers\SuperAdminController::class, 'timezoneSettings'])->name('settings.timezone');
+    Route::post('/settings/timezone', [App\Http\Controllers\SuperAdminController::class, 'updateTimezone'])->name('settings.timezone.update');
+    
+    // Support & Logs
+    Route::get('/support/tickets', [App\Http\Controllers\SuperAdminController::class, 'supportTickets'])->name('support.tickets');
+    Route::get('/logs/system', [App\Http\Controllers\SuperAdminController::class, 'systemLogs'])->name('logs.system');
+    Route::get('/logs/error', [App\Http\Controllers\SuperAdminController::class, 'errorLogs'])->name('logs.error');
+    Route::get('/impersonation-history', [App\Http\Controllers\SuperAdminController::class, 'impersonationHistory'])->name('impersonation-history');
+    
+    // Customers
+    Route::get('/customers', [App\Http\Controllers\SuperAdminController::class, 'customers'])->name('customers');
+    
+    // Impersonation
+    Route::get('/impersonate/{userId}', [App\Http\Controllers\SuperAdminController::class, 'impersonate'])->name('impersonate');
+    Route::get('/stop-impersonate', [App\Http\Controllers\SuperAdminController::class, 'stopImpersonate'])->name('stop-impersonate');
+});
+
 // ========== AUDIT TRAIL MODULE ==========
 Route::middleware('auth')->prefix('audit-trail')->name('audit-trail.')->group(function () {
     Route::get('/', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('index');
@@ -864,41 +947,48 @@ Route::middleware('auth')->prefix('audit-trail')->name('audit-trail.')->group(fu
 });
 
 // ========== LAUNDRY OPERATIONS MODULE ==========
-Route::middleware('auth')->prefix('laundry')->name('laundry.')->group(function () {
-    // Dashboard
-    Route::get('/', [App\Http\Controllers\LaundryController::class, 'dashboard'])->name('dashboard');
-    
-    // Orders
-    Route::get('/orders', [App\Http\Controllers\LaundryController::class, 'index'])->name('orders');
-    Route::get('/orders/create', [App\Http\Controllers\LaundryController::class, 'create'])->name('create');
-    Route::post('/orders', [App\Http\Controllers\LaundryController::class, 'store'])->name('store');
-    Route::get('/orders/{id}', [App\Http\Controllers\LaundryController::class, 'show'])->name('show');
-    Route::put('/orders/{id}/status', [App\Http\Controllers\LaundryController::class, 'updateStatus'])->name('update-status');
+// Laundry Dashboard
+Route::middleware('auth')->get('/laundry', [App\Http\Controllers\LaundryController::class, 'dashboard'])->name('laundry.dashboard');
+
+// Laundry Orders
+Route::middleware('auth')->prefix('laundry-orders')->name('laundry.')->group(function () {
+    Route::get('/', [App\Http\Controllers\LaundryController::class, 'index'])->name('orders');
+    Route::get('/create', [App\Http\Controllers\LaundryController::class, 'create'])->name('create');
+    Route::post('/', [App\Http\Controllers\LaundryController::class, 'store'])->name('store');
+    Route::get('/{id}', [App\Http\Controllers\LaundryController::class, 'show'])->name('show');
+    Route::put('/{id}/status', [App\Http\Controllers\LaundryController::class, 'updateStatus'])->name('update-status');
+    Route::post('/{id}/cancel', [App\Http\Controllers\LaundryController::class, 'cancelOrder'])->name('cancel-order');
     
     // QR/Order Search
     Route::post('/scan-qr', [App\Http\Controllers\LaundryController::class, 'scanQR'])->name('scan-qr');
     Route::post('/find-order', [App\Http\Controllers\LaundryController::class, 'findByOrderNumber'])->name('find-order');
-    Route::get('/orders/{id}/qr', [App\Http\Controllers\LaundryController::class, 'generateQRImage'])->name('qr-image');
-    
-    
-    // Machines
-    Route::get('/machines', [App\Http\Controllers\MachineController::class, 'index'])->name('machines');
-    Route::post('/machines', [App\Http\Controllers\MachineController::class, 'store'])->name('machines.store');
-    Route::put('/machines/{id}', [App\Http\Controllers\MachineController::class, 'update'])->name('machines.update');
-    Route::delete('/machines/{id}', [App\Http\Controllers\MachineController::class, 'destroy'])->name('machines.destroy');
-    Route::get('/machines/status', [App\Http\Controllers\MachineController::class, 'getStatus'])->name('machines.status');
+    Route::get('/{id}/qr', [App\Http\Controllers\LaundryController::class, 'generateQRImage'])->name('qr-image');
+});
+
+// Laundry Dashboard
+Route::middleware('auth')->get('/laundry', [App\Http\Controllers\LaundryController::class, 'dashboard'])->name('laundry.dashboard');
+
+// Machines
+Route::middleware('auth')->prefix('laundry-machines')->name('laundry.')->group(function () {
+    Route::get('/', [App\Http\Controllers\MachineController::class, 'index'])->name('machines');
+    Route::post('/', [App\Http\Controllers\MachineController::class, 'store'])->name('machines.store');
+    Route::put('/{id}', [App\Http\Controllers\MachineController::class, 'update'])->name('machines.update');
+    Route::delete('/{id}', [App\Http\Controllers\MachineController::class, 'destroy'])->name('machines.destroy');
+    Route::get('/status', [App\Http\Controllers\MachineController::class, 'getStatus'])->name('machines.status');
     
     // Machine Usage
-    Route::get('/machine-usage', [App\Http\Controllers\MachineController::class, 'usageHistory'])->name('machine-usage');
-    Route::post('/machines/start', [App\Http\Controllers\MachineController::class, 'startUsage'])->name('machines.start');
-    Route::put('/machines/usage/{id}/end', [App\Http\Controllers\MachineController::class, 'endUsage'])->name('machines.end');
-    
-    // Quality Control
-    Route::get('/qc', [App\Http\Controllers\QualityCheckController::class, 'index'])->name('qc.index');
-    Route::get('/qc/history', [App\Http\Controllers\QualityCheckController::class, 'history'])->name('qc.history');
-    Route::get('/qc/{orderId}', [App\Http\Controllers\QualityCheckController::class, 'create'])->name('qc.create');
-    Route::post('/qc/{orderId}', [App\Http\Controllers\QualityCheckController::class, 'store'])->name('qc.store');
-    Route::get('/qc/view/{id}', [App\Http\Controllers\QualityCheckController::class, 'show'])->name('qc.show');
+    Route::get('/usage', [App\Http\Controllers\MachineController::class, 'usageHistory'])->name('machine-usage');
+    Route::post('/start', [App\Http\Controllers\MachineController::class, 'startUsage'])->name('machines.start');
+    Route::put('/usage/{id}/end', [App\Http\Controllers\MachineController::class, 'endUsage'])->name('machines.end');
+});
+
+// Quality Control
+Route::middleware('auth')->prefix('laundry-qc')->name('laundry.qc.')->group(function () {
+    Route::get('/', [App\Http\Controllers\QualityCheckController::class, 'index'])->name('index');
+    Route::get('/history', [App\Http\Controllers\QualityCheckController::class, 'history'])->name('history');
+    Route::get('/{orderId}', [App\Http\Controllers\QualityCheckController::class, 'create'])->name('create');
+    Route::post('/{orderId}', [App\Http\Controllers\QualityCheckController::class, 'store'])->name('store');
+    Route::get('/view/{id}', [App\Http\Controllers\QualityCheckController::class, 'show'])->name('show');
 });
 
 

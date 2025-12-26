@@ -12,6 +12,7 @@ class LaundryOrderItem extends Model
     protected $fillable = [
         'laundry_order_id',
         'service_id',
+        'garment_name',
         'service_name',
         'item_code',
         'quantity',
@@ -45,5 +46,6 @@ class LaundryOrderItem extends Model
         return 'I' . $orderId . '-' . str_pad($index, 3, '0', STR_PAD_LEFT);
     }
 }
+
 
 
